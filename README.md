@@ -2,6 +2,8 @@
 
 Forge-Mod für **Minecraft Java 1.21.1** (Forge 52.1.14, Java 21) mit neuen Redstone-Blöcken und -Items.
 
+**Download:** [download/RedstonePlus-1.21.1-1.2.3.jar](download/RedstonePlus-1.21.1-1.2.3.jar) (auf der Seite dann rechts auf den Download-Pfeil).
+
 Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.2.3.jar` und kommt in den
 `mods`-Ordner. Alle Items sind im eigenen Kreativ-Tab **RedstonePlus**, jedes Item erklärt seine Funktion
 im Tooltip (Deutsch und Englisch).

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " R ",
+    "RLR",
+    " Z "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:instant_lamp",
+    "count": 2
+  }
+}

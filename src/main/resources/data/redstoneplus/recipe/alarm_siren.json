@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "IXI",
+    "IZI",
+    "IRI"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:note_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:alarm_siren",
+    "count": 1
+  }
+}

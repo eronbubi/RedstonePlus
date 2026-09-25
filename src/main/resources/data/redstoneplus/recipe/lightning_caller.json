@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "IXI",
+    "IZI",
+    "IUI"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:lightning_rod"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "U": {
+      "item": "redstoneplus:enriched_uranium"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:lightning_caller",
+    "count": 1
+  }
+}

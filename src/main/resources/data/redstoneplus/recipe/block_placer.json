@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CXC",
+    "CZC",
+    "CRC"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:dispenser"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:block_placer",
+    "count": 1
+  }
+}

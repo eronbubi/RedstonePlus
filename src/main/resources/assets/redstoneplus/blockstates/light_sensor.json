@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/light_sensor"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/light_sensor_on"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/item_magnet"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/item_magnet_on"
+    }
+  }
+}

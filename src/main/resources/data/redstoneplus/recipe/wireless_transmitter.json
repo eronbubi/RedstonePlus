@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " X ",
+    "IZI",
+    "IRI"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:lightning_rod"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:wireless_transmitter",
+    "count": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "TTT",
+    "TXT",
+    "TZT"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "X": {
+      "item": "redstoneplus:tnter"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:cluster_tnter",
+    "count": 1
+  }
+}

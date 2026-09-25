@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/spike_block"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/spike_block_on"
+    }
+  }
+}

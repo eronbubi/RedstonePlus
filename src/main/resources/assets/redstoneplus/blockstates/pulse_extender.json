@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,powered=false": {
+      "model": "redstoneplus:block/pulse_extender"
+    },
+    "facing=north,powered=true": {
+      "model": "redstoneplus:block/pulse_extender_on"
+    },
+    "facing=east,powered=false": {
+      "model": "redstoneplus:block/pulse_extender",
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "redstoneplus:block/pulse_extender_on",
+      "y": 90
+    },
+    "facing=south,powered=false": {
+      "model": "redstoneplus:block/pulse_extender",
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "redstoneplus:block/pulse_extender_on",
+      "y": 180
+    },
+    "facing=west,powered=false": {
+      "model": "redstoneplus:block/pulse_extender",
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "redstoneplus:block/pulse_extender_on",
+      "y": 270
+    }
+  }
+}

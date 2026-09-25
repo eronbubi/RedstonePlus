@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CXC",
+    "PZP",
+    "CRC"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:ender_pearl"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:block_swapper",
+    "count": 1
+  }
+}

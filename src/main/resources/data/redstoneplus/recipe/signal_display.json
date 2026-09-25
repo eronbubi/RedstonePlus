@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "GGG",
+    "RZR",
+    "III"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:black_stained_glass"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:signal_display",
+    "count": 1
+  }
+}

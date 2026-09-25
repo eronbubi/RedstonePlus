@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "XTX",
+    "TZT",
+    "XTX"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:tnter"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:tnt_rain",
+    "count": 1
+  }
+}

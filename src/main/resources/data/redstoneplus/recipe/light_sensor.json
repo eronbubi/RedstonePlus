@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "GXG",
+    "RZR",
+    "III"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "X": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:light_sensor",
+    "count": 1
+  }
+}

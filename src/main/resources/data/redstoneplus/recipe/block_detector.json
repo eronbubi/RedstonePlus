@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CXC",
+    "RZR",
+    "CCC"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:observer"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:block_detector",
+    "count": 1
+  }
+}

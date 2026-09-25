@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " X ",
+    "IZI",
+    "ITI"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:lightning_rod"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "T": {
+      "item": "minecraft:stone_button"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:redstone_remote",
+    "count": 1
+  }
+}

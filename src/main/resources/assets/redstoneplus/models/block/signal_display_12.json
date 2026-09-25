@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "redstoneplus:block/signal_display_12",
+    "side": "redstoneplus:block/signal_display_12",
+    "bottom": "redstoneplus:block/signal_display_side"
+  }
+}

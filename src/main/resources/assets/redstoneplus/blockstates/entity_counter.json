@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/entity_counter"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/entity_counter_on"
+    }
+  }
+}

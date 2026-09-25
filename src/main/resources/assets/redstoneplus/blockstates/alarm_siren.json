@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/alarm_siren"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/alarm_siren_on"
+    }
+  }
+}

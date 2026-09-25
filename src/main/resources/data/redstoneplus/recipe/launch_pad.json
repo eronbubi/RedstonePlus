@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "XXX",
+    "IZI",
+    "IRI"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:slime_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:launch_pad",
+    "count": 1
+  }
+}

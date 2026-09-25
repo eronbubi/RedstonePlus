@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "redstoneplus:block/uranium_block_top",
+    "side": "redstoneplus:block/uranium_block_side",
+    "bottom": "redstoneplus:block/uranium_block_bottom"
+  }
+}

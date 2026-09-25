@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "power=0": {
+      "model": "redstoneplus:block/signal_display_0"
+    },
+    "power=1": {
+      "model": "redstoneplus:block/signal_display_1"
+    },
+    "power=2": {
+      "model": "redstoneplus:block/signal_display_2"
+    },
+    "power=3": {
+      "model": "redstoneplus:block/signal_display_3"
+    },
+    "power=4": {
+      "model": "redstoneplus:block/signal_display_4"
+    },
+    "power=5": {
+      "model": "redstoneplus:block/signal_display_5"
+    },
+    "power=6": {
+      "model": "redstoneplus:block/signal_display_6"
+    },
+    "power=7": {
+      "model": "redstoneplus:block/signal_display_7"
+    },
+    "power=8": {
+      "model": "redstoneplus:block/signal_display_8"
+    },
+    "power=9": {
+      "model": "redstoneplus:block/signal_display_9"
+    },
+    "power=10": {
+      "model": "redstoneplus:block/signal_display_10"
+    },
+    "power=11": {
+      "model": "redstoneplus:block/signal_display_11"
+    },
+    "power=12": {
+      "model": "redstoneplus:block/signal_display_12"
+    },
+    "power=13": {
+      "model": "redstoneplus:block/signal_display_13"
+    },
+    "power=14": {
+      "model": "redstoneplus:block/signal_display_14"
+    },
+    "power=15": {
+      "model": "redstoneplus:block/signal_display_15"
+    }
+  }
+}

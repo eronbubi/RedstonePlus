@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " X ",
+    "IZI",
+    "IUI"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:activator_net"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "U": {
+      "item": "redstoneplus:uranium_shard"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:tnt_activator",
+    "count": 1
+  }
+}

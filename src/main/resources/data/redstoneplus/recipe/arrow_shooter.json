@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CBC",
+    "CDC",
+    "CZC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "B": {
+      "item": "minecraft:bow"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:arrow_shooter",
+    "count": 1
+  }
+}

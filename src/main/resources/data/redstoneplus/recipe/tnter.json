@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CTC",
+    "CDC",
+    "CZC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:tnter",
+    "count": 1
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/anti_gravity_field"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/anti_gravity_field_on"
+    }
+  }
+}

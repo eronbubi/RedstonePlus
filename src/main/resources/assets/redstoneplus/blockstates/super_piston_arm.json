@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "redstoneplus:block/super_piston_arm",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "redstoneplus:block/super_piston_arm",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "redstoneplus:block/super_piston_arm"
+    },
+    "facing=south": {
+      "model": "redstoneplus:block/super_piston_arm",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "redstoneplus:block/super_piston_arm",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "redstoneplus:block/super_piston_arm",
+      "y": 270
+    }
+  }
+}

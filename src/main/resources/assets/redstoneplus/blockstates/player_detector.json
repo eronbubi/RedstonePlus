@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/player_detector"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/player_detector_on"
+    }
+  }
+}

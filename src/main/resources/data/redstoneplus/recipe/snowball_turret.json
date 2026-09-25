@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "SXS",
+    "SZS",
+    "SDS"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:snowball"
+    },
+    "S": {
+      "item": "minecraft:snow_block"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:snowball_turret",
+    "count": 1
+  }
+}

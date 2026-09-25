@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " X ",
+    "RZP",
+    "SSS"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:lever"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "P": {
+      "item": "minecraft:repeater"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone_slab"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:t_flip_flop",
+    "count": 1
+  }
+}

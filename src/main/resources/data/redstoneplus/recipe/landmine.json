@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " P ",
+    "TZT"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:stone_pressure_plate"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:landmine",
+    "count": 2
+  }
+}

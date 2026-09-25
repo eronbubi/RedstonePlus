@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/item_detector"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/item_detector_on"
+    }
+  }
+}

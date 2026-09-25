@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " T ",
+    "IZI",
+    "IUI"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "U": {
+      "item": "redstoneplus:uranium_shard"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:remote_detonator",
+    "count": 1
+  }
+}

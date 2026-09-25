@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[52,)"
+license="CC BY-ND 4.0"
+
+[[mods]]
+modId="redstoneplus"
+version="1.2.2"
+displayName="RedstonePlus"
+authors="Eron"
+description='''
+Neue und krasse Redstone-Items: TnTer, FreezeTnter, Aktivator-Netz, Entity-Teleporter mit Fernzünder,
+Nuclear Repeater, ArrowShooter, Uranerz im End und über 50 weitere Redstone-Blöcke und -Items.
+'''
+
+[[dependencies.redstoneplus]]
+    modId="forge"
+    mandatory=true
+    versionRange="[52.1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.redstoneplus]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.1,1.21.2)"
+    ordering="NONE"
+    side="BOTH"

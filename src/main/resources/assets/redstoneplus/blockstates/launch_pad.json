@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/launch_pad"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/launch_pad_on"
+    }
+  }
+}

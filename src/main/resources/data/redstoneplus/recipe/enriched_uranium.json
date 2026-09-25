@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "redstoneplus:uranium_shard"
+    },
+    {
+      "item": "redstoneplus:uranium_shard"
+    },
+    {
+      "item": "redstoneplus:uranium_shard"
+    },
+    {
+      "item": "redstoneplus:uranium_shard"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "id": "redstoneplus:enriched_uranium",
+    "count": 1
+  }
+}

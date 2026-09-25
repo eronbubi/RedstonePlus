@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "EXE",
+    "IZI",
+    "IRI"
+  ],
+  "key": {
+    "E": {
+      "item": "redstoneplus:enriched_uranium"
+    },
+    "X": {
+      "item": "minecraft:shulker_shell"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:anti_gravity_field",
+    "count": 1
+  }
+}

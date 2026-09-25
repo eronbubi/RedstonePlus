@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "redstoneplus:block/speed_pad"
+    },
+    "powered=true": {
+      "model": "redstoneplus:block/speed_pad_on"
+    }
+  }
+}

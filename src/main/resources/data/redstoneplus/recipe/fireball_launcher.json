@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "CXC",
+    "CZC",
+    "CDC"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:fire_charge"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "D": {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:fireball_launcher",
+    "count": 1
+  }
+}

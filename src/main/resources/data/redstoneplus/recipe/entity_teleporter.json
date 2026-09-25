@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "OEO",
+    "ZPZ",
+    "OUO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    },
+    "U": {
+      "item": "redstoneplus:enriched_uranium"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:entity_teleporter",
+    "count": 1
+  }
+}

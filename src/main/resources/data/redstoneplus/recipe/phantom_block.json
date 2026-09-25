@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "GXG",
+    "XZX",
+    "GXG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "X": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:phantom_block",
+    "count": 4
+  }
+}

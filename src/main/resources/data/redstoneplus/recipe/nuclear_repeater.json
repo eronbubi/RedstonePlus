@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "EPE",
+    "SSS"
+  ],
+  "key": {
+    "E": {
+      "item": "redstoneplus:enriched_uranium"
+    },
+    "P": {
+      "item": "minecraft:repeater"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone_slab"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:nuclear_repeater",
+    "count": 1
+  }
+}

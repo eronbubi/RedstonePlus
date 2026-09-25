@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "PEP",
+    "PZP",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "E": {
+      "item": "redstoneplus:enriched_uranium"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:super_piston",
+    "count": 1
+  }
+}

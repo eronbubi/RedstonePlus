@@ -2,7 +2,7 @@
 
 Forge-Mod für **Minecraft Java 1.21.1** (Forge 52.1.14, Java 21) mit neuen Redstone-Blöcken und -Items.
 
-Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.2.2.jar` und kommt in den
+Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.2.3.jar` und kommt in den
 `mods`-Ordner. Alle Items sind im eigenen Kreativ-Tab **RedstonePlus**, jedes Item erklärt seine Funktion
 im Tooltip (Deutsch und Englisch).
 
@@ -14,7 +14,7 @@ im Tooltip (Deutsch und Englisch).
 | **FreezeTnter** | Wie der TnTer, aber das TNT ist eingefroren: explodiert nie, keine Schwerkraft, Explosionen schieben es nicht. Nur Kolben und Wasserströmung bewegen es. |
 | **Aktivator-Netz** | Eingefrorenes TNT, das durch das Netz geht, wird zu normalem TNT (80 Ticks Zündzeit). Alles andere läuft einfach durch. |
 | **Entity-Teleporter** | Saugt jedes Entity außer Spielern ein, das sich im Block über ihm befindet, und speichert es exakt so, wie es ist (Zündzeit, Leben, Items, Bewegung, Passagiere). Rechtsklick zeigt die Anzahl, Komparator liest sie aus. |
-| **Fernzünder** | Nicht stapelbar. Rechtsklick auf einen Entity-Teleporter verbindet ihn (beliebig viele Fernzünder pro Teleporter). Benutzen holt das nächste gespeicherte Entity (älteste zuerst) und setzt es 10 Blöcke über den Block, den man anschaut (bis 256 Blöcke weit). Danach geht der Fernzünder kaputt. Ist der Teleporter leer, passiert nichts und der Fernzünder bleibt ganz. |
+| **Fernzünder** | Nicht stapelbar. Schleichen + Rechtsklick auf einen Entity-Teleporter verbindet ihn (beliebig viele Fernzünder pro Teleporter). Benutzen holt die nächste gespeicherte Gruppe (älteste zuerst) und setzt sie 10 Blöcke über den Block, den man anschaut. Alles, was fast gleichzeitig (innerhalb einer halben Sekunde) in den Teleporter kam, ist eine Gruppe und kommt zusammen raus, mit denselben Abständen untereinander (bis 256 Blöcke weit). Danach geht der Fernzünder kaputt. Ist der Teleporter leer, passiert nichts und der Fernzünder bleibt ganz. |
 | **Nuclear Repeater** | Signal von hinten, Ausgang vorne. Der Redstone-Staub am Ausgang bleibt bis zu 200 Staub-Blöcke weit auf voller Stärke 15. |
 | **ArrowShooter** | Nimmt nur Pfeile (auch Spektral- und Trankpfeile) und Uranium Shards. Jedes Redstone-Signal schießt 6 Pfeile mit **100 Blöcken pro Tick** (2000 Blöcke pro Sekunde, wirkt wie Teleportieren) und kostet 1 Uranium Shard. |
 | **Uranerz / Uranium Shard** | Uranerz kommt im Endstein im End vor (Hauptinsel und äußere Inseln), braucht mindestens eine Eisenspitzhacke und droppt 1-3 Uranium Shards (Glück wirkt). |

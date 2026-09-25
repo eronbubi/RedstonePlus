@@ -120,7 +120,8 @@ public final class ModItems {
                 return InteractionResultHolder.fail(stack);
             }
             BlockPos target = hit.getBlockPos();
-            teleporter.releaseNext(serverLevel, new Vec3(target.getX() + 0.5, target.getY() + 10.0, target.getZ() + 0.5));
+            int released = teleporter.releaseNext(serverLevel, new Vec3(target.getX() + 0.5, target.getY() + 10.0, target.getZ() + 0.5));
+            player.displayClientMessage(Component.translatable("message.redstoneplus.released", released), true);
             level.playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
             stack.shrink(1);
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());

@@ -54,7 +54,7 @@ public class EntityTeleporterBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         EntityTeleporterBlockEntity be = EntityTeleporterBlockEntity.at(level, pos);
         if (!level.isClientSide() && be != null) {
-            player.displayClientMessage(Component.translatable("message.redstoneplus.teleporter_count", be.storedCount()), true);
+            player.displayClientMessage(Component.translatable("message.redstoneplus.teleporter_count", be.storedCount(), be.groupCount()), true);
         }
         return InteractionResult.SUCCESS;
     }

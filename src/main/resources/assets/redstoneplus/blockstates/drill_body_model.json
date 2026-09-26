@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "redstoneplus:block/drill_body_model"
+    }
+  }
+}

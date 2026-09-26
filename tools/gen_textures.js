@@ -335,3 +335,45 @@ item('tnt_activator', (im) => {
 });
 
 console.log('textures written to', ROOT);
+
+// ---------- drill vehicle ----------
+{
+  const body = img();
+  noiseFill(body, hex('#e0b020'), 'drillbody', 0.12);
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (((x + y) >> 2) % 2 === 0 && (y < 3 || y > 12)) set(body, x, y, hex('#202020'));
+  border(body, hex('#8a6a10'));
+  save('block', 'drill_body', body);
+
+  const track = img();
+  noiseFill(track, hex('#2a2a2a'), 'drilltrack', 0.1);
+  for (let x = 0; x < 16; x += 3) rect(track, x, 0, x, 15, hex('#505050'));
+  save('block', 'drill_track', track);
+
+  const cabin = img();
+  noiseFill(cabin, hex('#6a6e74'), 'drillcabin', 0.1);
+  border(cabin, hex('#3a3c40'));
+  rect(cabin, 3, 3, 12, 8, hex('#8fd0ff'));
+  rect(cabin, 4, 4, 6, 5, hex('#e0f6ff'));
+  save('block', 'drill_cabin', cabin);
+
+  const front = img();
+  noiseFill(front, hex('#44474c'), 'drillfront', 0.1);
+  border(front, hex('#25272a'));
+  for (const [x, y] of [[2, 2], [13, 2], [2, 13], [13, 13]]) set(front, x, y, hex('#b0b0b0'));
+  save('block', 'drill_front', front);
+
+  const bit = img();
+  noiseFill(bit, hex('#a8acb2'), 'drillbit', 0.12);
+  for (let x = 0; x < 16; x++) for (let k = 0; k < 16; k += 4) set(bit, x, (x + k) % 16, hex('#5a5e64'));
+  save('block', 'drill_bit', bit);
+}
+item('drill', (im) => {
+  rect(im, 1, 11, 11, 14, hex('#2a2a2a'));
+  rect(im, 2, 7, 10, 11, hex('#e0b020'));
+  rect(im, 6, 4, 10, 7, hex('#6a6e74'));
+  rect(im, 7, 5, 9, 6, hex('#8fd0ff'));
+  rect(im, 11, 7, 12, 11, hex('#a8acb2'));
+  rect(im, 13, 8, 13, 10, hex('#a8acb2'));
+  set(im, 14, 9, hex('#e0e0e0'));
+  for (const x of [2, 5, 8]) set(im, x, 14, hex('#505050'));
+});

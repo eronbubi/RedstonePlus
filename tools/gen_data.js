@@ -379,6 +379,7 @@ for (const [k, [e, g]] of Object.entries(MSG)) { en[`message.${NS}.${k}`] = e; d
 en[`tooltip.${NS}.linked_to`] = 'Linked to %s %s %s (%s)';
 de[`tooltip.${NS}.linked_to`] = 'Verbunden mit %s %s %s (%s)';
 require('./gen_piston')({ NS, ASSETS, DATA, write, en, de });
+require('./gen_drill')({ NS, ASSETS, DATA, write, en, de });
 write(path.join(ASSETS, 'lang', 'en_us.json'), en);
 write(path.join(ASSETS, 'lang', 'de_de.json'), de);
 

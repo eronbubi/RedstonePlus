@@ -2,6 +2,7 @@ package de.eron.redstoneplus.item;
 
 import de.eron.redstoneplus.block.Wireless;
 import de.eron.redstoneplus.block.entity.EntityTeleporterBlockEntity;
+import de.eron.redstoneplus.entity.DrillEntity;
 import de.eron.redstoneplus.entity.FrozenTntEntity;
 import de.eron.redstoneplus.registry.ModRegistry;
 import net.minecraft.ChatFormatting;
@@ -233,6 +234,34 @@ public final class ModItems {
                 player.getCooldowns().addCooldown(this, 10);
             }
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        }
+    }
+
+    /** Places a drivable Drill on the clicked block, facing the way the player looks. */
+    public static class DrillItem extends DescribedItem {
+        public DrillItem(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        public InteractionResult useOn(UseOnContext context) {
+            Level level = context.getLevel();
+            if (!(level instanceof ServerLevel serverLevel)) {
+                return InteractionResult.SUCCESS;
+            }
+            BlockPos at = context.getClickedPos().relative(context.getClickedFace());
+            DrillEntity drill = ModRegistry.DRILL_ENTITY.get().create(serverLevel);
+            if (drill == null) {
+                return InteractionResult.FAIL;
+            }
+            drill.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, context.getPlayer() != null ? context.getPlayer().getYRot() : 0.0F, 0.0F);
+            if (!level.noCollision(drill)) {
+                return InteractionResult.FAIL;
+            }
+            level.addFreshEntity(drill);
+            level.playSound(null, at, SoundEvents.IRON_GOLEM_REPAIR, SoundSource.BLOCKS, 1.0F, 0.8F);
+            context.getItemInHand().consume(1, context.getPlayer());
+            return InteractionResult.CONSUME;
         }
     }
 

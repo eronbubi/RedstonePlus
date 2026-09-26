@@ -18,6 +18,7 @@ import de.eron.redstoneplus.block.piston.SuperPistonParts;
 import de.eron.redstoneplus.menu.SuperPistonMenu;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
+import de.eron.redstoneplus.entity.DrillEntity;
 import de.eron.redstoneplus.entity.FrozenTntEntity;
 import de.eron.redstoneplus.entity.NukeTntEntity;
 import de.eron.redstoneplus.item.ModItems;
@@ -217,6 +218,14 @@ public final class ModRegistry {
     public static final RegistryObject<Block> SMOKE_EMITTER = block("smoke_emitter", NewMachines.SmokeEmitter::new, ModRegistry::shaped);
     public static final RegistryObject<Item> TNT_ACTIVATOR = item("tnt_activator", ModItems.TntActivator::new, () -> new Item.Properties().stacksTo(1));
 
+    // ---------- Drill ----------
+    public static final RegistryObject<Item> DRILL = item("drill", ModItems.DrillItem::new, () -> new Item.Properties().stacksTo(1));
+    /** Model-only blocks the drill renderer draws; they have no item and are never placed. */
+    public static final RegistryObject<Block> DRILL_BODY_MODEL = BLOCKS.register("drill_body_model",
+            () -> new Block(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+    public static final RegistryObject<Block> DRILL_BIT_MODEL = BLOCKS.register("drill_bit_model",
+            () -> new Block(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+
     // ---------- Super Piston ----------
     public static final RegistryObject<Block> SUPER_PISTON = block("super_piston", p -> new SuperPistonBlock(p, false), ModRegistry::piston);
     public static final RegistryObject<Block> STICKY_SUPER_PISTON = block("sticky_super_piston", p -> new SuperPistonBlock(p, true), ModRegistry::piston);
@@ -249,6 +258,10 @@ public final class ModRegistry {
     public static final RegistryObject<EntityType<NukeTntEntity>> NUKE_TNT = ENTITIES.register("nuke_tnt",
             () -> EntityType.Builder.<NukeTntEntity>of(NukeTntEntity::new, MobCategory.MISC).fireImmune()
                     .sized(0.98F, 0.98F).eyeHeight(0.15F).clientTrackingRange(16).updateInterval(10).build("nuke_tnt"));
+
+    public static final RegistryObject<EntityType<DrillEntity>> DRILL_ENTITY = ENTITIES.register("drill",
+            () -> EntityType.Builder.<DrillEntity>of(DrillEntity::new, MobCategory.MISC).sized(1.2F, 1.0F)
+                    .passengerAttachments(0.55F).clientTrackingRange(10).updateInterval(1).build("drill"));
 
     // ---------- creative tab ----------
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("redstoneplus", () -> CreativeModeTab.builder()

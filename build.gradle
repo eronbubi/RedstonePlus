@@ -9,7 +9,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[7.0.3,8)'
 }
 
-version = '1.2.3'
+version = '1.5.0'
 base.archivesName = 'RedstonePlus-1.21.1'
 group = 'de.eron.redstoneplus'
 

@@ -188,5 +188,10 @@
   "block.redstoneplus.super_piston.desc": "Schiebt bis zu 50 Blöcke. Rechtsklick: Reichweite des Arms einstellen (1-13 Blöcke).",
   "block.redstoneplus.sticky_super_piston.desc": "Klebriger SuperPiston: schiebt bis zu 50 Blöcke und zieht sie zurück. Rechtsklick: Reichweite 1-13.",
   "gui.redstoneplus.range": "Reichweite: %s Blöcke",
-  "gui.redstoneplus.push_limit": "Schiebt bis zu %s Blöcke"
+  "gui.redstoneplus.push_limit": "Schiebt bis zu %s Blöcke",
+  "item.redstoneplus.drill": "Bohrer",
+  "entity.redstoneplus.drill": "Bohrer",
+  "block.redstoneplus.drill_body_model": "Bohrer",
+  "block.redstoneplus.drill_bit_model": "Bohrkopf",
+  "item.redstoneplus.drill.desc": "Aufstellen, Rechtsklick zum Einsteigen. W fährt und bohrt einen 3x3-Tunnel, er fährt, wohin du schaust. Nach unten/oben schauen bohrt runter/hoch. Schleichen zum Aussteigen, schlagen zum Aufheben."
 }

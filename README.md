@@ -2,9 +2,9 @@
 
 Forge-Mod für **Minecraft Java 1.21.1** (Forge 52.1.14, Java 21) mit neuen Redstone-Blöcken und -Items.
 
-**Download:** [download/RedstonePlus-1.21.1-1.2.3.jar](download/RedstonePlus-1.21.1-1.2.3.jar) (auf der Seite dann rechts auf den Download-Pfeil).
+**Download:** [download/RedstonePlus-1.21.1-1.5.0.jar](download/RedstonePlus-1.21.1-1.5.0.jar) (auf der Seite dann rechts auf den Download-Pfeil).
 
-Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.2.3.jar` und kommt in den
+Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.5.0.jar` und kommt in den
 `mods`-Ordner. Alle Items sind im eigenen Kreativ-Tab **RedstonePlus**, jedes Item erklärt seine Funktion
 im Tooltip (Deutsch und Englisch).
 
@@ -67,6 +67,13 @@ Normale und klebrige Variante. Sieht aus wie der Vanilla-Kolben, beim klebrigen 
 Schiebt bis zu **50 Blöcke** (Vanilla: 12). Rechtsklick öffnet einen **Regler 1-13**: so weit fährt der Arm aus.
 Der Arm fährt Block für Block mit der normalen Kolben-Animation raus und schiebt dabei alles mit.
 Der klebrige zieht beim Einfahren wie Vanilla den angeklebten Block (bzw. Schleim-Konstruktionen) mit zurück.
+
+## Bohrer (neu in 1.5.0)
+
+Ein Fahrzeug zum Reinsetzen. Aufstellen mit dem Bohrer-Item, **Rechtsklick** zum Einsteigen.
+**W** fährt vorwärts und bohrt dabei einen **3x3-Tunnel**, **S** fährt rückwärts, gelenkt wird mit der Blickrichtung.
+Nach unten schauen bohrt schräg nach unten, nach oben schauen bohrt nach oben. Abgebaute Blöcke droppen normal.
+**Schleichen** zum Aussteigen, **schlagen** hebt den Bohrer wieder auf.
 
 ## Bauen
 

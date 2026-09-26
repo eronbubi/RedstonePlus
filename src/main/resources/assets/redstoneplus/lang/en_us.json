@@ -188,5 +188,10 @@
   "block.redstoneplus.super_piston.desc": "Pushes up to 50 blocks. Right click: set how far the arm goes (1-13 blocks).",
   "block.redstoneplus.sticky_super_piston.desc": "Sticky Super Piston: pushes up to 50 blocks and pulls them back. Right click: range 1-13.",
   "gui.redstoneplus.range": "Range: %s blocks",
-  "gui.redstoneplus.push_limit": "Pushes up to %s blocks"
+  "gui.redstoneplus.push_limit": "Pushes up to %s blocks",
+  "item.redstoneplus.drill": "Drill",
+  "entity.redstoneplus.drill": "Drill",
+  "block.redstoneplus.drill_body_model": "Drill",
+  "block.redstoneplus.drill_bit_model": "Drill Bit",
+  "item.redstoneplus.drill.desc": "Place it, right click to get in. W drives and bores a 3x3 tunnel, it turns where you look. Look down/up to dig down/up. Sneak to get out, hit it to pick it up."
 }

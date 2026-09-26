@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "IZ ",
+    "BPD",
+    "MMM"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "Z": {
+      "item": "redstoneplus:redstone_circuit"
+    },
+    "B": {
+      "item": "minecraft:minecart"
+    },
+    "P": {
+      "item": "redstoneplus:enriched_uranium"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "M": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:drill",
+    "count": 1
+  }
+}

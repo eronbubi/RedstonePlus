@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " X ",
+    " X ",
+    " S "
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:enriched_uranium"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:uranium_sword",
+    "count": 1
+  }
+}

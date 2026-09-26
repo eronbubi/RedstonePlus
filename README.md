@@ -2,9 +2,11 @@
 
 Forge-Mod für **Minecraft Java 1.21.1** (Forge 52.1.14, Java 21) mit neuen Redstone-Blöcken und -Items.
 
-**Download:** [download/RedstonePlus-1.21.1-1.5.0.jar](download/RedstonePlus-1.21.1-1.5.0.jar) (auf der Seite dann rechts auf den Download-Pfeil).
+**Benötigt [TerraBlender](https://modrinth.com/mod/terrablender) (Forge 1.21.1)** für die neuen Biome.
 
-Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.5.0.jar` und kommt in den
+**Download:** [download/RedstonePlus-1.21.1-1.6.0.jar](download/RedstonePlus-1.21.1-1.6.0.jar) (auf der Seite dann rechts auf den Download-Pfeil).
+
+Die fertige Datei liegt nach dem Bauen unter `build/libs/RedstonePlus-1.21.1-1.6.0.jar` und kommt in den
 `mods`-Ordner. Alle Items sind im eigenen Kreativ-Tab **RedstonePlus**, jedes Item erklärt seine Funktion
 im Tooltip (Deutsch und Englisch).
 
@@ -70,10 +72,27 @@ Der klebrige zieht beim Einfahren wie Vanilla den angeklebten Block (bzw. Schlei
 
 ## Bohrer (neu in 1.5.0)
 
-Ein Fahrzeug zum Reinsetzen. Aufstellen mit dem Bohrer-Item, **Rechtsklick** zum Einsteigen.
-**W** fährt vorwärts und bohrt dabei einen **3x3-Tunnel**, **S** fährt rückwärts, gelenkt wird mit der Blickrichtung.
+Ein Fahrzeug zum Reinsetzen, zwei Blöcke groß. Aufstellen mit dem Bohrer-Item, **Rechtsklick** zum Einsteigen.
+**W** fährt vorwärts und bohrt dabei einen **5x5-Tunnel**, **S** fährt rückwärts, gelenkt wird mit der Blickrichtung.
 Nach unten schauen bohrt schräg nach unten, nach oben schauen bohrt nach oben. Abgebaute Blöcke droppen normal.
 **Schleichen** zum Aussteigen, **schlagen** hebt den Bohrer wieder auf.
+
+## Erze, Rüstung, Biome und Mobs (neu in 1.6.0)
+
+**6 neue Erze** mit Rohstoff, Speicherblöcken, 5 Werkzeugen und kompletter Rüstung:
+Rubin, Saphir, Titan, Kobalt, Mithril (tief unten) und Voidium (im End). Dazu Werkzeuge und Rüstung aus Uran.
+
+**3 neue Overworld-Biome:** Redstone-Felder (rotes Gras, Redstone-Brocken, viel Rubin), Kristallwald
+(türkis, Amethyst-Kristalle, viel Saphir), Titan-Hochland (graue Hügel, Titan-Brocken).
+**2 neue End-Biome:** Leerenwüste (Boden aus Leerenstein, Leerenkristalle) und Kristalltürme (Kristallsäulen).
+
+**8 neue Mobs** mit Spawn-Eiern: Uran-Zombie (vergiftet, brennt nicht), Redstone-Creeper (doppelte Explosion),
+Kristallspinne (verlangsamt), Magmaskelett (Feuerpfeile), Rubinschleim (droppt Rubine), Leeren-Enderman
+(greift sofort an), Glutschwein und Redstone-Golem.
+
+Außerdem Deko-Blöcke (Leerenstein, Rubin-/Saphir-/Kobaltziegel, Titanplatten, Leerenkristall),
+Mob-Drops (Leerenperle, Kristallseide, Magmaknochen, geladenes Schwarzpulver, Uranfleisch),
+Glutfleisch sowie Rubin- und Mithrilapfel.
 
 ## Bauen
 
@@ -82,7 +101,8 @@ Nach unten schauen bohrt schräg nach unten, nach oben schauen bohrt nach oben. 
 ```
 
 Texturen und JSON-Dateien werden von `tools/gen_textures.js` und `tools/gen_data.js` erzeugt
-(`node tools/gen_textures.js && node tools/gen_data.js`).
+(`node tools/gen_textures.js && node tools/gen_data.js && python tools/gen_content.py`).
+`gen_content.py` färbt dafür Vanilla-Texturen aus dem Minecraft-Jar im Gradle-Cache um.
 
 ## Lizenz
 

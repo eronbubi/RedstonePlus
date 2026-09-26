@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:titanium_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:titanium_plating",
+    "count": 4
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": {
+    "tag": "redstoneplus:ruby_ores"
+  },
+  "result": {
+    "id": "redstoneplus:ruby"
+  },
+  "experience": 1.0,
+  "cookingtime": 100
+}

@@ -1,0 +1,9 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:crystal_forest",
+  "features": [
+    "redstoneplus:crystal_forest_rock",
+    "redstoneplus:crystal_forest_crystals"
+  ],
+  "step": "local_modifications"
+}

@@ -22,12 +22,15 @@ public class DrillRenderer extends EntityRenderer<DrillEntity> {
     private static final float AXIS_X = 0.5F;
     private static final float AXIS_Y = 7.0F / 16.0F;
 
+    /** The block models are drawn at this size: the drill is two blocks wide and high. */
+    private static final float SCALE = 2.0F;
+
     private final BlockRenderDispatcher blocks;
 
     public DrillRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.blocks = context.getBlockRenderDispatcher();
-        this.shadowRadius = 0.6F;
+        this.shadowRadius = 1.2F;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class DrillRenderer extends EntityRenderer<DrillEntity> {
         pose.pushPose();
         // the block models face north (-Z); an entity with yaw 0 faces south (+Z)
         pose.mulPose(Axis.YP.rotationDegrees(180.0F - Mth.rotLerp(partialTick, drill.yRotO, drill.getYRot())));
+        pose.scale(SCALE, SCALE, SCALE);
         pose.translate(-0.5F, 0.0F, -0.5F);
         this.blocks.renderSingleBlock(ModRegistry.DRILL_BODY_MODEL.get().defaultBlockState(), pose, buffers, light, OverlayTexture.NO_OVERLAY);
 

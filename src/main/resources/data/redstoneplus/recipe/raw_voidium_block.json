@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:raw_voidium"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:raw_voidium_block",
+    "count": 1
+  }
+}

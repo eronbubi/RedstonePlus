@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:redstone_fields",
+    "redstoneplus:crystal_forest",
+    "redstoneplus:titan_highlands"
+  ]
+}

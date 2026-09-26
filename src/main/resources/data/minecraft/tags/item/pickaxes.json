@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_pickaxe",
+    "redstoneplus:sapphire_pickaxe",
+    "redstoneplus:titanium_pickaxe",
+    "redstoneplus:cobalt_pickaxe",
+    "redstoneplus:mythril_pickaxe",
+    "redstoneplus:voidium_pickaxe",
+    "redstoneplus:uranium_pickaxe"
+  ]
+}

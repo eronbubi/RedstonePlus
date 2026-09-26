@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XX ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:cobalt_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:cobalt_hoe",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:titan_highlands",
+  "features": [
+    "redstoneplus:titan_highlands_rock"
+  ],
+  "step": "local_modifications"
+}

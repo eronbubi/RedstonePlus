@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": {
+    "item": "redstoneplus:raw_mythril"
+  },
+  "result": {
+    "id": "redstoneplus:mythril_ingot"
+  },
+  "experience": 0.9,
+  "cookingtime": 100
+}

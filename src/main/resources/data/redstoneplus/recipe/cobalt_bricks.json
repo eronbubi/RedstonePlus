@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SXS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:deepslate_bricks"
+    },
+    "X": {
+      "item": "redstoneplus:cobalt_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:cobalt_bricks",
+    "count": 8
+  }
+}

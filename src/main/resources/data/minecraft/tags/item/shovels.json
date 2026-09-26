@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_shovel",
+    "redstoneplus:sapphire_shovel",
+    "redstoneplus:titanium_shovel",
+    "redstoneplus:cobalt_shovel",
+    "redstoneplus:mythril_shovel",
+    "redstoneplus:voidium_shovel",
+    "redstoneplus:uranium_shovel"
+  ]
+}

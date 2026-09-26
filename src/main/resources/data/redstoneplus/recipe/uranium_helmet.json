@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XXX",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:enriched_uranium"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:uranium_helmet",
+    "count": 1
+  }
+}

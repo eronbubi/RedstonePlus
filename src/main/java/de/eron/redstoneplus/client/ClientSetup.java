@@ -18,6 +18,7 @@ public final class ClientSetup {
             event.registerEntityRenderer(ModRegistry.FROZEN_TNT.get(), TntRenderer::new);
             event.registerEntityRenderer(ModRegistry.NUKE_TNT.get(), TntRenderer::new);
             event.registerEntityRenderer(ModRegistry.DRILL_ENTITY.get(), DrillRenderer::new);
+            MobRenderers.register(event);
         });
     }
 }

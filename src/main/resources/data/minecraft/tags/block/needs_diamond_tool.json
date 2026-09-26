@@ -1,6 +1,13 @@
 {
   "replace": false,
   "values": [
-    "redstoneplus:reinforced_redstone_block"
+    "redstoneplus:reinforced_redstone_block",
+    "redstoneplus:mythril_ore",
+    "redstoneplus:deepslate_mythril_ore",
+    "redstoneplus:raw_mythril_block",
+    "redstoneplus:mythril_block",
+    "redstoneplus:voidium_ore",
+    "redstoneplus:raw_voidium_block",
+    "redstoneplus:voidium_block"
   ]
 }

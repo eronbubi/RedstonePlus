@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_sword",
+    "redstoneplus:sapphire_sword",
+    "redstoneplus:titanium_sword",
+    "redstoneplus:cobalt_sword",
+    "redstoneplus:mythril_sword",
+    "redstoneplus:voidium_sword",
+    "redstoneplus:uranium_sword"
+  ]
+}

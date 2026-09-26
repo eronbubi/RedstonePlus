@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " X ",
+    " X ",
+    " S "
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:titanium_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:titanium_sword",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:redstone_fields",
+  "features": [
+    "redstoneplus:redstone_fields_boulder"
+  ],
+  "step": "local_modifications"
+}

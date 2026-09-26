@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XX ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:sapphire"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:sapphire_hoe",
+    "count": 1
+  }
+}

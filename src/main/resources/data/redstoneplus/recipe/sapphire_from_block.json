@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "redstoneplus:sapphire_block"
+    }
+  ],
+  "result": {
+    "id": "redstoneplus:sapphire",
+    "count": 9
+  }
+}

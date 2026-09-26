@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:crystal_forest",
+  "features": [
+    "redstoneplus:ore_sapphire_rich"
+  ],
+  "step": "underground_decoration"
+}

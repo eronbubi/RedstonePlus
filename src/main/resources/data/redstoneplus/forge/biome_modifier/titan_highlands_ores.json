@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:titan_highlands",
+  "features": [
+    "redstoneplus:ore_titanium_rich"
+  ],
+  "step": "underground_decoration"
+}

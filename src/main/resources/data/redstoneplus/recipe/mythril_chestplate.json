@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "X X",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:mythril_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:mythril_chestplate",
+    "count": 1
+  }
+}

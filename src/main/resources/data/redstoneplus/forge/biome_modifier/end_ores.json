@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_end",
+  "features": [
+    "redstoneplus:ore_voidium"
+  ],
+  "step": "underground_ores"
+}

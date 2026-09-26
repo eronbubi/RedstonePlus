@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XXX",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:cobalt_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:cobalt_helmet",
+    "count": 1
+  }
+}

@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 
 /**
  * A drivable drill. Right click to get in, W/S to drive, it turns where you look. While driving forward it bores
- * a 3x3 tunnel in front of it; look down (steeper than 35 degrees) to dig down, look up to dig up.
+ * a 5x5 tunnel in front of it; look down (steeper than 35 degrees) to dig down, look up to dig up.
  * Sneak to get out, hit it to pick it up again.
  */
 public class DrillEntity extends Entity {
@@ -177,16 +177,17 @@ public class DrillEntity extends Entity {
         BlockPos base = this.blockPosition();
         float pitch = driver.getXRot();
         boolean any = false;
-        for (int w = -1; w <= 1; w++) {
-            for (int h = 0; h <= 2; h++) {
-                BlockPos front = base.relative(facing).relative(side, w).above(h);
-                any |= this.breakBlock(level, front, driver);
+        for (int w = -2; w <= 2; w++) {
+            for (int h = 0; h <= 4; h++) {
+                // two rows deep, the drill is two blocks long in front of its centre
+                any |= this.breakBlock(level, base.relative(facing, 2).relative(side, w).above(h), driver);
+                any |= this.breakBlock(level, base.relative(facing, 3).relative(side, w).above(h), driver);
             }
-            for (int d = 0; d <= 2; d++) {
+            for (int d = -1; d <= 3; d++) {
                 if (pitch > 35.0F) {
                     any |= this.breakBlock(level, base.below().relative(facing, d).relative(side, w), driver);
                 } else if (pitch < -35.0F) {
-                    any |= this.breakBlock(level, base.above(3).relative(facing, d).relative(side, w), driver);
+                    any |= this.breakBlock(level, base.above(5).relative(facing, d).relative(side, w), driver);
                 }
             }
         }

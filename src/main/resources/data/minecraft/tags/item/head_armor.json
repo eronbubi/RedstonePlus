@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_helmet",
+    "redstoneplus:sapphire_helmet",
+    "redstoneplus:titanium_helmet",
+    "redstoneplus:cobalt_helmet",
+    "redstoneplus:mythril_helmet",
+    "redstoneplus:voidium_helmet",
+    "redstoneplus:uranium_helmet"
+  ]
+}

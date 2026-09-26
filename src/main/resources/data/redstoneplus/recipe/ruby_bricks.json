@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SXS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "X": {
+      "item": "redstoneplus:ruby"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:ruby_bricks",
+    "count": 8
+  }
+}

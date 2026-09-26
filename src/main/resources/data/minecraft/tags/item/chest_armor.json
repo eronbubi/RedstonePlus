@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_chestplate",
+    "redstoneplus:sapphire_chestplate",
+    "redstoneplus:titanium_chestplate",
+    "redstoneplus:cobalt_chestplate",
+    "redstoneplus:mythril_chestplate",
+    "redstoneplus:voidium_chestplate",
+    "redstoneplus:uranium_chestplate"
+  ]
+}

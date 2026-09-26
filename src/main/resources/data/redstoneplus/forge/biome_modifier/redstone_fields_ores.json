@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:redstone_fields",
+  "features": [
+    "redstoneplus:ore_ruby_rich"
+  ],
+  "step": "underground_decoration"
+}

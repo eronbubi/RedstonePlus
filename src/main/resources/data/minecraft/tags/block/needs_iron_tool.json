@@ -2,6 +2,24 @@
   "replace": false,
   "values": [
     "redstoneplus:uranium_ore",
-    "redstoneplus:uranium_block"
+    "redstoneplus:uranium_block",
+    "redstoneplus:ruby_ore",
+    "redstoneplus:deepslate_ruby_ore",
+    "redstoneplus:ruby_block",
+    "redstoneplus:sapphire_ore",
+    "redstoneplus:deepslate_sapphire_ore",
+    "redstoneplus:sapphire_block",
+    "redstoneplus:titanium_ore",
+    "redstoneplus:deepslate_titanium_ore",
+    "redstoneplus:raw_titanium_block",
+    "redstoneplus:titanium_block",
+    "redstoneplus:cobalt_ore",
+    "redstoneplus:deepslate_cobalt_ore",
+    "redstoneplus:raw_cobalt_block",
+    "redstoneplus:cobalt_block",
+    "redstoneplus:ruby_bricks",
+    "redstoneplus:sapphire_bricks",
+    "redstoneplus:titanium_plating",
+    "redstoneplus:cobalt_bricks"
   ]
 }

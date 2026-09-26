@@ -4,7 +4,7 @@ license="CC BY-ND 4.0"
 
 [[mods]]
 modId="redstoneplus"
-version="1.5.0"
+version="1.6.0"
 displayName="RedstonePlus"
 authors="Eron"
 description='''
@@ -24,4 +24,11 @@ Nuclear Repeater, ArrowShooter, Uranerz im End und √ºber 50 weitere Redstone-Bl√
     mandatory=true
     versionRange="[1.21.1,1.21.2)"
     ordering="NONE"
+    side="BOTH"
+
+[[dependencies.redstoneplus]]
+    modId="terrablender"
+    mandatory=true
+    versionRange="[4.1.0.0,)"
+    ordering="AFTER"
     side="BOTH"

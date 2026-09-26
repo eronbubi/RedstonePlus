@@ -75,12 +75,12 @@ public final class ModRegistry {
             () -> DataComponentType.<Integer>builder().persistent(ExtraCodecs.intRange(0, 15)).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
     // ---------- block property presets ----------
-    private static BlockBehaviour.Properties stone() {
+    public static BlockBehaviour.Properties stone() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()
                 .instrument(NoteBlockInstrument.BASEDRUM);
     }
 
-    private static BlockBehaviour.Properties metal() {
+    public static BlockBehaviour.Properties metal() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.METAL);
     }
 
@@ -260,8 +260,8 @@ public final class ModRegistry {
                     .sized(0.98F, 0.98F).eyeHeight(0.15F).clientTrackingRange(16).updateInterval(10).build("nuke_tnt"));
 
     public static final RegistryObject<EntityType<DrillEntity>> DRILL_ENTITY = ENTITIES.register("drill",
-            () -> EntityType.Builder.<DrillEntity>of(DrillEntity::new, MobCategory.MISC).sized(1.2F, 1.0F)
-                    .passengerAttachments(0.55F).clientTrackingRange(10).updateInterval(1).build("drill"));
+            () -> EntityType.Builder.<DrillEntity>of(DrillEntity::new, MobCategory.MISC).sized(2.4F, 2.0F)
+                    .passengerAttachments(1.1F).clientTrackingRange(10).updateInterval(1).build("drill"));
 
     // ---------- creative tab ----------
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("redstoneplus", () -> CreativeModeTab.builder()
@@ -278,7 +278,7 @@ public final class ModRegistry {
         return block(name, p -> new Gates.LogicGate(p, logic), ModRegistry::gate);
     }
 
-    private static RegistryObject<Block> block(String name, Function<BlockBehaviour.Properties, ? extends Block> factory,
+    public static RegistryObject<Block> block(String name, Function<BlockBehaviour.Properties, ? extends Block> factory,
                                                Supplier<BlockBehaviour.Properties> properties) {
         RegistryObject<Block> block = BLOCKS.register(name, () -> factory.apply(properties.get()));
         RegistryObject<Item> item = ITEMS.register(name, () -> new ModItems.DescribedBlockItem(block.get(),
@@ -287,13 +287,15 @@ public final class ModRegistry {
         return block;
     }
 
-    private static RegistryObject<Item> item(String name, Function<Item.Properties, ? extends Item> factory, Supplier<Item.Properties> properties) {
+    public static RegistryObject<Item> item(String name, Function<Item.Properties, ? extends Item> factory, Supplier<Item.Properties> properties) {
         RegistryObject<Item> item = ITEMS.register(name, () -> factory.apply(properties.get()));
         TAB_ORDER.add(item);
         return item;
     }
 
     public static void register(IEventBus modBus) {
+        de.eron.redstoneplus.content.Materials.init();
+        de.eron.redstoneplus.content.Extras.init(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_axe",
+    "redstoneplus:sapphire_axe",
+    "redstoneplus:titanium_axe",
+    "redstoneplus:cobalt_axe",
+    "redstoneplus:mythril_axe",
+    "redstoneplus:voidium_axe",
+    "redstoneplus:uranium_axe"
+  ]
+}

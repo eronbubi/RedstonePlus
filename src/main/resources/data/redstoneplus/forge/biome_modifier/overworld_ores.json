@@ -1,0 +1,12 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "redstoneplus:ore_ruby",
+    "redstoneplus:ore_sapphire",
+    "redstoneplus:ore_titanium",
+    "redstoneplus:ore_cobalt",
+    "redstoneplus:ore_mythril"
+  ],
+  "step": "underground_ores"
+}

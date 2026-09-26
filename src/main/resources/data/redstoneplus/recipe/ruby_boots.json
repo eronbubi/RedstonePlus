@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:ruby"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:ruby_boots",
+    "count": 1
+  }
+}

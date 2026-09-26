@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "tag": "redstoneplus:sapphire_ores"
+  },
+  "result": {
+    "id": "redstoneplus:sapphire"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_helmet",
+    "redstoneplus:ruby_chestplate",
+    "redstoneplus:ruby_leggings",
+    "redstoneplus:ruby_boots",
+    "redstoneplus:sapphire_helmet",
+    "redstoneplus:sapphire_chestplate",
+    "redstoneplus:sapphire_leggings",
+    "redstoneplus:sapphire_boots",
+    "redstoneplus:titanium_helmet",
+    "redstoneplus:titanium_chestplate",
+    "redstoneplus:titanium_leggings",
+    "redstoneplus:titanium_boots",
+    "redstoneplus:cobalt_helmet",
+    "redstoneplus:cobalt_chestplate",
+    "redstoneplus:cobalt_leggings",
+    "redstoneplus:cobalt_boots",
+    "redstoneplus:mythril_helmet",
+    "redstoneplus:mythril_chestplate",
+    "redstoneplus:mythril_leggings",
+    "redstoneplus:mythril_boots",
+    "redstoneplus:voidium_helmet",
+    "redstoneplus:voidium_chestplate",
+    "redstoneplus:voidium_leggings",
+    "redstoneplus:voidium_boots",
+    "redstoneplus:uranium_helmet",
+    "redstoneplus:uranium_chestplate",
+    "redstoneplus:uranium_leggings",
+    "redstoneplus:uranium_boots"
+  ]
+}

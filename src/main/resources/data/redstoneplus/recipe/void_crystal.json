@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:void_crystal_shard"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:void_crystal",
+    "count": 1
+  }
+}

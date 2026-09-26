@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "redstoneplus:voidium_block"
+    }
+  ],
+  "result": {
+    "id": "redstoneplus:voidium_ingot",
+    "count": 9
+  }
+}

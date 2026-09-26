@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": "redstoneplus:void_wastes",
+  "features": [
+    "redstoneplus:void_wastes_crystals"
+  ],
+  "step": "surface_structures"
+}

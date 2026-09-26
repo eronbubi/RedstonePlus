@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "redstoneplus:item/mythril_hoe"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "redstoneplus:charged_gunpowder"
+    },
+    {
+      "item": "redstoneplus:charged_gunpowder"
+    },
+    {
+      "tag": "minecraft:sand"
+    },
+    {
+      "tag": "minecraft:sand"
+    }
+  ],
+  "result": {
+    "id": "minecraft:tnt",
+    "count": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:ruby_hoe",
+    "redstoneplus:sapphire_hoe",
+    "redstoneplus:titanium_hoe",
+    "redstoneplus:cobalt_hoe",
+    "redstoneplus:mythril_hoe",
+    "redstoneplus:voidium_hoe",
+    "redstoneplus:uranium_hoe"
+  ]
+}

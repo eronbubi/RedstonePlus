@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XXX",
+    "X X",
+    "X X"
+  ],
+  "key": {
+    "X": {
+      "item": "redstoneplus:voidium_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:voidium_leggings",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "ingredient": {
+    "item": "redstoneplus:ember_pork"
+  },
+  "result": {
+    "id": "redstoneplus:cooked_ember_pork"
+  },
+  "experience": 0.35,
+  "cookingtime": 100
+}

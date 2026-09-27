@@ -6,7 +6,6 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -25,13 +24,7 @@ public class RealmRenderer<T extends Mob> extends MobRenderer<T, RealmModel<T>> 
         super(context, new RealmModel<>(context.bakeLayer(layer), name), RealmModel.spec(name).shadow());
         this.texture = ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/" + name + ".png");
         this.scale = RealmModel.spec(name).scale();
-        RenderType glow = RenderType.eyes(ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/" + name + "_glow.png"));
-        this.addLayer(new EyesLayer<>(this) {
-            @Override
-            public RenderType renderType() {
-                return glow;
-            }
-        });
+        this.addLayer(new GlowLayer<>(this, ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/" + name + "_glow.png")));
     }
 
     @Override
@@ -65,5 +58,36 @@ public class RealmRenderer<T extends Mob> extends MobRenderer<T, RealmModel<T>> 
             return (int) (swell * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(swell, 0.5F, 1.0F);
         }
         return 0.0F;
+    }
+
+    /**
+     * Full-bright layer for eyes, redstone and fire. It breathes slowly, and flares up while the creature's
+     * special move plays.
+     */
+    static class GlowLayer<T extends Mob> extends net.minecraft.client.renderer.entity.layers.RenderLayer<T, RealmModel<T>> {
+        private final RenderType type;
+
+        GlowLayer(net.minecraft.client.renderer.entity.RenderLayerParent<T, RealmModel<T>> parent, ResourceLocation texture) {
+            super(parent);
+            this.type = RenderType.eyes(texture);
+        }
+
+        @Override
+        public void render(PoseStack pose, net.minecraft.client.renderer.MultiBufferSource buffers, int light, T entity, float limbSwing,
+                           float limbSwingAmount, float partialTick, float age, float headYaw, float headPitch) {
+            float pulse = 0.78F + 0.22F * Mth.sin(age * 0.12F + entity.getId());
+            if (entity instanceof de.eron.redstoneplus.realm.RealmAnimated animated) {
+                float since = age - animated.abilityStart();
+                if (since >= 0 && since < 20) {
+                    pulse = 1.0F;
+                }
+            }
+            if (entity.hurtTime > 0) {
+                pulse = 1.0F;
+            }
+            int color = net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, pulse, pulse, pulse);
+            this.getParentModel().renderToBuffer(pose, buffers.getBuffer(this.type), 0xF00000,
+                    net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, color);
+        }
     }
 }

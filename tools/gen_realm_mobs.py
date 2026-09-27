@@ -37,36 +37,36 @@ def hexrgb(h):
 
 # material: base colour, second colour, pattern, glows
 MATERIALS = {
-    'karst': ('#b8a888', '#d8883a', 'lichen', False),
-    'dark_stone': ('#5a5550', '#403c38', 'stone', False),
-    'rust': ('#8a4a22', '#c8702a', 'rust', False),
-    'iron': ('#7c7c84', '#a0a0a8', 'metal', False),
-    'dark_iron': ('#3c3c44', '#56565e', 'metal', False),
-    'brass': ('#b8823a', '#e0b060', 'metal', False),
-    'bell': ('#a8642a', '#e0a050', 'metal', False),
-    'copper': ('#c06a3a', '#e08a50', 'metal', False),
-    'copper_ox': ('#3a8a78', '#c06a3a', 'patina', False),
-    'chain': ('#6a1a1a', '#a02a2a', 'chain', False),
-    'cable': ('#2a1a1a', '#a01818', 'cable', False),
-    'furnace': ('#3a3634', '#262322', 'bricks', False),
-    'wood': ('#6a4a2a', '#4a3018', 'planks', False),
-    'wire': ('#d8d8d0', '#9a9a90', 'stripes', False),
-    'flesh': ('#c07a70', '#8a3a3a', 'flesh', False),
-    'zombie': ('#5a7a3a', '#3a5a22', 'flesh', False),
-    'pig': ('#e0a098', '#b86a60', 'flesh', False),
-    'ender': ('#1a1420', '#2a2034', 'stone', False),
-    'bone': ('#d8d0b8', '#a8a088', 'stone', False),
-    'egg': ('#8aa0c0', '#5a6a8a', 'flesh', False),
-    'crystal': ('#9ad8ff', '#e0f4ff', 'crystal', False),
-    'slime': ('#c02a4a', '#e05a70', 'slime', False),
-    'bellows': ('#6a4a2a', '#ff8a20', 'bellows', False),
-    'cage': ('#2a2a30', '#4a4a52', 'cage', False),
-    'ember': ('#ff8a20', '#ffd060', 'glow', True),
-    'redstone': ('#e01818', '#ff6040', 'glow', True),
-    'teal_glow': ('#40e0ff', '#c0ffff', 'glow', True),
-    'purple_glow': ('#b050ff', '#e0b0ff', 'glow', True),
-    'uranium': ('#7dff3a', '#d0ff90', 'glow', True),
-    'ruby_glow': ('#ff2a4a', '#ff9aaa', 'glow', True),
+    'karst': ('#d6c6a2', '#e8943e', 'lichen', False),
+    'dark_stone': ('#7a746c', '#9a928a', 'stone', False),
+    'rust': ('#a8582a', '#e08a3a', 'rust', False),
+    'iron': ('#a2a4ae', '#d4d6e0', 'metal', False),
+    'dark_iron': ('#5a5c68', '#8a8c9a', 'metal', False),
+    'brass': ('#d09a44', '#ffd27a', 'metal', False),
+    'bell': ('#c07a34', '#ffc070', 'metal', False),
+    'copper': ('#d87a44', '#ffaa70', 'metal', False),
+    'copper_ox': ('#48a890', '#d8804a', 'patina', False),
+    'chain': ('#8a2626', '#d04040', 'chain', False),
+    'cable': ('#3a2626', '#d02020', 'cable', False),
+    'furnace': ('#5a5450', '#3c3836', 'bricks', False),
+    'wood': ('#8a6238', '#604224', 'planks', False),
+    'wire': ('#eeeee6', '#b0b0a4', 'stripes', False),
+    'flesh': ('#d8928a', '#a24a4a', 'flesh', False),
+    'zombie': ('#6e9446', '#4a6e2c', 'flesh', False),
+    'pig': ('#f0b4aa', '#c87a70', 'flesh', False),
+    'ender': ('#2e2438', '#46385a', 'stone', False),
+    'bone': ('#ece4cc', '#bcb49a', 'stone', False),
+    'egg': ('#a4bade', '#6a7ca4', 'flesh', False),
+    'crystal': ('#b4e4ff', '#f0faff', 'crystal', False),
+    'slime': ('#d83a5a', '#ff7a90', 'slime', False),
+    'bellows': ('#8a6238', '#ffa030', 'bellows', False),
+    'cage': ('#3a3a44', '#6a6a78', 'cage', False),
+    'ember': ('#ff9a2a', '#ffe070', 'glow', True),
+    'redstone': ('#ff2a1a', '#ff8060', 'glow', True),
+    'teal_glow': ('#50eaff', '#d0ffff', 'glow', True),
+    'purple_glow': ('#c060ff', '#f0c8ff', 'glow', True),
+    'uranium': ('#8aff44', '#e0ffa0', 'glow', True),
+    'ruby_glow': ('#ff3a5a', '#ffb0bc', 'glow', True),
 }
 
 
@@ -87,7 +87,7 @@ class Painter:
             else:
                 self.gx[x, y] = (0, 0, 0, 0)
 
-    def face(self, x0, y0, w, h, mat, deco=None):
+    def face(self, x0, y0, w, h, mat, deco=None, light=1.0):
         base, second, pattern, glows = MATERIALS[mat]
         b, s = hexrgb(base), hexrgb(second)
         r = self.rnd
@@ -101,15 +101,19 @@ class Painter:
                     if r.random() < 0.10 + (0.25 if dy < 2 else 0):
                         c = [v * (1 + 0.1 * n) for v in s]
                 elif pattern == 'rust':
-                    if r.random() < 0.18:
+                    if r.random() < 0.2:
                         c = [v * (1 + 0.1 * n) for v in s]
                     if (dx * 7 + dy * 3) % 11 == 0:
-                        c = [v * 0.7 for v in c]
+                        c = [v * 0.72 for v in c]
+                    if dx % 4 == 1 and r.random() < 0.3:
+                        c = [v * 0.8 for v in c]
                 elif pattern == 'metal':
-                    if dx % 5 == 0:
-                        c = [v * 0.9 for v in c]
-                    if dy == 0:
-                        c = [v * 1.15 for v in c]
+                    if (dx + dy) % 7 == 0:
+                        c = [v * 0.88 for v in c]
+                    if abs(dx - dy - w // 3) <= 0:
+                        c = [v * 0.25 + s_ * 0.8 for v, s_ in zip(c, s)]
+                    if r.random() < 0.04:
+                        c = [v * 0.7 + 30 for v in c]
                 elif pattern == 'patina':
                     if r.random() < 0.12:
                         c = list(s)
@@ -134,6 +138,8 @@ class Painter:
                 elif pattern == 'flesh':
                     if r.random() < 0.12:
                         c = [v * (1 + 0.08 * n) for v in s]
+                    elif r.random() < 0.06:
+                        c = [min(255, v * 1.2 + 15) for v in c]
                     if (dx * 5 + dy * 7) % 17 == 0:
                         c = [v * 0.8 for v in c]
                 elif pattern == 'crystal':
@@ -157,8 +163,13 @@ class Painter:
                 elif pattern == 'glow':
                     if r.random() < 0.25:
                         c = list(s)
-                if edge and pattern not in ('glow', 'cage', 'slime'):
-                    c = [v * 0.78 for v in c]
+                if pattern not in ('glow', 'cage'):
+                    c = [v * light for v in c]
+                    # bevel: light catches the top/left edge, the bottom/right edge falls into shadow
+                    if dy == 0 or dx == 0:
+                        c = [v * 1.18 + 8 for v in c]
+                    elif dy == h - 1 or dx == w - 1:
+                        c = [v * 0.7 for v in c]
                 self.put(x0 + dx, y0 + dy, c, glow=glows, alpha=alpha)
         if deco:
             self.decorate(x0, y0, w, h, deco)
@@ -315,12 +326,12 @@ def paint(name, mob, tw, th):
             w, h, d = footprint(c)[2]
             faces = c['faces']
             mat = c['mat']
-            p.face(u + d, v, w, d, mat, faces.get('top'))
-            p.face(u + d + w, v, w, d, mat, faces.get('bottom'))
-            p.face(u, v + d, d, h, mat, faces.get('right'))
-            p.face(u + d, v + d, w, h, mat, faces.get('front'))
-            p.face(u + d + w, v + d, d, h, mat, faces.get('left'))
-            p.face(u + 2 * d + w, v + d, w, h, mat, faces.get('back'))
+            p.face(u + d, v, w, d, mat, faces.get('top'), 1.15)
+            p.face(u + d + w, v, w, d, mat, faces.get('bottom'), 0.72)
+            p.face(u, v + d, d, h, mat, faces.get('right'), 0.92)
+            p.face(u + d, v + d, w, h, mat, faces.get('front'), 1.0)
+            p.face(u + d + w, v + d, d, h, mat, faces.get('left'), 0.92)
+            p.face(u + 2 * d + w, v + d, w, h, mat, faces.get('back'), 0.85)
     os.makedirs(TEX, exist_ok=True)
     p.img.save(os.path.join(TEX, name + '.png'))
     p.glow.save(os.path.join(TEX, name + '_glow.png'))

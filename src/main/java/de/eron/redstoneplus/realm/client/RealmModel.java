@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Model of a realm creature, built from the JSON that tools/blender/export_mobs.py writes out of the creature's
  * .blend file (assets/redstoneplus/realm_models/NAME.json): the part hierarchy with its cubes, and keyframed
- * clips "idle", "walk", "attack" and "ability". Clips are added on top of the rest pose:
+ * clips "idle", "walk", "attack", "hurt" and "ability". Clips are added on top of the rest pose:
  * idle loops on age, walk follows the limb swing and fades in with speed, attack follows the swing progress and
  * ability starts when the entity sends {@link RealmAnimated#ABILITY_EVENT}.
  */
@@ -75,6 +75,13 @@ public class RealmModel<T extends LivingEntity> extends HierarchicalModel<T> {
             Clip attack = this.spec.clips.get("attack");
             if (attack != null) {
                 this.apply(attack, this.attackTime * attack.length, 1.0F);
+            }
+        }
+        if (entity.hurtTime > 0) {
+            Clip hurt = this.spec.clips.get("hurt");
+            if (hurt != null) {
+                float t = (entity.hurtDuration - entity.hurtTime + (ageInTicks - entity.tickCount)) / 20.0F;
+                this.apply(hurt, t, 1.0F);
             }
         }
         if (entity instanceof RealmAnimated animated) {

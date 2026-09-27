@@ -30,7 +30,7 @@ import java.util.List;
 public final class RealmTravel {
     private static final String RETURN = "redstoneplus_realm_return";
     private static final String VISITED = "redstoneplus_realm_visited";
-    private static final int GUIDE_PAGES = 12;
+    private static final int GUIDE_PAGES = 14;
 
     private RealmTravel() {
     }

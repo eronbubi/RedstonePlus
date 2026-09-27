@@ -126,6 +126,17 @@ public final class MachineBound {
                 puddle.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 0));
                 this.level().addFreshEntity(puddle);
                 this.playAbility();
+                // radioactive fertilizer: crops, saplings and grass around the spill grow a step
+                if (this.level() instanceof ServerLevel server) {
+                    for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.randomInCube(this.random, 12, this.blockPosition(), 3)) {
+                        net.minecraft.world.level.block.state.BlockState st = server.getBlockState(pos);
+                        if (st.getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock grow
+                                && grow.isValidBonemealTarget(server, pos, st) && grow.isBonemealSuccess(server, this.random, pos, st)) {
+                            grow.performBonemeal(server, this.random, pos, st);
+                            server.sendParticles(RealmFx.DRIP.get(), pos.getX() + 0.5, pos.getY() + 0.8, pos.getZ() + 0.5, 4, 0.3, 0.2, 0.3, 0.02);
+                        }
+                    }
+                }
             }
             return hurt;
         }
@@ -136,8 +147,13 @@ public final class MachineBound {
             if (this.spillCooldown > 0) {
                 this.spillCooldown--;
             }
-            if (this.level().isClientSide() && this.random.nextInt(6) == 0) {
-                this.level().addParticle(ParticleTypes.ITEM_SLIME, this.getRandomX(0.5), this.getY() + 0.6, this.getRandomZ(0.5), 0, -0.05, 0);
+            if (this.level().isClientSide()) {
+                if (this.random.nextInt(4) == 0) {
+                    RealmFx.emit(this, RealmFx.DRIP.get(), (this.random.nextDouble() - 0.5) * 0.4, 0.9 + this.random.nextDouble() * 0.3, 0.3, 0, -0.02, 0);
+                }
+                if (this.random.nextInt(25) == 0) {
+                    RealmFx.emit(this, RealmFx.SPARK.get(), this.random.nextBoolean() ? 0.3 : -0.3, 1.85, -0.1, 0, 0.1, 0);
+                }
             }
         }
 
@@ -203,7 +219,23 @@ public final class MachineBound {
 
         @Override
         public void tick() {
+            boolean aboutToBlow = this.getSwelling(1.0F) > 0.85F;
             super.tick();
+            if (this.isRemoved() && aboutToBlow && this.level() instanceof ServerLevel blast) {
+                // the detonation runs down the wiring into every realm trap nearby
+                RealmMechanics.pulseTraps(blast, this.blockPosition(), 10);
+                RealmFx.ring(blast, this.position().add(0, 0.3, 0), 3.0, RealmFx.SPARK.get(), 30);
+                return;
+            }
+            if (this.level().isClientSide() && this.isAlive()) {
+                float swell = this.getSwelling(1.0F);
+                if (swell > 0 && this.random.nextFloat() < 0.3F + swell) {
+                    RealmFx.emit(this, RealmFx.SPARK.get(), (this.random.nextDouble() - 0.5) * 0.5, 1.9, 0, 0, 0.12, 0);
+                }
+                if (this.tickCount % 30 < 3) {
+                    RealmFx.emit(this, RealmFx.EMBER.get(), this.random.nextBoolean() ? 0.3 : -0.3, 2.05, 0.3, 0, 0.01, 0);
+                }
+            }
             if (!this.level().isClientSide() && this.isAlive()) {
                 if (this.getSwellDir() > 0 && this.getSwelling(1.0F) > 0.75F && !this.relayed) {
                     this.relayed = true;
@@ -281,6 +313,32 @@ public final class MachineBound {
             }
             return hit;
         }
+
+        @Override
+        public void die(DamageSource source) {
+            super.die(source);
+            if (this.level() instanceof ServerLevel server) {
+                int n = 2 + this.random.nextInt(2);
+                for (int i = 0; i < n; i++) {
+                    net.minecraft.world.entity.monster.CaveSpider baby = EntityType.CAVE_SPIDER.create(server);
+                    if (baby != null) {
+                        baby.moveTo(this.getX() + this.random.nextGaussian() * 0.5, this.getY() + 0.3, this.getZ() + this.random.nextGaussian() * 0.5,
+                                this.random.nextFloat() * 360, 0);
+                        server.addFreshEntity(baby);
+                    }
+                }
+                server.sendParticles(ParticleTypes.END_ROD, this.getX(), this.getY() + 0.8, this.getZ(), 20, 0.5, 0.4, 0.5, 0.05);
+                this.playSound(SoundEvents.AMETHYST_CLUSTER_BREAK, 1.5F, 1.0F);
+            }
+        }
+
+        @Override
+        public void aiStep() {
+            super.aiStep();
+            if (this.level().isClientSide() && this.random.nextInt(10) == 0) {
+                RealmFx.emit(this, ParticleTypes.END_ROD, (this.random.nextDouble() - 0.5) * 0.8, 1.2, -0.7, 0, 0.01, 0);
+            }
+        }
     }
 
     /** Skeleton caged in a furnace frame: fire proof, its arrows burn. */
@@ -342,6 +400,16 @@ public final class MachineBound {
         @Override
         protected AbstractArrow getArrow(ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
             this.playAbility();
+            if (this.level() instanceof ServerLevel server) {
+                // it commands the kilns: every Kiln Turret close by fires with it
+                for (net.minecraft.core.BlockPos pos : net.minecraft.core.BlockPos.betweenClosed(this.blockPosition().offset(-6, -2, -6),
+                        this.blockPosition().offset(6, 2, 6))) {
+                    net.minecraft.world.level.block.state.BlockState st = server.getBlockState(pos);
+                    if (st.getBlock() instanceof TrapBlock.KilnTurret turret) {
+                        turret.arm(st, server, pos.immutable(), 2);
+                    }
+                }
+            }
             AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
             projectile.igniteForSeconds(100);
             return projectile;
@@ -350,8 +418,16 @@ public final class MachineBound {
         @Override
         public void aiStep() {
             super.aiStep();
-            if (this.level().isClientSide() && this.random.nextInt(8) == 0) {
-                this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 2.1, this.getZ(), 0, 0.03, 0);
+            if (this.level().isClientSide()) {
+                if (this.random.nextInt(3) == 0) {
+                    RealmFx.emit(this, RealmFx.EMBER.get(), (this.random.nextDouble() - 0.5) * 0.2, 2.35, 0, 0, 0.04, 0);
+                }
+                if (this.random.nextInt(6) == 0) {
+                    RealmFx.emit(this, ParticleTypes.SMOKE, 0, 2.4, 0, 0, 0.04, 0);
+                }
+                if (this.random.nextInt(8) == 0) {
+                    RealmFx.emit(this, RealmFx.EMBER.get(), 0, 1.5, 0.15, 0, 0.02, 0.01);
+                }
             }
         }
     }
@@ -414,8 +490,22 @@ public final class MachineBound {
                 }
                 server.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY(0.5), this.getZ(), 16, this.getBbWidth() * 0.6, 0.4, this.getBbWidth() * 0.6, 0.2);
                 this.playAbility();
+                RealmMechanics.pulseTraps(server, this.blockPosition(), 4);
+                for (LivingCapacitor other : server.getEntitiesOfClass(LivingCapacitor.class, this.getBoundingBox().inflate(6.0), c -> c != this)) {
+                    RealmFx.line(server, this.position().add(0, 0.6, 0), other.position().add(0, 0.6, 0), RealmFx.SPARK.get(), 0.3);
+                }
             }
             return hurt;
+        }
+
+        @Override
+        public void aiStep() {
+            super.aiStep();
+            if (this.level().isClientSide() && this.random.nextInt(5) == 0) {
+                double s = this.getSize() * 0.12;
+                RealmFx.emit(this, RealmFx.SPARK.get(), (this.random.nextBoolean() ? 1 : -1) * s, this.getSize() * 0.55, 0,
+                        (this.random.nextDouble() - 0.5) * 0.1, 0.08, (this.random.nextDouble() - 0.5) * 0.1);
+            }
         }
     }
 
@@ -486,11 +576,22 @@ public final class MachineBound {
                     double z = at.z + (this.random.nextDouble() - 0.5) * 12;
                     if (living.randomTeleport(x, at.y + this.random.nextInt(5) - 2, z, true)) {
                         this.playAbility();
+                        if (this.level() instanceof ServerLevel server) {
+                            RealmFx.line(server, at.add(0, 1, 0), living.position().add(0, 1, 0), ParticleTypes.REVERSE_PORTAL, 0.4);
+                        }
                         break;
                     }
                 }
             }
             return hit;
+        }
+
+        @Override
+        public void aiStep() {
+            super.aiStep();
+            if (this.level().isClientSide() && this.random.nextInt(4) == 0) {
+                RealmFx.emit(this, ParticleTypes.REVERSE_PORTAL, this.random.nextBoolean() ? 0.35 : -0.35, 0.6, 0.1, 0, 0.02, 0);
+            }
         }
     }
 
@@ -565,6 +666,63 @@ public final class MachineBound {
         public Pig getBreedOffspring(ServerLevel level, AgeableMob partner) {
             return Realm.BELLOWS_HOG.get().create(level);
         }
+
+        private int stoked;
+
+        private static boolean isFuel(ItemStack stack) {
+            return stack.is(net.minecraft.world.item.Items.COAL) || stack.is(net.minecraft.world.item.Items.CHARCOAL);
+        }
+
+        @Override
+        public boolean isFood(ItemStack stack) {
+            return isFuel(stack) || super.isFood(stack);
+        }
+
+        /** Coal stokes its bellows: for a minute it smelts everything dropped around it. */
+        @Override
+        public net.minecraft.world.InteractionResult mobInteract(net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
+            ItemStack stack = player.getItemInHand(hand);
+            if (isFuel(stack) && this.stoked <= 0 && !this.isBaby()) {
+                if (!this.level().isClientSide()) {
+                    this.stoked = 1200;
+                    this.usePlayerItem(player, hand, stack);
+                    this.playAbility();
+                    this.playSound(SoundEvents.FIRECHARGE_USE, 1.0F, 0.8F);
+                }
+                return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
+            }
+            return super.mobInteract(player, hand);
+        }
+
+        @Override
+        public void aiStep() {
+            super.aiStep();
+            if (this.level() instanceof ServerLevel server) {
+                if (this.stoked > 0) {
+                    this.stoked--;
+                    if (this.tickCount % 30 == 0) {
+                        RealmMechanics.smeltNearby(server, this.position().add(0, 0.4, 0), 2.5, 2);
+                    }
+                    if (this.tickCount % 4 == 0) {
+                        RealmFx.burst(this, RealmFx.EMBER.get(), 0, 1.35, -0.4, 2, 0.05, 0.02);
+                    }
+                }
+            } else if (this.random.nextInt(10) == 0) {
+                RealmFx.emit(this, ParticleTypes.SMOKE, 0.12, 1.35, -0.4, 0, 0.05, 0);
+            }
+        }
+
+        @Override
+        public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+            super.addAdditionalSaveData(tag);
+            tag.putInt("Stoked", this.stoked);
+        }
+
+        @Override
+        public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+            super.readAdditionalSaveData(tag);
+            this.stoked = tag.getInt("Stoked");
+        }
     }
 
     /** Iron golem made of a flesh press: guards the realm, its blows crush through armor. */
@@ -632,6 +790,39 @@ public final class MachineBound {
         @Override
         public boolean isAlliedTo(Entity other) {
             return other instanceof Constructs.Construct || super.isAlliedTo(other);
+        }
+
+        /** Give it a redstone block and it becomes your guardian: it will never turn on players again. */
+        @Override
+        protected net.minecraft.world.InteractionResult mobInteract(net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
+            ItemStack stack = player.getItemInHand(hand);
+            if (stack.is(net.minecraft.world.item.Items.REDSTONE_BLOCK) && !this.isPlayerCreated()) {
+                if (!this.level().isClientSide()) {
+                    this.setPlayerCreated(true);
+                    this.setTarget(null);
+                    stack.consume(1, player);
+                    this.playAbility();
+                    if (this.level() instanceof ServerLevel server) {
+                        server.sendParticles(ParticleTypes.HEART, this.getX(), this.getY() + 2.8, this.getZ(), 6, 0.5, 0.3, 0.5, 0.1);
+                        server.sendParticles(RealmFx.SPARK.get(), this.getX(), this.getY() + 1.6, this.getZ(), 30, 0.6, 0.6, 0.6, 0.2);
+                    }
+                }
+                return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
+            }
+            return super.mobInteract(player, hand);
+        }
+
+        @Override
+        public void aiStep() {
+            super.aiStep();
+            if (this.level().isClientSide()) {
+                if (this.random.nextInt(14) == 0) {
+                    RealmFx.emit(this, RealmFx.STEAM.get(), this.random.nextBoolean() ? 0.7 : -0.7, 2.0, 0.45, 0, 0.05, 0);
+                }
+                if (this.random.nextInt(20) == 0) {
+                    RealmFx.emit(this, RealmFx.SPARK.get(), 0, 1.6, 0.55, 0, 0.1, 0.05);
+                }
+            }
         }
     }
 }

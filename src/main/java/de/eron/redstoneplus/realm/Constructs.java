@@ -103,6 +103,9 @@ public final class Constructs {
         @Override
         public void aiStep() {
             super.aiStep();
+            if (this.level().isClientSide() && this.isAlive()) {
+                this.clientFx();
+            }
             if (this.level() instanceof ServerLevel server) {
                 if (this.stunTicks > 0) {
                     this.stunTicks--;
@@ -118,6 +121,10 @@ public final class Constructs {
 
         /** Server side, every tick while not stunned. */
         protected void ability(ServerLevel level, @Nullable LivingEntity target) {
+        }
+
+        /** Client side, every tick: ambient particles on the body. */
+        protected void clientFx() {
         }
 
         /** This creature's own sounds. */
@@ -204,6 +211,16 @@ public final class Constructs {
             return RealmSounds.KARST_COLOSSUS;
         }
 
+        @Override
+        protected void clientFx() {
+            if (RealmFx.chance(this, 12)) {
+                RealmFx.emit(this, RealmFx.STEAM.get(), this.random.nextBoolean() ? 0.35 : -0.35, 2.6, -0.55, 0, 0.06, 0);
+            }
+            if (RealmFx.chance(this, 30)) {
+                RealmFx.emit(this, RealmFx.SPARK.get(), 0, 1.7, 0.6, (this.random.nextDouble() - 0.5) * 0.1, 0.1, 0.05);
+            }
+        }
+
         private int slamCooldown = 60;
 
         public KarstColossus(EntityType<? extends Monster> type, Level level) {
@@ -248,6 +265,12 @@ public final class Constructs {
                 }
                 this.playAbility();
                 this.playSound(SoundEvents.PISTON_EXTEND, 2.0F, 0.4F);
+                RealmFx.ring(level, this.position().add(0, 0.15, 0), 2.0, RealmFx.SPARK.get(), 24);
+                RealmFx.ring(level, this.position().add(0, 0.15, 0), 4.0, RealmFx.STEAM.get(), 20);
+                RealmFx.burst(this, RealmFx.STEAM.get(), 0.35, 2.7, -0.55, 12, 0.15, 0.05);
+                RealmFx.burst(this, RealmFx.STEAM.get(), -0.35, 2.7, -0.55, 12, 0.15, 0.05);
+                // the shock runs through the ground into every realm trap around
+                RealmMechanics.pulseTraps(level, this.blockPosition(), 8);
             }
         }
 
@@ -259,6 +282,18 @@ public final class Constructs {
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.SWITCHBACK_CRAWLER;
+        }
+
+        @Override
+        protected void clientFx() {
+            boolean moving = this.getDeltaMovement().horizontalDistanceSqr() > 0.01;
+            BlockState at = this.level().getBlockState(this.blockPosition());
+            if (moving && at.getBlock() instanceof BaseRailBlock && RealmFx.chance(this, 2)) {
+                RealmFx.emit(this, RealmFx.SPARK.get(), this.random.nextBoolean() ? 0.5 : -0.5, 0.1, -0.2, 0, 0.15, 0);
+            }
+            if (RealmFx.chance(this, 20)) {
+                RealmFx.emit(this, RealmFx.EMBER.get(), 0, 0.95, 0.9, 0, 0.02, 0);
+            }
         }
 
         private static final ResourceLocation RAIL_BOOST = Realm.id("rail_boost");
@@ -276,6 +311,14 @@ public final class Constructs {
 
         @Override
         protected void ability(ServerLevel level, @Nullable LivingEntity target) {
+            // it couples to minecarts it touches and drags them along
+            Vec3 motion = this.getDeltaMovement();
+            if (motion.horizontalDistanceSqr() > 0.004) {
+                for (net.minecraft.world.entity.vehicle.AbstractMinecart cart : level.getEntitiesOfClass(
+                        net.minecraft.world.entity.vehicle.AbstractMinecart.class, this.getBoundingBox().inflate(0.6))) {
+                    cart.setDeltaMovement(motion.x * 1.6, cart.getDeltaMovement().y, motion.z * 1.6);
+                }
+            }
             AttributeInstance speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
             boolean onRail = level.getBlockState(this.blockPosition()).getBlock() instanceof BaseRailBlock
                     || level.getBlockState(this.blockPosition().below()).getBlock() instanceof BaseRailBlock;
@@ -298,6 +341,7 @@ public final class Constructs {
                     victim.hurtMarked = true;
                     this.dashTicks = 0;
                 }
+                level.sendParticles(RealmFx.SPARK.get(), this.getX(), this.getY() + 0.2, this.getZ(), 3, 0.3, 0.1, 0.3, 0.15);
                 level.sendParticles(ParticleTypes.CRIT, this.getX(), this.getY() + 0.2, this.getZ(), 2, 0.3, 0.1, 0.3, 0.05);
                 return;
             }
@@ -325,6 +369,17 @@ public final class Constructs {
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.BELL_STALKER;
+        }
+
+        @Override
+        protected void clientFx() {
+            if (RealmFx.chance(this, 6)) {
+                double side = (this.random.nextDouble() - 0.5) * 0.8;
+                RealmFx.emit(this, ParticleTypes.GLOW, side, 1.6 + this.random.nextDouble() * 0.3, 0.75, 0, -0.02, 0);
+            }
+            if (RealmFx.chance(this, 40)) {
+                RealmFx.emit(this, RealmFx.RESONANCE.get(), 0, 2.2, 0.75, 0, 0, 0);
+            }
         }
 
         private int tollCooldown = 60;
@@ -375,6 +430,11 @@ public final class Constructs {
                     victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
                 }
                 level.sendParticles(ParticleTypes.SONIC_BOOM, this.getX(), this.getY() + 2.8, this.getZ(), 1, 0, 0, 0, 0);
+                for (int r = 1; r <= 3; r++) {
+                    RealmFx.ring(level, RealmFx.on(this, 0, 2.3, 0.75), r * 1.6, RealmFx.RESONANCE.get(), 10 + r * 6);
+                }
+                // the toll is a vibration: sculk sensors that hear it (and the lockdown gates behind them) react
+                level.gameEvent(this, net.minecraft.world.level.gameevent.GameEvent.INSTRUMENT_PLAY, this.position().add(0, 2.5, 0));
                 level.sendParticles(ParticleTypes.NOTE, this.getX(), this.getY() + 3.2, this.getZ(), 8, 1.5, 0.5, 1.5, 1.0);
             }
         }
@@ -474,6 +534,15 @@ public final class Constructs {
             return RealmSounds.SLUICE_CHAINJAW;
         }
 
+        @Override
+        protected void clientFx() {
+            if (this.isInWater() && RealmFx.chance(this, 3)) {
+                RealmFx.emit(this, ParticleTypes.BUBBLE, this.random.nextDouble() - 0.5, 0.5, (this.random.nextDouble() - 0.5) * 1.5, 0, 0.1, 0);
+            } else if (!this.isInWater() && RealmFx.chance(this, 25)) {
+                RealmFx.emit(this, ParticleTypes.FALLING_WATER, (this.random.nextDouble() - 0.5) * 0.8, 0.6, 0, 0, 0, 0);
+            }
+        }
+
         public SluiceChainjaw(EntityType<? extends Monster> type, Level level) {
             super(type, level);
             this.setPathfindingMalus(PathType.WATER, 0.0F);
@@ -525,6 +594,17 @@ public final class Constructs {
         @Override
         protected void ability(ServerLevel level, @Nullable LivingEntity target) {
             if (this.isInWater()) {
+                // whirlpool: everything swimming within 8 blocks is dragged round and towards it
+                if (this.tickCount % 5 == 0) {
+                    for (LivingEntity swimmer : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(8.0),
+                            e -> e != this && e.isInWater() && !(e instanceof Construct))) {
+                        Vec3 pull = this.position().subtract(swimmer.position()).normalize();
+                        Vec3 swirl = new Vec3(-pull.z, 0, pull.x).scale(0.08);
+                        swimmer.setDeltaMovement(swimmer.getDeltaMovement().add(pull.scale(0.06)).add(swirl));
+                        swimmer.hurtMarked = true;
+                    }
+                    RealmFx.ring(level, this.position().add(0, 0.6, 0), 2.5 + this.random.nextDouble() * 2, ParticleTypes.BUBBLE, 12);
+                }
                 if (target != null) {
                     Vec3 to = target.position().subtract(this.position()).normalize().scale(0.06);
                     this.setDeltaMovement(this.getDeltaMovement().add(to));
@@ -545,6 +625,19 @@ public final class Constructs {
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.KILN_BRUTE;
+        }
+
+        @Override
+        protected void clientFx() {
+            if (RealmFx.chance(this, 4)) {
+                RealmFx.emit(this, ParticleTypes.LARGE_SMOKE, 0.28, 2.95, -0.28, 0, 0.08, 0);
+            }
+            if (RealmFx.chance(this, 5)) {
+                RealmFx.emit(this, RealmFx.EMBER.get(), (this.random.nextDouble() - 0.5) * 0.9, 1.4 + this.random.nextDouble() * 0.8, 0.55, 0, 0.03, 0.02);
+            }
+            if (RealmFx.chance(this, 15)) {
+                RealmFx.emit(this, ParticleTypes.FLAME, 0.28, 2.95, -0.28, 0, 0.04, 0);
+            }
         }
 
         private int volleyCooldown = 60;
@@ -573,8 +666,9 @@ public final class Constructs {
 
         @Override
         protected void ability(ServerLevel level, @Nullable LivingEntity target) {
-            if (this.tickCount % 10 == 0) {
-                level.sendParticles(ParticleTypes.LARGE_SMOKE, this.getX(), this.getY() + this.getBbHeight() + 0.2, this.getZ(), 1, 0.1, 0.1, 0.1, 0.01);
+            // a walking furnace: ore and food dropped near it comes out smelted
+            if (this.tickCount % 40 == 0) {
+                RealmMechanics.smeltNearby(level, this.position().add(0, 0.5, 0), 3.0, 4);
             }
             if (this.shotsLeft > 0) {
                 if (this.tickCount % 6 == 0 && target != null) {
@@ -627,6 +721,37 @@ public final class Constructs {
             return RealmSounds.SPOOL_WEAVER;
         }
 
+        private int spoolRegrow;
+
+        /** Shears or Insulated Cutters unwind wire from its spool, like shearing a sheep. */
+        @Override
+        protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+            var stack = player.getItemInHand(hand);
+            if (stack.getItem() instanceof net.minecraft.world.item.ShearsItem) {
+                if (this.spoolRegrow > 0) {
+                    return net.minecraft.world.InteractionResult.FAIL;
+                }
+                if (!this.level().isClientSide()) {
+                    this.spoolRegrow = 2400;
+                    this.spawnAtLocation(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STRING, 3 + this.random.nextInt(4)));
+                    if (this.random.nextBoolean()) {
+                        this.spawnAtLocation(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.TRIPWIRE_HOOK));
+                    }
+                    this.playSound(SoundEvents.SHEEP_SHEAR, 1.0F, 0.8F);
+                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                }
+                return net.minecraft.world.InteractionResult.sidedSuccess(this.level().isClientSide());
+            }
+            return super.mobInteract(player, hand);
+        }
+
+        @Override
+        protected void clientFx() {
+            if (RealmFx.chance(this, 18)) {
+                RealmFx.emit(this, RealmFx.SPARK.get(), (this.random.nextDouble() - 0.5) * 0.7, 0.9, -0.45, 0, 0.1, 0);
+            }
+        }
+
         private int lashCooldown = 40;
 
         public SpoolWeaver(EntityType<? extends Monster> type, Level level) {
@@ -658,6 +783,9 @@ public final class Constructs {
 
         @Override
         protected void ability(ServerLevel level, @Nullable LivingEntity target) {
+            if (this.spoolRegrow > 0) {
+                this.spoolRegrow--;
+            }
             if (this.lashCooldown > 0) {
                 this.lashCooldown--;
                 return;

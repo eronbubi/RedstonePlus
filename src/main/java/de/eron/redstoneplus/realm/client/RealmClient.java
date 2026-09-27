@@ -42,6 +42,7 @@ public final class RealmClient {
         modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) ->
                 CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name))));
         modBus.addListener(RealmClient::renderers);
+        modBus.addListener(RealmParticles::register);
     }
 
     private static ModelLayerLocation layer(String name) {

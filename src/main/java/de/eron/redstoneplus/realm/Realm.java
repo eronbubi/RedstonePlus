@@ -230,6 +230,7 @@ public final class Realm {
         FEATURES.register(modBus);
         TABS.register(modBus);
         RealmSounds.init(modBus);
+        RealmFx.init(modBus);
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {

@@ -211,9 +211,18 @@ public final class RealmFeatures {
                 for (int i = 0; i < 4; i++) {
                     text = text.setMessage(i, Component.translatable("sign.redstoneplus." + key + "." + i));
                 }
-                sign.setText(text.setHasGlowingText(true), true);
-                sign.setWaxed(true);
-                sign.setChanged();
+                text = text.setHasGlowingText(true);
+                if (sign.getLevel() != null) {
+                    sign.setText(text, true);
+                    sign.setWaxed(true);
+                    sign.setChanged();
+                } else {
+                    // a chunk that is still being generated: the sign is not in a world yet, so write its data directly
+                    net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+                    tag.put("front_text", SignText.DIRECT_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, text).getOrThrow());
+                    tag.putBoolean("is_waxed", true);
+                    sign.loadCustomOnly(tag, this.level.registryAccess());
+                }
             }
         }
 

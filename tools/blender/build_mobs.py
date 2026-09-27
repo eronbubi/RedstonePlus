@@ -218,22 +218,80 @@ def build(spec, path):
     bpy.ops.wm.save_as_mainfile(filepath=path)
 
 
+def setup_lighting(scene):
+    """Eevee, a dark studio with a floor, three lights and bloom on everything that glows."""
+    try:
+        scene.render.engine = 'BLENDER_EEVEE_NEXT'
+    except TypeError:
+        scene.render.engine = 'BLENDER_EEVEE'
+    eevee = scene.eevee
+    for attr, value in (('taa_render_samples', 48), ('use_shadows', True), ('use_raytracing', True)):
+        if hasattr(eevee, attr):
+            setattr(eevee, attr, value)
+    scene.view_settings.view_transform = 'AgX' if 'AgX' in [v.identifier for v in type(scene.view_settings).bl_rna.properties['view_transform'].enum_items] else 'Filmic'
+    scene.view_settings.look = 'None'
+    world = bpy.data.worlds.new('studio')
+    world.use_nodes = True
+    bg = world.node_tree.nodes['Background']
+    bg.inputs['Color'].default_value = (0.035, 0.03, 0.03, 1)
+    bg.inputs['Strength'].default_value = 1.0
+    scene.world = world
+    # floor
+    bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, 0))
+    floor = bpy.context.active_object
+    fm = bpy.data.materials.new('floor')
+    fm.use_nodes = True
+    fb = fm.node_tree.nodes['Principled BSDF']
+    fb.inputs['Base Color'].default_value = (0.09, 0.075, 0.07, 1)
+    fb.inputs['Roughness'].default_value = 0.6
+    floor.data.materials.append(fm)
+    # key, fill, rim
+    for name, loc, energy, color, size in (('key', (-3.5, -4.5, 6), 600, (1.0, 0.93, 0.85), 3),
+                                           ('fill', (5, -3, 3), 250, (0.7, 0.8, 1.0), 4),
+                                           ('rim', (1, 5, 5), 550, (1.0, 0.6, 0.45), 2)):
+        ld = bpy.data.lights.new(name, 'AREA')
+        ld.energy = energy
+        ld.color = color
+        ld.size = size
+        lo = bpy.data.objects.new(name, ld)
+        lo.location = loc
+        scene.collection.objects.link(lo)
+        tc = lo.constraints.new('TRACK_TO')
+        tc.target = bpy.data.objects.get('preview_target')
+        tc.track_axis = 'TRACK_NEGATIVE_Z'
+        tc.up_axis = 'UP_Y'
+    # bloom: glare on the bright parts in the compositor
+    scene.use_nodes = True
+    nt = scene.node_tree
+    rl = nt.nodes.get('Render Layers') or nt.nodes.new('CompositorNodeRLayers')
+    comp = nt.nodes.get('Composite') or nt.nodes.new('CompositorNodeComposite')
+    glare = nt.nodes.new('CompositorNodeGlare')
+    glare.glare_type = 'FOG_GLOW' if 'FOG_GLOW' in [e.identifier for e in type(glare).bl_rna.properties['glare_type'].enum_items] else 'BLOOM'
+    if hasattr(glare, 'threshold'):
+        glare.threshold = 0.8
+    if hasattr(glare, 'size'):
+        glare.size = 8
+    nt.links.new(rl.outputs['Image'], glare.inputs['Image'])
+    nt.links.new(glare.outputs['Image'], comp.inputs['Image'])
+
+
 def previews(name):
-    """Renders one pose from each clip (Workbench, textured) to tools/blender/previews/NAME_CLIP.png."""
+    """Renders one pose from each clip to tools/blender/previews/NAME_CLIP.png."""
     scene = bpy.context.scene
     clips = json.loads(scene['mc_clips'])
-    scene.render.engine = 'BLENDER_WORKBENCH'
-    scene.display.shading.light = 'STUDIO'
-    scene.display.shading.color_type = 'TEXTURE'
-    scene.display.shading.show_cavity = True
-    scene.render.film_transparent = True
-    scene.render.resolution_x = 480
-    scene.render.resolution_y = 480
+    scene.render.resolution_x = 640
+    scene.render.resolution_y = 640
+    scene.render.film_transparent = False
     for obj in scene.objects:
         if obj.type == 'EMPTY':
             obj.hide_render = True
+    # the glow textures light up in the renders too
+    for mat in bpy.data.materials:
+        if mat.use_nodes and 'Principled BSDF' in mat.node_tree.nodes:
+            mat.node_tree.nodes['Principled BSDF'].inputs['Emission Strength'].default_value = 6.0
     cam_data = bpy.data.cameras.new('preview_cam')
-    cam_data.type = 'ORTHO'
+    cam_data.type = 'PERSP'
+    cam_data.lens = 50
     cam = bpy.data.objects.new('preview_cam', cam_data)
     scene.collection.objects.link(cam)
     scene.camera = cam
@@ -243,26 +301,70 @@ def previews(name):
     track.target = target
     track.track_axis = 'TRACK_NEGATIVE_Z'
     track.up_axis = 'UP_Y'
+    try:
+        setup_lighting(scene)
+    except Exception as e:  # fall back to the simple look if Eevee is not available
+        print('LIGHTING FALLBACK', e)
+        scene.render.engine = 'BLENDER_WORKBENCH'
+        scene.display.shading.light = 'STUDIO'
+        scene.display.shading.color_type = 'TEXTURE'
     os.makedirs(PREVIEWS, exist_ok=True)
-    meshes = [o for o in scene.objects if o.type == 'MESH']
+    meshes = [o for o in scene.objects if o.type == 'MESH' and o.name.endswith('_mesh')]
+    import mathutils
     for clip_name, c in clips.items():
-        frame = c['start'] + (c['end'] - c['start']) // (4 if clip_name in ('attack', 'ability') else 3)
+        frame = c['start'] + (c['end'] - c['start']) // (4 if clip_name in ('attack', 'ability', 'hurt') else 3)
         scene.frame_set(frame)
         lo = [1e9, 1e9, 1e9]
         hi = [-1e9, -1e9, -1e9]
         for m in meshes:
             for corner in m.bound_box:
-                w = m.matrix_world @ __import__('mathutils').Vector(corner)
+                w = m.matrix_world @ mathutils.Vector(corner)
                 for k in range(3):
                     lo[k] = min(lo[k], w[k])
                     hi[k] = max(hi[k], w[k])
-        center = [(lo[k] + hi[k]) / 2 for k in range(3)]
+        center = mathutils.Vector([(lo[k] + hi[k]) / 2 for k in range(3)])
         size = max(hi[k] - lo[k] for k in range(3))
         target.location = center
-        cam.location = (center[0] - size * 1.4, center[1] - size * 2.0, center[2] + size * 1.0)
-        cam_data.ortho_scale = size * 1.45
+        cam.location = center + mathutils.Vector((-0.9, -1.55, 0.55)) * size * 1.08
         scene.render.filepath = os.path.join(PREVIEWS, f'{name}_{clip_name}.png')
         bpy.ops.render.render(write_still=True)
+
+
+def animation_frames(name, clip_names=('walk', 'idle', 'ability'), size=360, step=2):
+    """Renders every other frame of some clips to tools/blender/previews/anim/NAME_CLIP_NNN.png (for GIFs)."""
+    scene = bpy.context.scene
+    clips = json.loads(scene['mc_clips'])
+    scene.render.resolution_x = size
+    scene.render.resolution_y = size
+    import mathutils
+    meshes = [o for o in scene.objects if o.type == 'MESH' and o.name.endswith('_mesh')]
+    cam = scene.camera
+    target = bpy.data.objects.get('preview_target')
+    out_dir = os.path.join(PREVIEWS, 'anim')
+    os.makedirs(out_dir, exist_ok=True)
+    for clip_name in clip_names:
+        if clip_name not in clips:
+            continue
+        c = clips[clip_name]
+        # frame the whole clip once, so the camera does not jump
+        lo = [1e9] * 3
+        hi = [-1e9] * 3
+        for f in range(c['start'], c['end'] + 1, 4):
+            scene.frame_set(f)
+            for m in meshes:
+                for corner in m.bound_box:
+                    w = m.matrix_world @ mathutils.Vector(corner)
+                    for k in range(3):
+                        lo[k] = min(lo[k], w[k])
+                        hi[k] = max(hi[k], w[k])
+        center = mathutils.Vector([(lo[k] + hi[k]) / 2 for k in range(3)])
+        extent = max(hi[k] - lo[k] for k in range(3))
+        target.location = center
+        cam.location = center + mathutils.Vector((-0.9, -1.55, 0.55)) * extent * 1.08
+        for i, f in enumerate(range(c['start'], c['end'], step)):
+            scene.frame_set(f)
+            scene.render.filepath = os.path.join(out_dir, f'{name}_{clip_name}_{i:03d}.png')
+            bpy.ops.render.render(write_still=True)
 
 
 def main():
@@ -281,6 +383,9 @@ def main():
         bpy.ops.wm.open_mainfile(filepath=path)
         previews(name)
         print('PREVIEWED', name)
+        if '--gifs' in argv:
+            animation_frames(name)
+            print('ANIMATED', name)
 
 
 main()

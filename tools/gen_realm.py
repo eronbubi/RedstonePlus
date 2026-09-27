@@ -819,6 +819,46 @@ write(os.path.join(DATA, 'dimension', 'redstone_realm.json'), {
         point('resonance_hollows', dep=[0.2, 0.9]),
     ]}}})
 
+# ================================================================================================ particles
+def particle_frames(name, frames):
+    keys = []
+    for i, img in enumerate(frames):
+        save(img, 'particle', f'{name}_{i}')
+        keys.append(f'{NS}:{name}_{i}')
+    write(os.path.join(ASSETS, 'particles', name + '.json'), {'textures': keys})
+
+
+def radial(size, fn):
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
+    c = (size - 1) / 2
+    for y in range(size):
+        for x in range(size):
+            d = ((x - c) ** 2 + (y - c) ** 2) ** 0.5 / (size / 2)
+            col = fn(d, x, y)
+            if col:
+                px[x, y] = col
+    return img
+
+
+# spark: white-hot core with a red-orange cross that shrinks
+particle_frames('realm_spark', [radial(8, lambda d, x, y, k=k: (
+    (255, 250, 220, 255) if d < 0.25 * (1 - k * 0.2) else
+    (255, 120, 40, 255) if (abs(x - 3.5) < 0.6 or abs(y - 3.5) < 0.6) and d < 0.95 - k * 0.2 else
+    (220, 30, 20, 200) if d < 0.5 - k * 0.1 else None)) for k in range(4)])
+# steam: soft round puffs with a little noise
+particle_frames('realm_steam', [radial(16, lambda d, x, y, k=k: (
+    (240, 240, 236, int(max(0, 1 - d) * (200 - k * 30) * (0.8 + 0.2 * rnd.random())))) if d < 1 else None) for k in range(4)])
+# ember: flickering orange coal
+particle_frames('realm_ember', [radial(8, lambda d, x, y, k=k: (
+    (255, 240, 170, 255) if d < 0.3 else (255, 150 - k * 30, 30, 230) if d < 0.65 - k * 0.08 else None)) for k in range(3)])
+# resonance: a thin cyan ring that the particle then grows
+particle_frames('realm_resonance', [radial(16, lambda d, x, y, k=k: (
+    (120, 240, 255, 230 - k * 40) if 0.72 - k * 0.04 < d < 0.92 else (200, 255, 255, 120) if 0.62 < d <= 0.72 - k * 0.04 else None)) for k in range(4)])
+# drip: green glowing droplet
+particle_frames('realm_drip', [radial(8, lambda d, x, y, k=k: (
+    (220, 255, 160, 255) if d < 0.25 else (125, 255, 60, 230) if d < 0.6 - k * 0.1 else None)) for k in range(3)])
+
 # ================================================================================================ texts
 name(f'itemGroup.{NS}.redstone_realm', 'Redstone Realm', 'Redstone-Reich')
 MESSAGES = {
@@ -874,6 +914,8 @@ BOOK_EN = [
     'THE MACHINE-BOUND\nLeaking Cell, Detonator Husk, Tripwire Brood, Kilnbound, Living Capacitor, Relay Strider, Bellows Hog and Flesh Press: creatures rebuilt by the realm\'s machines. Watch their tricks.',
     'BUILD YOUR OWN\nTraps are normal redstone parts: any signal fires them, and touching traps of the same kind fire one after another. Mix them with gates, sensors and wireless from RedstonePlus.',
     'EXAMPLE\nLaser Sensor across a door -> Delay -> row of Kiln Turrets.\nPlayer Detector -> Counter -> Signal Display shows visitors.\nClock -> Sequencer -> three Floodgates = a wave pool.',
+    'CREATURE JOBS 1\nColossus: its slam sets off every trap nearby.\nCrawler: drags minecarts, fast on rails.\nBell Stalker: its toll trips sculk sensors.\nChainjaw: whirlpool in water.\nKiln Brute: smelts items dropped near it.\nSpool Weaver: shear it for string.',
+    'CREATURE JOBS 2\nLeaking Cell: its spill makes crops grow.\nDetonator Husk: its blast fires traps.\nBrood: bursts into cave spiders.\nKilnbound: fires the Kiln Turrets.\nCapacitor: shocks traps.\nBellows Hog: feed coal, it smelts.\nFlesh Press: give a redstone block, it guards you.',
 ]
 BOOK_DE = [
     'REDSTONE-REICH\nFeldführer\n\nDiese Welt läuft mit Redstone. Jedes Biom hat eine Maschinenkreatur, eine Falle mit AUSLÖSER und REAKTION und ein GEGENMITTEL.\n\nDie Ankunftsplattform zeigt funktionierende Beispielschaltungen.',
@@ -888,6 +930,8 @@ BOOK_DE = [
     'DIE MASCHINENGEBUNDENEN\nLeckende Zelle, Zünderhülle, Stolperdraht-Brut, Ofengebundener, Lebender Kondensator, Relais-Schreiter, Blasebalg-Keiler und Fleischpresse: von den Maschinen umgebaute Kreaturen.',
     'SELBST BAUEN\nFallen sind normale Redstone-Teile: jedes Signal löst sie aus, und angrenzende Fallen derselben Art folgen nacheinander. Kombiniere sie mit Gattern, Sensoren und Funk aus RedstonePlus.',
     'BEISPIEL\nLasersensor vor einer Tür -> Verzögerer -> Reihe Brennofen-Geschütze.\nSpielerdetektor -> Zähler -> Signalanzeige zählt Besucher.\nTaktgeber -> Sequenzer -> drei Flutschleusen = Wellenbad.',
+    'KREATUR-AUFGABEN 1\nKoloss: sein Stampfen löst alle Fallen aus.\nKriecher: zieht Loren, schnell auf Schienen.\nGlockenpirscher: sein Läuten weckt Sculk-Sensoren.\nKettenkiefer: Strudel im Wasser.\nBrennofen-Rohling: schmilzt Items neben sich.\nSpulenweber: scheren gibt Faden.',
+    'KREATUR-AUFGABEN 2\nLeckende Zelle: macht Pflanzen wachsen.\nZünderhülle: Explosion löst Fallen aus.\nBrut: platzt zu Höhlenspinnen.\nOfengebundener: zündet Geschütze.\nKondensator: schockt Fallen.\nBlasebalg-Keiler: mit Kohle füttern, er schmilzt.\nFleischpresse: Redstone-Block geben, sie beschützt dich.',
 ]
 name(f'book.{NS}.realm_guide.title', 'Redstone Realm Field Guide', 'Feldführer Redstone-Reich')
 for i, (e, g) in enumerate(zip(BOOK_EN, BOOK_DE)):

@@ -60,6 +60,9 @@ public final class Realm {
     private static final List<RegistryObject<? extends Item>> TAB_ORDER = new ArrayList<>();
 
     public static final ResourceKey<Level> REALM = ResourceKey.create(Registries.DIMENSION, id("redstone_realm"));
+    /** The biomes of the realm (defined in data/redstoneplus/worldgen/biome, written by tools/gen_realm.py). */
+    public static final List<String> BIOMES = List.of("piston_karst", "switchyard_flats", "resonance_hollows", "sluice_gardens",
+            "kiln_barrens", "tripwire_briar");
 
     // ---------- getting there ----------
     public static final RegistryObject<Block> REALM_GATE = block("realm_gate", RealmGateBlock::new,

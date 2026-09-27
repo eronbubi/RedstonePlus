@@ -123,6 +123,13 @@ Neu aufbauen aus `tools/realm_mobs.py`: `python tools/gen_realm_mobs.py`, dann
 `blender -b -P tools/blender/build_mobs.py -- --rebuild NAME`. Texte, Blöcke und Weltgenerierung:
 `python tools/gen_realm.py`, Geräusche: `python tools/gen_realm_sounds.py`.
 
+## Handbuch im Spiel
+
+Das **RedstonePlus-Handbuch** (Kreativ-Tab, oder Buch + Redstone craften; jeder Spieler bekommt es beim ersten Betreten)
+erklärt jedes Item, jeden Block, jede Kreatur und jedes Biom. Die Seiten entstehen beim Öffnen aus den registrierten
+Inhalten und ihren `.desc`-Texten, neue Inhalte erscheinen also von selbst. Nach jeder Änderung
+`python tools/gen_guide.py` ausführen: es schreibt die Kapiteltexte und meldet alles, was noch keine Beschreibung hat.
+
 ## Bauen
 
 ```bash

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,firing=false,disarmed=false": {
+      "model": "redstoneplus:block/crusher"
+    },
+    "facing=north,firing=false,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed"
+    },
+    "facing=north,firing=true,disarmed=false": {
+      "model": "redstoneplus:block/crusher_firing"
+    },
+    "facing=north,firing=true,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed"
+    },
+    "facing=east,firing=false,disarmed=false": {
+      "model": "redstoneplus:block/crusher",
+      "y": 90
+    },
+    "facing=east,firing=false,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 90
+    },
+    "facing=east,firing=true,disarmed=false": {
+      "model": "redstoneplus:block/crusher_firing",
+      "y": 90
+    },
+    "facing=east,firing=true,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 90
+    },
+    "facing=south,firing=false,disarmed=false": {
+      "model": "redstoneplus:block/crusher",
+      "y": 180
+    },
+    "facing=south,firing=false,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 180
+    },
+    "facing=south,firing=true,disarmed=false": {
+      "model": "redstoneplus:block/crusher_firing",
+      "y": 180
+    },
+    "facing=south,firing=true,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 180
+    },
+    "facing=west,firing=false,disarmed=false": {
+      "model": "redstoneplus:block/crusher",
+      "y": 270
+    },
+    "facing=west,firing=false,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 270
+    },
+    "facing=west,firing=true,disarmed=false": {
+      "model": "redstoneplus:block/crusher_firing",
+      "y": 270
+    },
+    "facing=west,firing=true,disarmed=true": {
+      "model": "redstoneplus:block/crusher_disarmed",
+      "y": 270
+    }
+  }
+}

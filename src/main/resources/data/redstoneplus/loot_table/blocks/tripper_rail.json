@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "redstoneplus:blocks/tripper_rail",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "redstoneplus:tripper_rail"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

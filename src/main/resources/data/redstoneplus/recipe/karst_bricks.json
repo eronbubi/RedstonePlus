@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "redstoneplus:karst_limestone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:karst_bricks",
+    "count": 4
+  }
+}

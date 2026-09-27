@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "redstoneplus:blocks/karst_limestone",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "redstoneplus:karst_limestone"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

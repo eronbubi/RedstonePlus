@@ -79,6 +79,20 @@
     "redstoneplus:ruby_bricks",
     "redstoneplus:sapphire_bricks",
     "redstoneplus:titanium_plating",
-    "redstoneplus:cobalt_bricks"
+    "redstoneplus:cobalt_bricks",
+    "redstoneplus:karst_limestone",
+    "redstoneplus:lichen_karst",
+    "redstoneplus:karst_bricks",
+    "redstoneplus:slag",
+    "redstoneplus:resonant_crystal",
+    "redstoneplus:sulfur_crust",
+    "redstoneplus:realm_gate",
+    "redstoneplus:crusher",
+    "redstoneplus:hazard_switch",
+    "redstoneplus:floodgate",
+    "redstoneplus:kiln_turret",
+    "redstoneplus:volley_launcher",
+    "redstoneplus:lockdown_gate",
+    "redstoneplus:decoy_beacon"
   ]
 }

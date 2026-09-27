@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "KKK"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "item": "redstoneplus:realm_cog"
+    },
+    "K": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:decoy_beacon",
+    "count": 1
+  }
+}

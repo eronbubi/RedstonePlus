@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "redstoneplus:blocks/hazard_switch",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "redstoneplus:hazard_switch"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

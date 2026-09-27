@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "redstoneplus:blocks/kiln_turret",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "redstoneplus:kiln_turret"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

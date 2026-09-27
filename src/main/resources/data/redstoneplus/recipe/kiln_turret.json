@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "BBB",
+    "BFB",
+    "BRB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:polished_blackstone_bricks"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:kiln_turret",
+    "count": 1
+  }
+}

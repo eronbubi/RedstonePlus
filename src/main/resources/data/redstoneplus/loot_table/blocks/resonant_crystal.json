@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "redstoneplus:blocks/resonant_crystal",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "redstoneplus:resonant_crystal"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

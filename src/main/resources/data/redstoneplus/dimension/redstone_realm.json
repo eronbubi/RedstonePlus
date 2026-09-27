@@ -1,0 +1,204 @@
+{
+  "type": "redstoneplus:redstone_realm",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "redstoneplus:redstone_realm",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "redstoneplus:sluice_gardens",
+          "parameters": {
+            "temperature": [
+              -1,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -1.2,
+              -0.11
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:piston_karst",
+          "parameters": {
+            "temperature": [
+              -1,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -0.11,
+              1.2
+            ],
+            "erosion": [
+              -1,
+              -0.3
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:kiln_barrens",
+          "parameters": {
+            "temperature": [
+              0.2,
+              1
+            ],
+            "humidity": [
+              -1,
+              0.1
+            ],
+            "continentalness": [
+              -0.11,
+              1.2
+            ],
+            "erosion": [
+              -0.3,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:switchyard_flats",
+          "parameters": {
+            "temperature": [
+              -1,
+              0.2
+            ],
+            "humidity": [
+              -1,
+              0.1
+            ],
+            "continentalness": [
+              -0.11,
+              1.2
+            ],
+            "erosion": [
+              -0.3,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:tripwire_briar",
+          "parameters": {
+            "temperature": [
+              -1,
+              0.2
+            ],
+            "humidity": [
+              0.1,
+              1
+            ],
+            "continentalness": [
+              -0.11,
+              1.2
+            ],
+            "erosion": [
+              -0.3,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:sluice_gardens",
+          "parameters": {
+            "temperature": [
+              0.2,
+              1
+            ],
+            "humidity": [
+              0.1,
+              1
+            ],
+            "continentalness": [
+              -0.11,
+              1.2
+            ],
+            "erosion": [
+              -0.3,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": 0.0,
+            "offset": 0.0
+          }
+        },
+        {
+          "biome": "redstoneplus:resonance_hollows",
+          "parameters": {
+            "temperature": [
+              -1,
+              1
+            ],
+            "humidity": [
+              -1,
+              1
+            ],
+            "continentalness": [
+              -1.2,
+              1.2
+            ],
+            "erosion": [
+              -1,
+              1
+            ],
+            "weirdness": [
+              -1,
+              1
+            ],
+            "depth": [
+              0.2,
+              0.9
+            ],
+            "offset": 0.0
+          }
+        }
+      ]
+    }
+  }
+}

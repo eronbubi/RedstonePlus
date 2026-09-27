@@ -1,0 +1,155 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "redstoneplus:block/crusher_side",
+    "side": "redstoneplus:block/crusher_side",
+    "front": "redstoneplus:block/crusher_front",
+    "ram": "redstoneplus:block/crusher_ram"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "up": {
+          "texture": "#side",
+          "cullface": "up"
+        },
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        6,
+        -6
+      ],
+      "to": [
+        10,
+        10,
+        0
+      ],
+      "faces": {
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            6,
+            6,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            6,
+            6,
+            10
+          ]
+        },
+        "up": {
+          "texture": "#side",
+          "uv": [
+            6,
+            0,
+            10,
+            6
+          ]
+        },
+        "down": {
+          "texture": "#side",
+          "uv": [
+            6,
+            0,
+            10,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        1,
+        -9
+      ],
+      "to": [
+        15,
+        15,
+        -6
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ram"
+        },
+        "south": {
+          "texture": "#ram"
+        },
+        "east": {
+          "texture": "#ram",
+          "uv": [
+            0,
+            1,
+            3,
+            15
+          ]
+        },
+        "west": {
+          "texture": "#ram",
+          "uv": [
+            0,
+            1,
+            3,
+            15
+          ]
+        },
+        "up": {
+          "texture": "#ram",
+          "uv": [
+            1,
+            0,
+            15,
+            3
+          ]
+        },
+        "down": {
+          "texture": "#ram",
+          "uv": [
+            1,
+            0,
+            15,
+            3
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "redstoneplus:block/lichen_karst_top",
+    "side": "redstoneplus:block/lichen_karst_side",
+    "bottom": "redstoneplus:block/karst_limestone"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "  R",
+    " C ",
+    "I  "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "C": {
+      "item": "redstoneplus:realm_cog"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:pulse_injector",
+    "count": 1
+  }
+}

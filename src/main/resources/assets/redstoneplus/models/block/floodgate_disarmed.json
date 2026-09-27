@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "side": "minecraft:block/oxidized_cut_copper",
+    "top": "minecraft:block/oxidized_cut_copper",
+    "front": "redstoneplus:block/floodgate_front_locked"
+  }
+}

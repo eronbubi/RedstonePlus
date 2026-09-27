@@ -1,0 +1,473 @@
+{
+  "entity.karst_colossus.ambient": {
+    "sounds": [
+      "redstoneplus:entity/karst_colossus/ambient1",
+      "redstoneplus:entity/karst_colossus/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.karst_colossus.ambient"
+  },
+  "entity.karst_colossus.hurt": {
+    "sounds": [
+      "redstoneplus:entity/karst_colossus/hurt1",
+      "redstoneplus:entity/karst_colossus/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.karst_colossus.hurt"
+  },
+  "entity.karst_colossus.death": {
+    "sounds": [
+      "redstoneplus:entity/karst_colossus/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.karst_colossus.death"
+  },
+  "entity.karst_colossus.step": {
+    "sounds": [
+      "redstoneplus:entity/karst_colossus/step1",
+      "redstoneplus:entity/karst_colossus/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.karst_colossus.step"
+  },
+  "entity.karst_colossus.ability": {
+    "sounds": [
+      "redstoneplus:entity/karst_colossus/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.karst_colossus.ability"
+  },
+  "entity.switchback_crawler.ambient": {
+    "sounds": [
+      "redstoneplus:entity/switchback_crawler/ambient1",
+      "redstoneplus:entity/switchback_crawler/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.switchback_crawler.ambient"
+  },
+  "entity.switchback_crawler.hurt": {
+    "sounds": [
+      "redstoneplus:entity/switchback_crawler/hurt1",
+      "redstoneplus:entity/switchback_crawler/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.switchback_crawler.hurt"
+  },
+  "entity.switchback_crawler.death": {
+    "sounds": [
+      "redstoneplus:entity/switchback_crawler/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.switchback_crawler.death"
+  },
+  "entity.switchback_crawler.step": {
+    "sounds": [
+      "redstoneplus:entity/switchback_crawler/step1",
+      "redstoneplus:entity/switchback_crawler/step2",
+      "redstoneplus:entity/switchback_crawler/step3"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.switchback_crawler.step"
+  },
+  "entity.switchback_crawler.ability": {
+    "sounds": [
+      "redstoneplus:entity/switchback_crawler/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.switchback_crawler.ability"
+  },
+  "entity.bell_stalker.ambient": {
+    "sounds": [
+      "redstoneplus:entity/bell_stalker/ambient1",
+      "redstoneplus:entity/bell_stalker/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bell_stalker.ambient"
+  },
+  "entity.bell_stalker.hurt": {
+    "sounds": [
+      "redstoneplus:entity/bell_stalker/hurt1",
+      "redstoneplus:entity/bell_stalker/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bell_stalker.hurt"
+  },
+  "entity.bell_stalker.death": {
+    "sounds": [
+      "redstoneplus:entity/bell_stalker/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bell_stalker.death"
+  },
+  "entity.bell_stalker.step": {
+    "sounds": [
+      "redstoneplus:entity/bell_stalker/step1",
+      "redstoneplus:entity/bell_stalker/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bell_stalker.step"
+  },
+  "entity.bell_stalker.ability": {
+    "sounds": [
+      "redstoneplus:entity/bell_stalker/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bell_stalker.ability"
+  },
+  "entity.sluice_chainjaw.ambient": {
+    "sounds": [
+      "redstoneplus:entity/sluice_chainjaw/ambient1",
+      "redstoneplus:entity/sluice_chainjaw/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.sluice_chainjaw.ambient"
+  },
+  "entity.sluice_chainjaw.hurt": {
+    "sounds": [
+      "redstoneplus:entity/sluice_chainjaw/hurt1",
+      "redstoneplus:entity/sluice_chainjaw/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.sluice_chainjaw.hurt"
+  },
+  "entity.sluice_chainjaw.death": {
+    "sounds": [
+      "redstoneplus:entity/sluice_chainjaw/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.sluice_chainjaw.death"
+  },
+  "entity.sluice_chainjaw.step": {
+    "sounds": [
+      "redstoneplus:entity/sluice_chainjaw/step1",
+      "redstoneplus:entity/sluice_chainjaw/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.sluice_chainjaw.step"
+  },
+  "entity.sluice_chainjaw.ability": {
+    "sounds": [
+      "redstoneplus:entity/sluice_chainjaw/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.sluice_chainjaw.ability"
+  },
+  "entity.kiln_brute.ambient": {
+    "sounds": [
+      "redstoneplus:entity/kiln_brute/ambient1",
+      "redstoneplus:entity/kiln_brute/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kiln_brute.ambient"
+  },
+  "entity.kiln_brute.hurt": {
+    "sounds": [
+      "redstoneplus:entity/kiln_brute/hurt1",
+      "redstoneplus:entity/kiln_brute/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kiln_brute.hurt"
+  },
+  "entity.kiln_brute.death": {
+    "sounds": [
+      "redstoneplus:entity/kiln_brute/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kiln_brute.death"
+  },
+  "entity.kiln_brute.step": {
+    "sounds": [
+      "redstoneplus:entity/kiln_brute/step1",
+      "redstoneplus:entity/kiln_brute/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kiln_brute.step"
+  },
+  "entity.kiln_brute.ability": {
+    "sounds": [
+      "redstoneplus:entity/kiln_brute/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kiln_brute.ability"
+  },
+  "entity.spool_weaver.ambient": {
+    "sounds": [
+      "redstoneplus:entity/spool_weaver/ambient1",
+      "redstoneplus:entity/spool_weaver/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spool_weaver.ambient"
+  },
+  "entity.spool_weaver.hurt": {
+    "sounds": [
+      "redstoneplus:entity/spool_weaver/hurt1",
+      "redstoneplus:entity/spool_weaver/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spool_weaver.hurt"
+  },
+  "entity.spool_weaver.death": {
+    "sounds": [
+      "redstoneplus:entity/spool_weaver/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spool_weaver.death"
+  },
+  "entity.spool_weaver.step": {
+    "sounds": [
+      "redstoneplus:entity/spool_weaver/step1",
+      "redstoneplus:entity/spool_weaver/step2",
+      "redstoneplus:entity/spool_weaver/step3"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spool_weaver.step"
+  },
+  "entity.spool_weaver.ability": {
+    "sounds": [
+      "redstoneplus:entity/spool_weaver/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spool_weaver.ability"
+  },
+  "entity.leaking_cell.ambient": {
+    "sounds": [
+      "redstoneplus:entity/leaking_cell/ambient1",
+      "redstoneplus:entity/leaking_cell/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.leaking_cell.ambient"
+  },
+  "entity.leaking_cell.hurt": {
+    "sounds": [
+      "redstoneplus:entity/leaking_cell/hurt1",
+      "redstoneplus:entity/leaking_cell/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.leaking_cell.hurt"
+  },
+  "entity.leaking_cell.death": {
+    "sounds": [
+      "redstoneplus:entity/leaking_cell/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.leaking_cell.death"
+  },
+  "entity.leaking_cell.step": {
+    "sounds": [
+      "redstoneplus:entity/leaking_cell/step1",
+      "redstoneplus:entity/leaking_cell/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.leaking_cell.step"
+  },
+  "entity.leaking_cell.ability": {
+    "sounds": [
+      "redstoneplus:entity/leaking_cell/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.leaking_cell.ability"
+  },
+  "entity.detonator_husk.ambient": {
+    "sounds": [
+      "redstoneplus:entity/detonator_husk/ambient1",
+      "redstoneplus:entity/detonator_husk/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.detonator_husk.ambient"
+  },
+  "entity.detonator_husk.hurt": {
+    "sounds": [
+      "redstoneplus:entity/detonator_husk/hurt1",
+      "redstoneplus:entity/detonator_husk/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.detonator_husk.hurt"
+  },
+  "entity.detonator_husk.death": {
+    "sounds": [
+      "redstoneplus:entity/detonator_husk/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.detonator_husk.death"
+  },
+  "entity.detonator_husk.step": {
+    "sounds": [
+      "redstoneplus:entity/detonator_husk/step1",
+      "redstoneplus:entity/detonator_husk/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.detonator_husk.step"
+  },
+  "entity.detonator_husk.ability": {
+    "sounds": [
+      "redstoneplus:entity/detonator_husk/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.detonator_husk.ability"
+  },
+  "entity.tripwire_brood.ambient": {
+    "sounds": [
+      "redstoneplus:entity/tripwire_brood/ambient1",
+      "redstoneplus:entity/tripwire_brood/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.tripwire_brood.ambient"
+  },
+  "entity.tripwire_brood.hurt": {
+    "sounds": [
+      "redstoneplus:entity/tripwire_brood/hurt1",
+      "redstoneplus:entity/tripwire_brood/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.tripwire_brood.hurt"
+  },
+  "entity.tripwire_brood.death": {
+    "sounds": [
+      "redstoneplus:entity/tripwire_brood/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.tripwire_brood.death"
+  },
+  "entity.tripwire_brood.step": {
+    "sounds": [
+      "redstoneplus:entity/tripwire_brood/step1",
+      "redstoneplus:entity/tripwire_brood/step2",
+      "redstoneplus:entity/tripwire_brood/step3"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.tripwire_brood.step"
+  },
+  "entity.tripwire_brood.ability": {
+    "sounds": [
+      "redstoneplus:entity/tripwire_brood/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.tripwire_brood.ability"
+  },
+  "entity.kilnbound.ambient": {
+    "sounds": [
+      "redstoneplus:entity/kilnbound/ambient1",
+      "redstoneplus:entity/kilnbound/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kilnbound.ambient"
+  },
+  "entity.kilnbound.hurt": {
+    "sounds": [
+      "redstoneplus:entity/kilnbound/hurt1",
+      "redstoneplus:entity/kilnbound/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kilnbound.hurt"
+  },
+  "entity.kilnbound.death": {
+    "sounds": [
+      "redstoneplus:entity/kilnbound/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kilnbound.death"
+  },
+  "entity.kilnbound.step": {
+    "sounds": [
+      "redstoneplus:entity/kilnbound/step1",
+      "redstoneplus:entity/kilnbound/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kilnbound.step"
+  },
+  "entity.kilnbound.ability": {
+    "sounds": [
+      "redstoneplus:entity/kilnbound/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.kilnbound.ability"
+  },
+  "entity.living_capacitor.ambient": {
+    "sounds": [
+      "redstoneplus:entity/living_capacitor/ambient1",
+      "redstoneplus:entity/living_capacitor/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.living_capacitor.ambient"
+  },
+  "entity.living_capacitor.hurt": {
+    "sounds": [
+      "redstoneplus:entity/living_capacitor/hurt1",
+      "redstoneplus:entity/living_capacitor/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.living_capacitor.hurt"
+  },
+  "entity.living_capacitor.death": {
+    "sounds": [
+      "redstoneplus:entity/living_capacitor/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.living_capacitor.death"
+  },
+  "entity.living_capacitor.step": {
+    "sounds": [
+      "redstoneplus:entity/living_capacitor/step1",
+      "redstoneplus:entity/living_capacitor/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.living_capacitor.step"
+  },
+  "entity.living_capacitor.ability": {
+    "sounds": [
+      "redstoneplus:entity/living_capacitor/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.living_capacitor.ability"
+  },
+  "entity.relay_strider.ambient": {
+    "sounds": [
+      "redstoneplus:entity/relay_strider/ambient1",
+      "redstoneplus:entity/relay_strider/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.relay_strider.ambient"
+  },
+  "entity.relay_strider.hurt": {
+    "sounds": [
+      "redstoneplus:entity/relay_strider/hurt1",
+      "redstoneplus:entity/relay_strider/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.relay_strider.hurt"
+  },
+  "entity.relay_strider.death": {
+    "sounds": [
+      "redstoneplus:entity/relay_strider/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.relay_strider.death"
+  },
+  "entity.relay_strider.step": {
+    "sounds": [
+      "redstoneplus:entity/relay_strider/step1",
+      "redstoneplus:entity/relay_strider/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.relay_strider.step"
+  },
+  "entity.relay_strider.ability": {
+    "sounds": [
+      "redstoneplus:entity/relay_strider/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.relay_strider.ability"
+  },
+  "entity.bellows_hog.ambient": {
+    "sounds": [
+      "redstoneplus:entity/bellows_hog/ambient1",
+      "redstoneplus:entity/bellows_hog/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bellows_hog.ambient"
+  },
+  "entity.bellows_hog.hurt": {
+    "sounds": [
+      "redstoneplus:entity/bellows_hog/hurt1",
+      "redstoneplus:entity/bellows_hog/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bellows_hog.hurt"
+  },
+  "entity.bellows_hog.death": {
+    "sounds": [
+      "redstoneplus:entity/bellows_hog/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bellows_hog.death"
+  },
+  "entity.bellows_hog.step": {
+    "sounds": [
+      "redstoneplus:entity/bellows_hog/step1",
+      "redstoneplus:entity/bellows_hog/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bellows_hog.step"
+  },
+  "entity.bellows_hog.ability": {
+    "sounds": [
+      "redstoneplus:entity/bellows_hog/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.bellows_hog.ability"
+  },
+  "entity.flesh_press.ambient": {
+    "sounds": [
+      "redstoneplus:entity/flesh_press/ambient1",
+      "redstoneplus:entity/flesh_press/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.flesh_press.ambient"
+  },
+  "entity.flesh_press.hurt": {
+    "sounds": [
+      "redstoneplus:entity/flesh_press/hurt1",
+      "redstoneplus:entity/flesh_press/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.flesh_press.hurt"
+  },
+  "entity.flesh_press.death": {
+    "sounds": [
+      "redstoneplus:entity/flesh_press/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.flesh_press.death"
+  },
+  "entity.flesh_press.step": {
+    "sounds": [
+      "redstoneplus:entity/flesh_press/step1",
+      "redstoneplus:entity/flesh_press/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.flesh_press.step"
+  },
+  "entity.flesh_press.ability": {
+    "sounds": [
+      "redstoneplus:entity/flesh_press/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.flesh_press.ability"
+  },
+  "block.realm_gate.travel": {
+    "sounds": [
+      "redstoneplus:block/realm_gate/travel"
+    ],
+    "subtitle": "subtitles.redstoneplus.block.realm_gate.travel"
+  }
+}

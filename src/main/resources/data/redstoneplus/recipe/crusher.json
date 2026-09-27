@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "SSS",
+    "SPS",
+    "SRS"
+  ],
+  "key": {
+    "S": {
+      "item": "redstoneplus:karst_bricks"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:crusher",
+    "count": 1
+  }
+}

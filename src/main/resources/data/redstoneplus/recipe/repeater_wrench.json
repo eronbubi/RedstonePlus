@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " I ",
+    " RI",
+    "C  "
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:repeater"
+    },
+    "C": {
+      "item": "redstoneplus:realm_cog"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:repeater_wrench",
+    "count": 1
+  }
+}

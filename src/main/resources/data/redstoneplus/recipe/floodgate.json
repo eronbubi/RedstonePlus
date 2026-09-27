@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "KKK",
+    "KWK",
+    "KRK"
+  ],
+  "key": {
+    "K": {
+      "item": "minecraft:copper_ingot"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:floodgate",
+    "count": 1
+  }
+}

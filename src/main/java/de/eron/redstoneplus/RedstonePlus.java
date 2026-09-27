@@ -16,6 +16,7 @@ public final class RedstonePlus {
     public RedstonePlus(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
         ModRegistry.register(modBus);
+        de.eron.redstoneplus.realm.Realm.init(modBus);
         modBus.addListener((net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent event) ->
                 event.enqueueWork(de.eron.redstoneplus.world.ModBiomes::setup));
         FastArrows.init();

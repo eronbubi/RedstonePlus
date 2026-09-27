@@ -1,0 +1,591 @@
+"""
+The creatures of the Redstone Realm: body parts, cubes, materials and animation clips.
+
+Coordinates are Minecraft model pixels: y grows DOWNWARD, the ground is y = 24, the creature looks towards -z.
+Pivots and cube corners are written in absolute model space; the tools turn them into the relative values
+Minecraft and Blender need. Rotations and keyframes are in degrees around the Minecraft x / y / z axes and are
+added on top of the rest pose. Clips: idle (loops on age), walk (follows the legs), attack (melee swing),
+ability (the creature's special move, started from the server).
+
+This file seeds tools/blender/<name>.blend (see tools/blender/build_mobs.py). Once a .blend exists it is the
+source of the model and its animations: edit it in Blender and run tools/blender/export_mobs.py.
+"""
+import math
+
+MOBS = {}
+
+
+# ------------------------------------------------------------------------------------------------ helpers
+def cube(frm, size, mat, faces=None, inflate=0.0, mirror=False):
+    return {'from': list(frm), 'size': list(size), 'mat': mat, 'faces': faces or {}, 'inflate': inflate, 'mirror': mirror}
+
+
+def part(name, pivot, cubes=(), parent='root', rot=(0, 0, 0)):
+    return {'name': name, 'parent': parent, 'pivot': list(pivot), 'rot': list(rot), 'cubes': list(cubes)}
+
+
+def wave(length, amp, axis='x', phase=0.0, cycles=1, steps=8, offset=0.0):
+    """Keyframes of a sine wave: [[t, x, y, z], ...]."""
+    keys = []
+    n = steps * cycles
+    for i in range(n + 1):
+        t = length * i / n
+        v = offset + amp * math.sin(2 * math.pi * cycles * i / n + phase)
+        vec = [0.0, 0.0, 0.0]
+        vec['xyz'.index(axis)] = round(v, 2)
+        keys.append([round(t, 3)] + vec)
+    return keys
+
+
+def waves(length, amps, phases=(0, 0, 0), cycles=1, steps=8):
+    """Sine on several axes at once. amps = (ax, ay, az)."""
+    keys = []
+    n = steps * cycles
+    for i in range(n + 1):
+        t = length * i / n
+        a = 2 * math.pi * cycles * i / n
+        keys.append([round(t, 3)] + [round(amps[k] * math.sin(a + phases[k]), 2) for k in range(3)])
+    return keys
+
+
+def spin(length, degrees, axis='x', steps=8):
+    return [[round(length * i / steps, 3)] + [round(degrees * i / steps, 2) if 'xyz'[k] == axis else 0.0 for k in range(3)]
+            for i in range(steps + 1)]
+
+
+def keys(*frames, axis='x'):
+    """keys((t, v), ...) on one axis."""
+    out = []
+    for t, v in frames:
+        vec = [0.0, 0.0, 0.0]
+        vec['xyz'.index(axis)] = v
+        out.append([t] + vec)
+    return out
+
+
+def keys3(*frames):
+    return [[t, x, y, z] for t, (x, y, z) in frames]
+
+
+def clip(length, loop, bones):
+    return {'length': length, 'loop': loop, 'bones': bones}
+
+
+def rot(k):
+    return {'rotation': k}
+
+
+def pos(k):
+    return {'position': k}
+
+
+def scl(k):
+    return {'scale': k}
+
+
+def merge(*tracks):
+    out = {}
+    for t in tracks:
+        out.update(t)
+    return out
+
+
+def mob(name, parts, anims, look=('head',), shadow=0.6, scale=1.0, texture_width=128):
+    MOBS[name] = {'parts': parts, 'animations': anims, 'look': list(look), 'shadow': shadow, 'scale': scale,
+                  'texture_width': texture_width}
+
+
+def spider_legs(prefix_parent, y, zs, length, mat, x0=4):
+    """Eight splayed legs; returns parts. Right legs point -x, left legs +x."""
+    spread = [-32, -10, 10, 32]
+    parts = []
+    for i, z in enumerate(zs):
+        parts.append(part(f'leg_r{i}', (-x0, y, z), [cube((-x0 - length, y - 1, z - 1), (length, 2, 2), mat)],
+                          parent=prefix_parent, rot=(0, spread[i], -40)))
+        parts.append(part(f'leg_l{i}', (x0, y, z), [cube((x0, y - 1, z - 1), (length, 2, 2), mat)],
+                          parent=prefix_parent, rot=(0, -spread[i], 40)))
+    return parts
+
+
+def spider_walk(length, amp_y=22, amp_z=14):
+    bones = {}
+    for i in range(4):
+        ph = (0 if i % 2 == 0 else math.pi)
+        bones[f'leg_r{i}'] = rot(waves(length, (0, amp_y, amp_z), (0, ph, ph + math.pi / 2)))
+        bones[f'leg_l{i}'] = rot(waves(length, (0, -amp_y, -amp_z), (0, ph + math.pi, ph + math.pi * 1.5)))
+    return bones
+
+
+# ================================================================================================ constructs
+# ---- Karst Colossus: walking stone engine with piston limbs
+mob('karst_colossus', [
+    part('body', (0, 4, 0), [
+        cube((-11, -18, -7), (22, 22, 14), 'karst', {'front': 'lichen'}),
+        cube((-7, -14, -9), (14, 10, 2), 'rust', {'front': 'core'}),
+        cube((-9, -16, 7), (6, 14, 5), 'iron', {'back': 'rivets'}),
+        cube((3, -16, 7), (6, 14, 5), 'iron', {'back': 'rivets'}),
+        cube((-6, -21, 3), (12, 3, 3), 'cable'),
+    ]),
+    part('head', (0, -18, -2), [
+        cube((-5, -28, -8), (10, 10, 10), 'dark_stone', {'front': 'eyes3'}),
+        cube((-6, -29, -9), (12, 3, 4), 'karst'),
+    ], parent='body'),
+    part('arm_r', (-13, -14, 0), [
+        cube((-17, -17, -5), (8, 8, 10), 'rust', {'top': 'rivets'}),
+        cube((-16, -10, -4), (6, 14, 8), 'karst'),
+        cube((-15, 4, -2), (4, 6, 4), 'iron'),
+        cube((-17, 9, -5), (8, 8, 10), 'dark_stone', {'front': 'rivets'}),
+    ], parent='body'),
+    part('arm_l', (13, -14, 0), [
+        cube((9, -17, -5), (8, 8, 10), 'rust', {'top': 'rivets'}),
+        cube((10, -10, -4), (6, 14, 8), 'karst'),
+        cube((11, 4, -2), (4, 6, 4), 'iron'),
+        cube((9, 9, -5), (8, 8, 10), 'dark_stone', {'front': 'rivets'}),
+    ], parent='body'),
+    part('leg_r', (-6, 4, 0), [
+        cube((-10, 4, -4), (8, 10, 8), 'iron'),
+        cube((-9, 14, -3), (6, 6, 6), 'dark_iron'),
+        cube((-11, 20, -6), (10, 4, 11), 'karst'),
+    ]),
+    part('leg_l', (6, 4, 0), [
+        cube((2, 4, -4), (8, 10, 8), 'iron'),
+        cube((3, 14, -3), (6, 6, 6), 'dark_iron'),
+        cube((1, 20, -6), (10, 4, 11), 'karst'),
+    ]),
+    part('cables', (0, -16, 11), [cube((-4, -16, 11), (2, 16, 2), 'cable'), cube((2, -14, 11), (2, 14, 2), 'cable')], parent='body'),
+], {
+    'walk': clip(1.2, True, merge(
+        {'leg_r': rot(wave(1.2, 28)), 'leg_l': rot(wave(1.2, 28, phase=math.pi)),
+         'arm_r': rot(wave(1.2, 18, phase=math.pi)), 'arm_l': rot(wave(1.2, 18)),
+         'body': merge(rot(wave(1.2, 3, 'z')), pos(wave(1.2, 1.0, 'y', cycles=2, offset=0.5))),
+         'cables': rot(wave(1.2, 10, phase=1.0))})),
+    'idle': clip(3.0, True, {
+        'body': rot(wave(3.0, 1.5)), 'head': rot(wave(3.0, 8, 'y')), 'cables': rot(waves(3.0, (6, 0, 5), (0, 0, 1))),
+        'arm_r': rot(wave(3.0, 3, 'z')), 'arm_l': rot(wave(3.0, -3, 'z'))}),
+    'attack': clip(0.6, False, {
+        'arm_r': rot(keys((0, 0), (0.2, -110), (0.35, -20), (0.6, 0))),
+        'body': rot(keys((0, 0), (0.2, -15), (0.6, 0), axis='y'))}),
+    'ability': clip(1.0, False, {
+        'arm_r': rot(keys((0, 0), (0.35, -165), (0.55, -15), (1.0, 0))),
+        'arm_l': rot(keys((0, 0), (0.35, -165), (0.55, -15), (1.0, 0))),
+        'body': merge(rot(keys((0, 0), (0.35, -12), (0.55, 16), (1.0, 0))), pos(keys3((0, (0, 0, 0)), (0.35, (0, -2, 0)), (0.55, (0, 3, 0)), (1.0, (0, 0, 0))))),
+        'head': rot(keys((0, 0), (0.35, -15), (0.55, 20), (1.0, 0)))}),
+}, shadow=1.2)
+
+# ---- Switchback Crawler: rail centipede
+_crawler = [
+    part('body', (0, 15, -8)),
+    part('head', (0, 15, -8), [
+        cube((-6, 9, -18), (12, 10, 10), 'rust', {'front': 'eyes4'}),
+        cube((-2, 8, -16), (4, 1, 4), 'ember'),
+    ], parent='body'),
+    part('mandible_l', (3, 17, -18), [cube((2, 16, -23), (3, 2, 5), 'iron')], parent='head'),
+    part('mandible_r', (-3, 17, -18), [cube((-5, 16, -23), (3, 2, 5), 'iron')], parent='head'),
+]
+_prev = 'body'
+_segs = [(-8, 12, 10, 9), (1, 12, 10, 9), (10, 10, 9, 9), (19, 8, 8, 8)]
+for i, (z, w, h, d) in enumerate(_segs):
+    name = f'seg{i}'
+    _crawler.append(part(name, (0, 15, z), [
+        cube((-w // 2, 19 - h, z), (w, h, d), 'rust', {'top': 'rivets'}),
+        cube((-w // 2 + 1, 18 - h, z + 1), (w - 2, 1, d - 2), 'copper_ox'),
+    ], parent=_prev))
+    half = w // 2
+    _crawler.append(part(f'{name}_leg_l', (half, 17, z + d // 2), [
+        cube((half, 16, z + d // 2 - 1), (5, 2, 2), 'iron'), cube((half + 4, 16, z + d // 2 - 1), (2, 8, 2), 'dark_iron')], parent=name))
+    _crawler.append(part(f'{name}_leg_r', (-half, 17, z + d // 2), [
+        cube((-half - 5, 16, z + d // 2 - 1), (5, 2, 2), 'iron'), cube((-half - 6, 16, z + d // 2 - 1), (2, 8, 2), 'dark_iron')], parent=name))
+    _prev = name
+_crawler.append(part('tail', (0, 15, 27), [cube((-2, 12, 27), (4, 4, 6), 'rust'), cube((-1, 13, 33), (2, 2, 3), 'iron')], parent=_prev))
+_walk = {}
+for i in range(4):
+    ph = i * math.pi / 2
+    _walk[f'seg{i}_leg_l'] = rot(waves(0.8, (0, 25, 12), (0, ph, ph + 1.5)))
+    _walk[f'seg{i}_leg_r'] = rot(waves(0.8, (0, 25, -12), (0, ph + math.pi, ph + math.pi + 1.5)))
+    _walk[f'seg{i}'] = rot(wave(0.8, 6, 'y', phase=i * 0.9))
+_walk['head'] = rot(wave(0.8, 5, 'y', phase=-0.9))
+_walk['tail'] = rot(wave(0.8, 12, 'y', phase=4 * 0.9))
+_dash = {f'seg{i}_leg_{s}': rot(waves(0.8, (0, 35, 15), (0, i + (0 if s == 'l' else math.pi), i), cycles=4)) for i in range(4) for s in 'lr'}
+_dash['head'] = rot(keys((0, 0), (0.1, -12), (0.7, -12), (0.8, 0)))
+_dash['body'] = pos(keys3((0, (0, 0, 0)), (0.1, (0, 1.5, 0)), (0.7, (0, 1.5, 0)), (0.8, (0, 0, 0))))
+_dash['mandible_l'] = rot(keys((0, 0), (0.1, -30), (0.7, -30), (0.8, 0), axis='y'))
+_dash['mandible_r'] = rot(keys((0, 0), (0.1, 30), (0.7, 30), (0.8, 0), axis='y'))
+mob('switchback_crawler', _crawler, {
+    'walk': clip(0.8, True, _walk),
+    'idle': clip(2.0, True, {
+        'mandible_l': rot(wave(2.0, -12, 'y', cycles=4)), 'mandible_r': rot(wave(2.0, 12, 'y', cycles=4)),
+        'seg0': rot(wave(2.0, 3, 'y')), 'seg2': rot(wave(2.0, -3, 'y')), 'tail': rot(wave(2.0, 10, 'y', phase=1))}),
+    'attack': clip(0.5, False, {
+        'mandible_l': rot(keys((0, 0), (0.15, -40), (0.3, 12), (0.5, 0), axis='y')),
+        'mandible_r': rot(keys((0, 0), (0.15, 40), (0.3, -12), (0.5, 0), axis='y')),
+        'head': rot(keys((0, 0), (0.15, -18), (0.3, 10), (0.5, 0)))}),
+    'ability': clip(0.8, False, _dash),
+}, look=('head',), shadow=0.8)
+
+# ---- Bell Stalker: blind stilt-walker with a bell for a head
+_tendrils = []
+for i, (x, z) in enumerate([(-6, -20), (5, -20), (-6, -9), (5, -9), (0, -21)]):
+    _tendrils.append(part(f'tendril{i}', (x + 0.5, -27, z + 0.5), [
+        cube((x, -27, z), (1, 12, 1), 'cable'), cube((x - 0.5, -15, z - 0.5), (2, 2, 2), 'teal_glow')], parent='bell'))
+mob('bell_stalker', [
+    part('hip', (0, -22, 0), [cube((-5, -26, -5), (10, 6, 10), 'brass', {'front': 'rivets'}), cube((-6, -24, -1), (12, 2, 2), 'iron')]),
+    part('leg_l', (4, -22, 0), [cube((3, -22, -1), (3, 24, 3), 'wood'), cube((2.5, 0, -1.5), (4, 3, 4), 'brass')], parent='hip', rot=(0, 0, -6)),
+    part('leg_l_low', (4.5, 2, 0.5), [cube((3, 2, -1), (3, 20, 3), 'wood'), cube((2, 22, -2), (5, 2, 5), 'brass')], parent='leg_l', rot=(0, 0, 6)),
+    part('leg_r', (-4, -22, 0), [cube((-6, -22, -1), (3, 24, 3), 'wood'), cube((-6.5, 0, -1.5), (4, 3, 4), 'brass')], parent='hip', rot=(0, 0, 6)),
+    part('leg_r_low', (-4.5, 2, 0.5), [cube((-6, 2, -1), (3, 20, 3), 'wood'), cube((-7, 22, -2), (5, 2, 5), 'brass')], parent='leg_r', rot=(0, 0, -6)),
+    part('leg_b', (0, -22, 4), [cube((-1, -22, 3), (3, 24, 3), 'wood'), cube((-1.5, 0, 2.5), (4, 3, 4), 'brass')], parent='hip', rot=(-6, 0, 0)),
+    part('leg_b_low', (0.5, 2, 4.5), [cube((-1, 2, 3), (3, 20, 3), 'wood'), cube((-2, 22, 2), (5, 2, 5), 'brass')], parent='leg_b', rot=(6, 0, 0)),
+    part('neck', (0, -26, 0), [
+        cube((-1.5, -44, -1.5), (3, 18, 3), 'brass'),
+        cube((-2, -34, -2), (4, 3, 4), 'iron'),
+        cube((-1.5, -46, -14), (3, 3, 15), 'brass', {'top': 'rivets'}),
+        cube((-2, -47, -1.5), (4, 4, 4), 'iron'),
+    ], parent='hip'),
+    part('bell', (0, -43, -12), [
+        cube((-3, -43, -15), (6, 3, 6), 'iron'),
+        cube((-6, -40, -18), (12, 11, 12), 'bell', {'front': 'eye1', 'left': 'rivets', 'right': 'rivets'}),
+        cube((-8, -29, -20), (16, 2, 16), 'bell'),
+        cube((-2, -28, -14), (4, 3, 4), 'teal_glow'),
+    ], parent='neck'),
+] + _tendrils, {
+    'walk': clip(1.6, True, merge(
+        {'leg_l': rot(wave(1.6, 18)), 'leg_r': rot(wave(1.6, 18, phase=2.1)), 'leg_b': rot(wave(1.6, 18, phase=4.2)),
+         'leg_l_low': rot(wave(1.6, 14, phase=1.5, offset=10)), 'leg_r_low': rot(wave(1.6, 14, phase=3.6, offset=10)),
+         'leg_b_low': rot(wave(1.6, 14, phase=5.7, offset=10)),
+         'hip': pos(wave(1.6, 1.2, 'y', cycles=3)), 'neck': rot(wave(1.6, 4)), 'bell': rot(wave(1.6, 12, 'z', phase=1.0))},
+        {f'tendril{i}': rot(waves(1.6, (16, 0, 10), (i, 0, i + 1))) for i in range(5)})),
+    'idle': clip(3.0, True, merge(
+        {'bell': rot(wave(3.0, 10, 'z')), 'neck': rot(wave(3.0, 14, 'y'))},
+        {f'tendril{i}': rot(waves(3.0, (12, 0, 8), (i * 1.3, 0, i))) for i in range(5)})),
+    'attack': clip(0.7, False, {
+        'neck': rot(keys((0, 0), (0.25, 25), (0.45, -10), (0.7, 0))),
+        'bell': rot(keys((0, 0), (0.25, 30), (0.45, -15), (0.7, 0)))}),
+    'ability': clip(1.2, False, merge(
+        {'bell': merge(rot(keys((0, 0), (0.15, 35), (0.35, -35), (0.55, 25), (0.75, -15), (1.0, 5), (1.2, 0), axis='z')),
+                       scl(keys3((0, (1, 1, 1)), (0.15, (1.2, 1.2, 1.2)), (0.4, (1, 1, 1)), (1.2, (1, 1, 1))))),
+         'neck': rot(keys((0, 0), (0.15, -10), (0.6, 5), (1.2, 0)))},
+        {f'tendril{i}': rot(keys((0, 0), (0.15, -50 if i % 2 == 0 else 50), (0.6, 10), (1.2, 0))) for i in range(5)})),
+}, look=('neck',), shadow=0.7, scale=0.9)
+
+# ---- Sluice Chainjaw: chained copper gator
+mob('sluice_chainjaw', [
+    part('body', (0, 14, 0), [
+        cube((-7, 10, -10), (14, 9, 22), 'copper_ox', {'top': 'rivets'}),
+        cube((-2, 8, -8), (4, 2, 18), 'copper'),
+        cube((-7, 9, -4), (14, 11, 2), 'chain', inflate=0.3),
+        cube((-7, 9, 5), (14, 11, 2), 'chain', inflate=0.3),
+    ]),
+    part('head', (0, 13, -10), [
+        cube((-5, 9, -24), (10, 5, 14), 'copper_ox', {'top': 'eyes2', 'front': 'teeth'}),
+        cube((-4, 8, -23), (8, 1, 5), 'iron'),
+    ], parent='body'),
+    part('jaw', (0, 14, -11), [cube((-4.5, 14, -23), (9, 3, 12), 'copper', {'top': 'teeth'})], parent='head'),
+    part('tail1', (0, 13, 12), [cube((-4, 10, 12), (8, 6, 10), 'copper_ox'), cube((-4, 9.5, 15), (8, 7, 2), 'chain', inflate=0.2)], parent='body'),
+    part('tail2', (0, 13, 22), [cube((-2.5, 11, 22), (5, 4, 10), 'copper_ox'), cube((-0.5, 8, 24), (1, 3, 7), 'iron')], parent='tail1'),
+    part('leg_fl', (-6, 17, -7), [cube((-9, 16, -9), (4, 7, 4), 'copper_ox'), cube((-10, 22, -11), (5, 2, 5), 'iron')], parent='body'),
+    part('leg_fr', (6, 17, -7), [cube((5, 16, -9), (4, 7, 4), 'copper_ox'), cube((5, 22, -11), (5, 2, 5), 'iron')], parent='body'),
+    part('leg_bl', (-6, 17, 7), [cube((-9, 16, 5), (4, 7, 4), 'copper_ox'), cube((-10, 22, 3), (5, 2, 5), 'iron')], parent='body'),
+    part('leg_br', (6, 17, 7), [cube((5, 16, 5), (4, 7, 4), 'copper_ox'), cube((5, 22, 3), (5, 2, 5), 'iron')], parent='body'),
+], {
+    'walk': clip(1.0, True, {
+        'leg_fl': rot(wave(1.0, 30)), 'leg_br': rot(wave(1.0, 30)), 'leg_fr': rot(wave(1.0, 30, phase=math.pi)),
+        'leg_bl': rot(wave(1.0, 30, phase=math.pi)), 'body': rot(wave(1.0, 4, 'y')),
+        'tail1': rot(wave(1.0, 15, 'y', phase=1.5)), 'tail2': rot(wave(1.0, 20, 'y', phase=3.0)), 'head': rot(wave(1.0, 5, 'y', phase=-1))}),
+    'idle': clip(3.0, True, {
+        'jaw': rot(keys((0, 0), (1.2, 0), (1.5, 14), (1.8, 0), (3.0, 0))),
+        'tail1': rot(wave(3.0, 10, 'y')), 'tail2': rot(wave(3.0, 14, 'y', phase=1)), 'body': pos(wave(3.0, 0.4, 'y'))}),
+    'attack': clip(0.5, False, {
+        'jaw': rot(keys((0, 0), (0.15, 45), (0.3, 0), (0.5, 0))),
+        'head': rot(keys((0, 0), (0.15, -20), (0.3, 8), (0.5, 0)))}),
+    'ability': clip(0.8, False, {
+        'jaw': rot(keys((0, 0), (0.1, 50), (0.25, 0), (0.8, 0))),
+        'head': rot(keys((0, 0), (0.2, -25), (0.4, 25), (0.6, -10), (0.8, 0), axis='y')),
+        'body': rot(keys((0, 0), (0.2, 8), (0.4, -8), (0.8, 0), axis='y')),
+        'tail1': rot(keys((0, 0), (0.2, -20), (0.4, 20), (0.8, 0), axis='y'))}),
+}, shadow=0.9)
+
+# ---- Kiln Brute: walking furnace
+mob('kiln_brute', [
+    part('body', (0, 6, 0), [
+        cube((-11, -20, -8), (22, 26, 16), 'furnace', {'front': 'grill'}),
+        cube((-7, -6, -9), (14, 8, 1), 'dark_iron', {'front': 'grill_small'}),
+        cube((-11, -13, -8), (22, 2, 16), 'chain', inflate=0.4),
+    ]),
+    part('chimney', (4, -20, 3), [cube((2, -28, 1), (5, 8, 5), 'dark_iron', {'top': 'ember_top'})], parent='body'),
+    part('arm_r', (-13, -14, 0), [
+        cube((-19, -18, -6), (8, 8, 12), 'rust', {'top': 'rivets'}),
+        cube((-18, -10, -5), (7, 18, 10), 'furnace', {'front': 'grill_small'}),
+        cube((-19, 8, -6), (9, 7, 12), 'dark_iron', {'front': 'rivets'}),
+    ], parent='body'),
+    part('arm_l', (13, -14, 0), [
+        cube((11, -18, -6), (8, 8, 12), 'rust', {'top': 'rivets'}),
+        cube((11, -10, -5), (7, 18, 10), 'furnace', {'front': 'grill_small'}),
+        cube((10, 8, -6), (9, 7, 12), 'dark_iron', {'front': 'rivets'}),
+    ], parent='body'),
+    part('leg_r', (-6, 6, 0), [cube((-10, 6, -5), (8, 14, 10), 'furnace'), cube((-11, 20, -6), (10, 4, 12), 'dark_iron')]),
+    part('leg_l', (6, 6, 0), [cube((2, 6, -5), (8, 14, 10), 'furnace'), cube((1, 20, -6), (10, 4, 12), 'dark_iron')]),
+], {
+    'walk': clip(1.4, True, {
+        'leg_r': rot(wave(1.4, 25)), 'leg_l': rot(wave(1.4, 25, phase=math.pi)),
+        'arm_r': rot(wave(1.4, 20, phase=math.pi)), 'arm_l': rot(wave(1.4, 20)),
+        'body': merge(rot(wave(1.4, 4, 'z')), pos(wave(1.4, 1.0, 'y', cycles=2, offset=0.5)))}),
+    'idle': clip(3.0, True, {
+        'body': rot(wave(3.0, 2)), 'chimney': rot(wave(3.0, 3, 'z')),
+        'arm_r': rot(wave(3.0, 3, 'z')), 'arm_l': rot(wave(3.0, -3, 'z'))}),
+    'attack': clip(0.7, False, {
+        'arm_r': rot(keys((0, 0), (0.25, -100), (0.4, 10), (0.7, 0))),
+        'body': rot(keys((0, 0), (0.25, -12), (0.7, 0), axis='y'))}),
+    'ability': clip(1.0, False, {
+        'body': rot(keys((0, 0), (0.2, -12), (0.5, -12), (0.7, 6), (1.0, 0))),
+        'arm_r': rot(keys((0, 0), (0.2, 30), (0.7, 30), (1.0, 0), axis='z')),
+        'arm_l': rot(keys((0, 0), (0.2, -30), (0.7, -30), (1.0, 0), axis='z')),
+        'chimney': scl(keys3((0, (1, 1, 1)), (0.3, (1.2, 1.4, 1.2)), (0.5, (0.9, 0.8, 0.9)), (1.0, (1, 1, 1))))}),
+}, shadow=1.1)
+
+# ---- Spool Weaver: spider with a wire spool on its back
+mob('spool_weaver', [
+    part('body', (0, 15, 0), [cube((-4, 11, -4), (8, 7, 8), 'rust', {'top': 'rivets'})]),
+    part('head', (0, 15, -4), [cube((-4, 10, -12), (8, 7, 8), 'dark_iron', {'front': 'eyes6'})], parent='body'),
+    part('spool', (0, 12, 6), [cube((-7, 5, 2), (1, 10, 10), 'copper_ox'), cube((6, 5, 2), (1, 10, 10), 'copper_ox')], parent='body'),
+    part('drum', (0, 10, 7), [cube((-6, 6, 3), (12, 8, 8), 'wire')], parent='spool'),
+] + spider_legs('body', 15, (-3, -1, 1, 3), 15, 'iron'), {
+    'walk': clip(0.6, True, merge(spider_walk(0.6), {'drum': rot(spin(0.6, 180)), 'body': pos(wave(0.6, 0.5, 'y', cycles=2))})),
+    'idle': clip(4.0, True, {'drum': rot(spin(4.0, 360)), 'head': rot(wave(4.0, 6, 'y')), 'leg_r0': rot(wave(4.0, 6, 'z', cycles=2)),
+                             'leg_l0': rot(wave(4.0, -6, 'z', cycles=2))}),
+    'attack': clip(0.5, False, {'head': rot(keys((0, 0), (0.15, -20), (0.3, 10), (0.5, 0))),
+                                'leg_r0': rot(keys((0, 0), (0.15, 30), (0.5, 0), axis='z')),
+                                'leg_l0': rot(keys((0, 0), (0.15, -30), (0.5, 0), axis='z'))}),
+    'ability': clip(0.8, False, {
+        'body': rot(keys((0, 0), (0.2, -25), (0.5, -25), (0.8, 0))),
+        'drum': rot(spin(0.8, 720)),
+        'leg_r0': rot(keys((0, 0), (0.2, 45), (0.5, 45), (0.8, 0), axis='z')),
+        'leg_l0': rot(keys((0, 0), (0.2, -45), (0.5, -45), (0.8, 0), axis='z'))}),
+}, shadow=0.9)
+
+# ================================================================================================ machine-bound
+# ---- The Leaking Cell (Uranium Zombie)
+mob('leaking_cell', [
+    part('body', (0, 12, 0), [
+        cube((-6, -4, -4), (12, 16, 8), 'zombie', {'front': 'veins'}),
+        cube((-5, -2, -7), (10, 11, 3), 'iron', {'front': 'cage_glow'}),
+        cube((-7, -6, 3), (14, 14, 4), 'rust', {'back': 'bars'}),
+        cube((-6, -8, 2), (2, 2, 2), 'redstone'), cube((4, -8, 2), (2, 2, 2), 'redstone'),
+        cube((-3, 9, -6), (1, 4, 1), 'uranium'), cube((2, 9, -6), (1, 3, 1), 'uranium'),
+    ]),
+    part('head', (0, -4, -2), [
+        cube((-4, -12, -7), (8, 8, 8), 'zombie', {'front': 'face_zombie'}),
+        cube((-4, -12, -7), (8, 8, 8), 'cage', inflate=0.6),
+    ], parent='body'),
+    part('arm_r', (-8, -2, 0), [cube((-11, -3, -3), (5, 16, 6), 'zombie'), cube((-11, 5, -3), (5, 4, 6), 'rust', inflate=0.3)],
+         parent='body', rot=(-75, 0, 0)),
+    part('arm_l', (8, -2, 0), [cube((6, -3, -3), (5, 16, 6), 'zombie'), cube((6, 5, -3), (5, 4, 6), 'rust', inflate=0.3)],
+         parent='body', rot=(-75, 0, 0)),
+    part('leg_r', (-3, 12, 0), [cube((-6, 12, -3), (5, 12, 6), 'zombie'), cube((-6, 19, -3), (5, 2, 6), 'iron', inflate=0.3)]),
+    part('leg_l', (3, 12, 0), [cube((1, 12, -3), (5, 12, 6), 'zombie'), cube((1, 19, -3), (5, 2, 6), 'iron', inflate=0.3)]),
+], {
+    'walk': clip(1.2, True, {'leg_r': rot(wave(1.2, 30)), 'leg_l': rot(wave(1.2, 30, phase=math.pi)),
+                             'arm_r': rot(wave(1.2, 8)), 'arm_l': rot(wave(1.2, 8, phase=math.pi)),
+                             'body': rot(wave(1.2, 3, 'z'))}),
+    'idle': clip(2.5, True, {'body': rot(waves(2.5, (3, 0, 2), (0, 0, 1))), 'head': rot(wave(2.5, 8, 'z', phase=1.5))}),
+    'attack': clip(0.6, False, {'arm_r': rot(keys((0, 0), (0.2, -30), (0.4, 40), (0.6, 0))),
+                                'arm_l': rot(keys((0, 0), (0.25, -30), (0.45, 40), (0.6, 0)))}),
+    'ability': clip(0.8, False, {'body': merge(rot(keys((0, 0), (0.25, 25), (0.6, 25), (0.8, 0))),
+                                               scl(keys3((0, (1, 1, 1)), (0.25, (1.1, 0.95, 1.1)), (0.8, (1, 1, 1))))),
+                                 'head': rot(keys((0, 0), (0.25, 20), (0.8, 0)))}),
+}, shadow=0.6)
+
+# ---- Detonator Husk (Redstone Creeper)
+mob('detonator_husk', [
+    part('body', (0, 16, 0), [
+        cube((-5, -6, -4), (10, 22, 8), 'flesh', {'front': 'veins'}),
+        cube((-2, 3, -5), (4, 6, 1), 'redstone'),
+        cube((-5, 0, -4), (10, 2, 8), 'rust', inflate=0.3), cube((-5, 11, -4), (10, 2, 8), 'rust', inflate=0.3),
+        cube((5, -4, -1), (1, 18, 2), 'cable'),
+    ]),
+    part('head', (0, -6, 0), [
+        cube((-5, -16, -5), (10, 10, 10), 'flesh', {'front': 'face_creeper'}),
+        cube((-5, -16, -5), (10, 10, 10), 'cage', inflate=0.7),
+        cube((-6, -17, -6), (2, 2, 2), 'redstone'), cube((4, -17, -6), (2, 2, 2), 'redstone'),
+        cube((-6, -17, 4), (2, 2, 2), 'redstone'), cube((4, -17, 4), (2, 2, 2), 'redstone'),
+    ], parent='body'),
+    part('leg_fl', (-3, 16, -4), [cube((-6, 16, -8), (6, 8, 6), 'flesh'), cube((-6, 22, -8), (6, 2, 6), 'iron', inflate=0.3)], parent='body'),
+    part('leg_fr', (3, 16, -4), [cube((0, 16, -8), (6, 8, 6), 'flesh'), cube((0, 22, -8), (6, 2, 6), 'iron', inflate=0.3)], parent='body'),
+    part('leg_bl', (-3, 16, 4), [cube((-6, 16, 2), (6, 8, 6), 'flesh'), cube((-6, 22, 2), (6, 2, 6), 'iron', inflate=0.3)], parent='body'),
+    part('leg_br', (3, 16, 4), [cube((0, 16, 2), (6, 8, 6), 'flesh'), cube((0, 22, 2), (6, 2, 6), 'iron', inflate=0.3)], parent='body'),
+], {
+    'walk': clip(0.8, True, {'leg_fl': rot(wave(0.8, 25)), 'leg_br': rot(wave(0.8, 25)),
+                             'leg_fr': rot(wave(0.8, 25, phase=math.pi)), 'leg_bl': rot(wave(0.8, 25, phase=math.pi)),
+                             'body': rot(wave(0.8, 3, 'z', cycles=2))}),
+    'idle': clip(3.0, True, {'head': rot(wave(3.0, 6, 'y')), 'body': rot(wave(3.0, 1.5))}),
+    'ability': clip(1.0, False, {
+        'body': merge(rot(wave(1.0, 4, 'z', cycles=5)), scl(keys3((0, (1, 1, 1)), (1.0, (1.05, 1.0, 1.05))))),
+        'head': merge(rot(wave(1.0, 6, 'x', cycles=6)), pos(keys3((0, (0, 0, 0)), (1.0, (0, -2, 0)))))}),
+}, shadow=0.5, scale=0.8)
+
+# ---- Tripwire Brood (Crystal Spider)
+mob('tripwire_brood', [
+    part('body', (0, 15, 0), [cube((-4, 11, -3), (8, 7, 7), 'iron', {'top': 'rivets'})]),
+    part('head', (0, 15, -3), [cube((-4, 10, -10), (8, 8, 7), 'dark_iron', {'front': 'eyes6'})], parent='body'),
+    part('fang_l', (2, 17, -10), [cube((1, 17, -12), (2, 4, 2), 'bone')], parent='head'),
+    part('fang_r', (-2, 17, -10), [cube((-3, 17, -12), (2, 4, 2), 'bone')], parent='head'),
+    part('strand', (0, 18, -12), [cube((-0.5, 18, -12.5), (1, 7, 1), 'wire')], parent='head'),
+    part('sack', (0, 13, 4), [
+        cube((-8, 4, 4), (16, 12, 14), 'egg', {'top': 'bumps', 'back': 'bumps'}),
+        cube((-2, 1, 8), (3, 4, 3), 'crystal'), cube((3, 2, 11), (2, 3, 2), 'crystal'), cube((-5, 2, 13), (2, 3, 2), 'crystal'),
+        cube((-8, 4, 4), (16, 12, 14), 'cage', inflate=0.6),
+    ], parent='body'),
+] + spider_legs('body', 15, (-2, 0, 2, 4), 17, 'rust'), {
+    'walk': clip(0.6, True, merge(spider_walk(0.6), {'sack': rot(wave(0.6, 3, 'x', cycles=2))})),
+    'idle': clip(3.0, True, {'sack': scl(keys3((0, (1, 1, 1)), (1.5, (1.05, 1.06, 1.04)), (3.0, (1, 1, 1)))),
+                             'fang_l': rot(wave(3.0, -8, 'y', cycles=3)), 'fang_r': rot(wave(3.0, 8, 'y', cycles=3)),
+                             'strand': rot(wave(3.0, 15, 'z'))}),
+    'attack': clip(0.5, False, {'head': rot(keys((0, 0), (0.15, -20), (0.3, 10), (0.5, 0))),
+                                'fang_l': rot(keys((0, 0), (0.15, -30), (0.3, 20), (0.5, 0), axis='y')),
+                                'fang_r': rot(keys((0, 0), (0.15, 30), (0.3, -20), (0.5, 0), axis='y'))}),
+    'ability': clip(0.6, False, {'body': rot(keys((0, 0), (0.15, -15), (0.3, 8), (0.6, 0))),
+                                 'fang_l': rot(keys((0, 0), (0.1, -35), (0.25, 25), (0.6, 0), axis='y')),
+                                 'fang_r': rot(keys((0, 0), (0.1, 35), (0.25, -25), (0.6, 0), axis='y'))}),
+}, shadow=0.9)
+
+# ---- Kilnbound (Magma Skeleton)
+mob('kilnbound', [
+    part('body', (0, 5, 0), [
+        cube((-4, -15, -2), (8, 12, 4), 'bone', {'front': 'ribs'}),
+        cube((-2, -12, -1), (4, 5, 2), 'ember'),
+        cube((-5, -17, -3), (10, 2, 6), 'rust'),
+        cube((-6, -17, -1), (1, 16, 2), 'wood'), cube((5, -17, -1), (1, 16, 2), 'wood'),
+        cube((-1, -3, -1), (2, 5, 2), 'bone'),
+        cube((-4, 2, -2), (8, 3, 4), 'bone'),
+    ]),
+    part('head', (0, -17, 0), [
+        cube((-4, -26, -4), (8, 9, 8), 'furnace', {'front': 'grill'}),
+        cube((-1, -28, -1), (2, 2, 2), 'ember'),
+    ], parent='body'),
+    part('arm_r', (-6, -15, 0), [cube((-7, -15, -1), (2, 20, 2), 'bone'), cube((-8, -9, -1), (1, 12, 2), 'wood')], parent='body',
+         rot=(-10, 0, 0)),
+    part('arm_l', (6, -15, 0), [cube((5, -15, -1), (2, 20, 2), 'bone'), cube((7, -9, -1), (1, 12, 2), 'wood')], parent='body',
+         rot=(-10, 0, 0)),
+    part('leg_r', (-2, 5, 0), [cube((-3, 5, -1), (2, 19, 2), 'bone'), cube((-4, 8, -1), (1, 16, 2), 'wood'), cube((-4, 22, -2), (4, 2, 4), 'rust')]),
+    part('leg_l', (2, 5, 0), [cube((1, 5, -1), (2, 19, 2), 'bone'), cube((3, 8, -1), (1, 16, 2), 'wood'), cube((0, 22, -2), (4, 2, 4), 'rust')]),
+], {
+    'walk': clip(1.1, True, {'leg_r': rot(wave(1.1, 30)), 'leg_l': rot(wave(1.1, 30, phase=math.pi)),
+                             'arm_r': rot(wave(1.1, 25, phase=math.pi)), 'arm_l': rot(wave(1.1, 25)),
+                             'body': pos(wave(1.1, 0.6, 'y', cycles=2))}),
+    'idle': clip(2.0, True, {'head': merge(rot(wave(2.0, 5, 'z')), pos(wave(2.0, 0.4, 'y', cycles=2))),
+                             'arm_r': rot(wave(2.0, 4, 'z')), 'arm_l': rot(wave(2.0, -4, 'z'))}),
+    'attack': clip(0.6, False, {'arm_r': rot(keys((0, 0), (0.2, -90), (0.4, 10), (0.6, 0)))}),
+    'ability': clip(0.7, False, {'arm_r': rot(keys((0, 0), (0.1, -90), (0.45, -90), (0.7, 0))),
+                                 'arm_l': rot(keys((0, 0), (0.1, -70), (0.45, -70), (0.7, 0))),
+                                 'head': rot(keys((0, 0), (0.1, -8), (0.45, -8), (0.7, 0)))}),
+}, shadow=0.5, scale=0.85)
+
+# ---- Living Capacitor (Ruby Slime)
+mob('living_capacitor', [
+    part('frame', (0, 24, 0), [
+        cube((-5, 15, -5), (1, 9, 1), 'iron'), cube((4, 15, -5), (1, 9, 1), 'iron'),
+        cube((-5, 15, 4), (1, 9, 1), 'iron'), cube((4, 15, 4), (1, 9, 1), 'iron'),
+        cube((-5, 15, -5), (10, 1, 1), 'rust'), cube((-5, 15, 4), (10, 1, 1), 'rust'),
+        cube((-5, 23, -5), (10, 1, 10), 'dark_iron'),
+    ]),
+    part('slime', (0, 23, 0), [cube((-4, 15, -4), (8, 8, 8), 'slime', {'front': 'bubbles', 'top': 'bubbles'}),
+                               cube((-2, 17, -2), (4, 4, 4), 'ruby_glow')], parent='frame'),
+    part('electrode_l', (-2, 15, 0), [cube((-3, 11, -1), (2, 4, 2), 'copper'), cube((-3, 10, -1), (2, 1, 2), 'redstone')], parent='frame'),
+    part('electrode_r', (2, 15, 0), [cube((1, 11, -1), (2, 4, 2), 'copper'), cube((1, 10, -1), (2, 1, 2), 'redstone')], parent='frame'),
+], {
+    'idle': clip(1.5, True, {'slime': scl(keys3((0, (1, 1, 1)), (0.75, (1.05, 0.92, 1.05)), (1.5, (1, 1, 1)))),
+                             'electrode_l': rot(wave(1.5, 6, 'z')), 'electrode_r': rot(wave(1.5, -6, 'z'))}),
+    'walk': clip(0.8, True, {'slime': scl(keys3((0, (1, 1, 1)), (0.2, (1.15, 0.8, 1.15)), (0.4, (0.9, 1.15, 0.9)), (0.8, (1, 1, 1)))),
+                             'frame': pos(keys3((0, (0, 0, 0)), (0.4, (0, -3, 0)), (0.8, (0, 0, 0))))}),
+    'ability': clip(0.5, False, {'electrode_l': scl(keys3((0, (1, 1, 1)), (0.1, (1.4, 1.4, 1.4)), (0.5, (1, 1, 1)))),
+                                 'electrode_r': scl(keys3((0, (1, 1, 1)), (0.1, (1.4, 1.4, 1.4)), (0.5, (1, 1, 1)))),
+                                 'slime': scl(keys3((0, (1, 1, 1)), (0.1, (1.15, 1.15, 1.15)), (0.3, (0.95, 0.95, 0.95)), (0.5, (1, 1, 1)))),
+                                 'frame': rot(wave(0.5, 3, 'z', cycles=4))}),
+}, look=(), shadow=0.25)
+
+# ---- Relay Strider (Void Enderman)
+mob('relay_strider', [
+    part('body', (0, -6, 0), [
+        cube((-4, -18, -2), (8, 12, 4), 'ender', {'front': 'circuit'}),
+        cube((-4, -16, -3), (3, 3, 1), 'iron'), cube((1, -13, -3), (3, 3, 1), 'iron'),
+    ]),
+    part('head', (0, -18, 0), [cube((-4, -26, -4), (8, 8, 8), 'dark_iron', {'front': 'eyes_purple'})], parent='body'),
+    part('arm_r', (-5, -16, 0), [cube((-6, -16, -1), (2, 30, 2), 'ender'), cube((-7, -14, 1), (1, 28, 1), 'cable'),
+                                 cube((-7, 14, -2), (3, 3, 3), 'purple_glow')], parent='body'),
+    part('arm_l', (5, -16, 0), [cube((4, -16, -1), (2, 30, 2), 'ender'), cube((6, -14, 1), (1, 28, 1), 'cable'),
+                                cube((4, 14, -2), (3, 3, 3), 'purple_glow')], parent='body'),
+    part('leg_r', (-2, -6, 0), [cube((-3, -6, -1), (2, 30, 2), 'ender'), cube((-4, 6, -2), (3, 4, 3), 'iron')]),
+    part('leg_l', (2, -6, 0), [cube((1, -6, -1), (2, 30, 2), 'ender'), cube((1, 6, -2), (3, 4, 3), 'iron')]),
+    part('cables', (0, -8, 2), [cube((-3, -8, 2), (1, 26, 1), 'cable'), cube((2, -8, 2), (1, 24, 1), 'cable')], parent='body'),
+], {
+    'walk': clip(1.4, True, {'leg_r': rot(wave(1.4, 25)), 'leg_l': rot(wave(1.4, 25, phase=math.pi)),
+                             'arm_r': rot(wave(1.4, 15, phase=math.pi)), 'arm_l': rot(wave(1.4, 15)),
+                             'cables': rot(wave(1.4, 10, phase=1))}),
+    'idle': clip(3.0, True, {'arm_r': rot(wave(3.0, 4, 'z')), 'arm_l': rot(wave(3.0, -4, 'z')),
+                             'cables': rot(waves(3.0, (8, 0, 5), (0, 0, 1))), 'head': rot(wave(3.0, 10, 'y'))}),
+    'attack': clip(0.6, False, {'arm_r': rot(keys((0, 0), (0.2, -80), (0.4, 0), (0.6, 0))),
+                                'arm_l': rot(keys((0, 0), (0.25, -80), (0.45, 0), (0.6, 0)))}),
+    'ability': clip(0.6, False, {'head': rot(keys((0, 0), (0.15, -20), (0.6, 0))),
+                                 'arm_r': rot(keys((0, 0), (0.15, 60), (0.45, 60), (0.6, 0), axis='z')),
+                                 'arm_l': rot(keys((0, 0), (0.15, -60), (0.45, -60), (0.6, 0), axis='z')),
+                                 'body': scl(keys3((0, (1, 1, 1)), (0.1, (1.1, 0.95, 1.1)), (0.2, (0.95, 1.05, 0.95)), (0.6, (1, 1, 1))))}),
+}, shadow=0.5, scale=0.95)
+
+# ---- Bellows Hog (Ember Pig)
+mob('bellows_hog', [
+    part('body', (0, 13, 0), [
+        cube((-6, 6, -9), (12, 10, 18), 'pig', {'top': 'veins'}),
+        cube((-6, 6, -4), (12, 10, 2), 'rust', inflate=0.3), cube((-6, 6, 4), (12, 10, 2), 'rust', inflate=0.3),
+    ]),
+    part('bellows_l', (6, 11, 0), [cube((6, 7, -6), (3, 8, 12), 'bellows')], parent='body'),
+    part('bellows_r', (-6, 11, 0), [cube((-9, 7, -6), (3, 8, 12), 'bellows')], parent='body'),
+    part('pipe', (2, 6, 6), [cube((1, 0, 5), (2, 6, 2), 'dark_iron', {'top': 'ember_top'})], parent='body'),
+    part('head', (0, 11, -9), [
+        cube((-5, 5, -17), (10, 9, 8), 'pig', {'front': 'face_pig'}),
+        cube((-3, 9, -19), (6, 4, 3), 'iron', {'front': 'grill_small'}),
+    ], parent='body'),
+    part('leg_fl', (-3, 16, -6), [cube((-5, 16, -8), (4, 8, 4), 'pig'), cube((-5, 21, -8), (4, 1, 4), 'iron', inflate=0.2)]),
+    part('leg_fr', (3, 16, -6), [cube((1, 16, -8), (4, 8, 4), 'pig'), cube((1, 21, -8), (4, 1, 4), 'iron', inflate=0.2)]),
+    part('leg_bl', (-3, 16, 6), [cube((-5, 16, 4), (4, 8, 4), 'pig'), cube((-5, 21, 4), (4, 1, 4), 'iron', inflate=0.2)]),
+    part('leg_br', (3, 16, 6), [cube((1, 16, 4), (4, 8, 4), 'pig'), cube((1, 21, 4), (4, 1, 4), 'iron', inflate=0.2)]),
+], {
+    'walk': clip(0.9, True, {'leg_fl': rot(wave(0.9, 30)), 'leg_br': rot(wave(0.9, 30)),
+                             'leg_fr': rot(wave(0.9, 30, phase=math.pi)), 'leg_bl': rot(wave(0.9, 30, phase=math.pi)),
+                             'head': rot(wave(0.9, 4, cycles=2))}),
+    'idle': clip(1.5, True, {'bellows_l': scl(keys3((0, (1, 1, 1)), (0.75, (0.55, 1, 1)), (1.5, (1, 1, 1)))),
+                             'bellows_r': scl(keys3((0, (1, 1, 1)), (0.75, (0.55, 1, 1)), (1.5, (1, 1, 1)))),
+                             'body': scl(keys3((0, (1, 1, 1)), (0.75, (1.02, 1.03, 1)), (1.5, (1, 1, 1))))}),
+    'ability': clip(0.6, False, {'bellows_l': scl(keys3((0, (1, 1, 1)), (0.15, (0.3, 1, 1)), (0.6, (1, 1, 1)))),
+                                 'bellows_r': scl(keys3((0, (1, 1, 1)), (0.15, (0.3, 1, 1)), (0.6, (1, 1, 1)))),
+                                 'head': rot(keys((0, 0), (0.15, -18), (0.6, 0))),
+                                 'pipe': scl(keys3((0, (1, 1, 1)), (0.15, (1.3, 1.5, 1.3)), (0.6, (1, 1, 1))))}),
+}, shadow=0.7)
+
+# ---- Flesh Press (Redstone Golem)
+mob('flesh_press', [
+    part('body', (0, -2, 0), [
+        cube((-10, -18, -7), (20, 16, 14), 'flesh', {'front': 'veins', 'back': 'veins'}),
+        cube((-11, -17, -8), (22, 3, 2), 'iron', {'front': 'rivets'}), cube((-11, -5, -8), (22, 3, 2), 'iron', {'front': 'rivets'}),
+        cube((-12, -19, -8), (2, 18, 2), 'rust'), cube((10, -19, -8), (2, 18, 2), 'rust'),
+        cube((-2, -14, -9), (4, 7, 1), 'redstone'),
+        cube((-6, -2, -5), (12, 6, 10), 'flesh'),
+    ]),
+    part('head', (0, -18, -3), [
+        cube((-4, -26, -7), (8, 8, 8), 'flesh', {'front': 'face_cage'}),
+        cube((-4, -26, -7), (8, 8, 8), 'cage', inflate=0.6),
+        cube((-5, -27, -8), (2, 2, 2), 'redstone'), cube((3, -27, -8), (2, 2, 2), 'redstone'),
+    ], parent='body'),
+    part('arm_r', (-12, -15, 0), [cube((-17, -16, -4), (6, 30, 8), 'flesh', {'front': 'veins'}),
+                                  cube((-18, -10, -5), (8, 4, 10), 'iron'), cube((-18, 4, -5), (8, 4, 10), 'iron')], parent='body'),
+    part('arm_l', (12, -15, 0), [cube((11, -16, -4), (6, 30, 8), 'flesh', {'front': 'veins'}),
+                                 cube((10, -10, -5), (8, 4, 10), 'iron'), cube((10, 4, -5), (8, 4, 10), 'iron')], parent='body'),
+    part('leg_r', (-5, 4, 0), [cube((-9, 4, -4), (8, 20, 8), 'flesh'), cube((-10, 14, -5), (10, 4, 10), 'iron')]),
+    part('leg_l', (5, 4, 0), [cube((1, 4, -4), (8, 20, 8), 'flesh'), cube((0, 14, -5), (10, 4, 10), 'iron')]),
+], {
+    'walk': clip(1.4, True, {'leg_r': rot(wave(1.4, 20)), 'leg_l': rot(wave(1.4, 20, phase=math.pi)),
+                             'arm_r': rot(wave(1.4, 15, phase=math.pi)), 'arm_l': rot(wave(1.4, 15))}),
+    'idle': clip(3.0, True, {'body': merge(rot(wave(3.0, 1.5)), scl(keys3((0, (1, 1, 1)), (1.5, (1.02, 1.02, 1.03)), (3.0, (1, 1, 1))))),
+                             'head': rot(wave(3.0, 6, 'y'))}),
+    'ability': clip(0.5, False, {'arm_r': rot(keys((0, 0), (0.15, -120), (0.3, -20), (0.5, 0))),
+                                 'arm_l': rot(keys((0, 0), (0.15, -120), (0.3, -20), (0.5, 0))),
+                                 'body': rot(keys((0, 0), (0.15, -8), (0.3, 6), (0.5, 0)))}),
+}, shadow=1.1, scale=0.93)

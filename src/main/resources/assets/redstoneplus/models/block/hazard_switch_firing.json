@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "side": "redstoneplus:block/hazard_switch_side",
+    "top": "minecraft:block/observer_top",
+    "front": "redstoneplus:block/hazard_switch_front_on"
+  }
+}

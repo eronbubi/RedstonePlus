@@ -84,7 +84,7 @@ public final class Machines {
             Direction facing = facing(state);
             Vec3 start = frontPoint(pos, facing, 0.6);
             Vec3 end = start.add(facing.getStepX() * 64.0, facing.getStepY() * 64.0, facing.getStepZ() * 64.0);
-            BlockHitResult hit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, (Entity) null));
+            BlockHitResult hit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
             Vec3 target = hit.getType() == HitResult.Type.MISS ? end : Vec3.atBottomCenterOf(hit.getBlockPos().above());
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
             if (bolt != null) {

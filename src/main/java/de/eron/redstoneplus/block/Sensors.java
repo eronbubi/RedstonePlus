@@ -202,7 +202,7 @@ public final class Sensors {
             Direction facing = state.getValue(FACING);
             Vec3 start = MachineBlock.frontPoint(pos, facing, 0.51);
             Vec3 end = start.add(facing.getStepX() * 32.0, facing.getStepY() * 32.0, facing.getStepZ() * 32.0);
-            BlockHitResult hit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, (Entity) null));
+            BlockHitResult hit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
             Vec3 stop = hit.getType() == HitResult.Type.MISS ? end : hit.getLocation();
             AABB beam = new AABB(start, stop).inflate(0.05);
             boolean blocked = !level.getEntities((Entity) null, beam,

@@ -148,6 +148,10 @@ public final class RealmFeatures {
 
         void set(int x, int y, int z, BlockState state) {
             BlockPos pos = this.at(x, y, z);
+            if (this.worldgen && (Math.abs((pos.getX() >> 4) - (this.origin.getX() >> 4)) > 1 || Math.abs((pos.getZ() >> 4) - (this.origin.getZ() >> 4)) > 1)) {
+                // a feature may only write into the chunks next to the one it starts in: long pieces are cut off there
+                return;
+            }
             BlockState rotated = state.rotate(this.rotation);
             this.level.setBlock(pos, rotated, this.worldgen ? Block.UPDATE_CLIENTS : Block.UPDATE_ALL);
             if (this.worldgen) {
@@ -280,7 +284,9 @@ public final class RealmFeatures {
             if (this.kind.flat && !flatEnough(level, origin, 6, 4)) {
                 return false;
             }
-            if (this.kind.flat && !level.getFluidState(origin.below()).isEmpty()) {
+            boolean waterside = this.kind == Kind.BOARDWALK || this.kind == Kind.AQUEDUCT || this.kind == Kind.STORM_SPIRE
+                    || this.kind == Kind.SLUICE_BRIDGE || this.kind == Kind.RESONANCE_GATEHOUSE;
+            if (!waterside && (!level.getFluidState(origin.below()).isEmpty() || !level.getFluidState(origin).isEmpty())) {
                 return false;
             }
             Build b = new Build(level, origin, rotation, random, true);

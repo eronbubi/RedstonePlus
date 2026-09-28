@@ -81,14 +81,13 @@
     [],
     [],
     [
+      "redstoneplus:mesas",
       "redstoneplus:hoodoo",
       "redstoneplus:scree"
     ],
     [],
     [
-      "redstoneplus:tower",
       "redstoneplus:ruin",
-      "redstoneplus:lamp_pylon",
       "redstoneplus:crusher_mill",
       "redstoneplus:beast_cage"
     ],

@@ -73,11 +73,7 @@
     [
       "redstoneplus:resonance_gatehouse"
     ],
-    [
-      "redstoneplus:tower",
-      "redstoneplus:ruin",
-      "redstoneplus:lamp_pylon"
-    ],
+    [],
     [],
     [
       "redstoneplus:ore_realm_redstone",

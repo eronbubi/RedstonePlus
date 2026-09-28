@@ -218,6 +218,10 @@ public final class Realm {
         for (RealmFeatures.Kind kind : RealmFeatures.Kind.values()) {
             FEATURES.register(kind.id(), () -> new RealmFeatures.Site(kind));
         }
+        // landforms: dunes, mesas, ponds, crevasses, lava channels, terraced pools
+        for (RealmTerrain.Shape shape : RealmTerrain.Shape.values()) {
+            FEATURES.register(shape.id(), () -> new RealmTerrain.Overlay(shape));
+        }
     }
 
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("redstone_realm", () -> CreativeModeTab.builder()

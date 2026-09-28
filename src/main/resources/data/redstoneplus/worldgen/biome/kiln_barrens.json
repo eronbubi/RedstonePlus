@@ -77,6 +77,7 @@
       "minecraft:lake_lava_surface"
     ],
     [
+      "redstoneplus:lava_channels",
       "redstoneplus:kiln_spire",
       "redstoneplus:sulfur_rock",
       "redstoneplus:scree"
@@ -84,8 +85,6 @@
     [],
     [
       "redstoneplus:kiln_bridge",
-      "redstoneplus:tower",
-      "redstoneplus:ruin",
       "redstoneplus:lamp_pylon"
     ],
     [],

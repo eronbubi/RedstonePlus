@@ -813,12 +813,16 @@ ore('resonant_crystal_ore', 'resonant_crystal', 9, 14, -60, 40)
 cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
+# landforms: once per chunk, over the columns of their own biome
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools'):
+    placed(shape, none_feature(shape), [])
+
 # trap sites, scenery and machines: rare and spread out
 placed('resonance_gatehouse', none_feature('resonance_gatehouse'), underground(1, -40, 30, rarity=5))
 for kind, rarity in (('crusher_passage', 28), ('switchyard_junction', 26), ('sluice_bridge', 26), ('kiln_bridge', 26), ('briar_ambush', 26),
-                     ('rail_line', 8), ('tower', 10), ('ruin', 12), ('monolith', 30), ('crashed_shell', 18), ('crystal_dome', 30),
-                     ('boardwalk', 10), ('kiln_hut', 20), ('aqueduct', 16), ('ice_rails', 14), ('scrap', 10),
-                     ('lamp_pylon', 40), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
+                     ('rail_line', 14), ('tower', 22), ('ruin', 20), ('monolith', 30), ('crashed_shell', 18), ('crystal_dome', 30),
+                     ('boardwalk', 16), ('kiln_hut', 20), ('aqueduct', 16), ('ice_rails', 22), ('scrap', 18),
+                     ('lamp_pylon', 70), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
                      ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40)):
     site(kind, rarity)
 placed('giant_tree', none_feature('giant_tree'), surface(count={'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=2))
@@ -827,7 +831,8 @@ placed('giant_tree', none_feature('giant_tree'), surface(count={'type': 'minecra
 STEPS = [
     [],
     ['minecraft:lake_lava_surface'],
-    ['redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+    ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
+     'redstoneplus:terrace_pools', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree'],
     ['redstoneplus:resonance_gatehouse'],
@@ -847,7 +852,7 @@ STEPS = [
     ['minecraft:freeze_top_layer'],
 ]
 EVERYWHERE = {'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
-              'redstoneplus:lamp_pylon', 'redstoneplus:tower', 'redstoneplus:ruin', 'redstoneplus:scree', 'minecraft:freeze_top_layer'}
+              'redstoneplus:scree', 'minecraft:freeze_top_layer'}
 
 
 def features(*wanted):
@@ -875,46 +880,46 @@ BIOMES = {
                      features('karst_spire', 'crusher_passage', 'crusher_mill', 'lichen_tuft_patch', 'beast_cage'),
                      [('karst_colossus', 25, 1, 1), ('relay_strider', 20, 1, 1), ('detonator_husk', 30, 1, 2)], [('flesh_press', 3, 1, 1)], ['karst_colossus']),
     'switchyard_flats': ('Switchyard Flats', 'Weichenebene', 1.2, 0.1, ('#c07aa0', '#d08a70', '#8a4a3a', '#3a1a10', '#a8905a'), fx(RED_DUST, 0.004),
-                         features('slag_heap', 'switchyard_junction', 'rail_line', 'minecart_loop', 'salt_brush_patch'),
+                         features('slag_heap', 'switchyard_junction', 'rail_line', 'tower', 'lamp_pylon', 'minecart_loop', 'salt_brush_patch'),
                          [('switchback_crawler', 40, 1, 2), ('detonator_husk', 30, 1, 2), ('kilnbound', 20, 1, 1)], [('bellows_hog', 10, 2, 3)],
                          ['switchback_crawler']),
     'sluice_gardens': ('Sluice Gardens', 'Schleusengärten', 0.7, 0.9, ('#8ab0a0', '#a8c8b8', '#3ab8a0', '#10403a', '#4a9a70'), None,
                        features('sluice_bridge', 'aqueduct', 'pump_station', 'copper_reed_patch', 'fen_reed_patch'),
                        [('sluice_chainjaw', 40, 1, 2), ('leaking_cell', 30, 1, 2), ('living_capacitor', 20, 1, 2)], [], ['sluice_chainjaw']),
     'kiln_barrens': ('Kiln Barrens', 'Brennofen-Öde', 2.0, 0.0, ('#b0603a', '#8a4a2a', '#c06a2a', '#3a1a0a', '#6a5a3a'), fx('minecraft:white_ash', 0.01),
-                     features('kiln_spire', 'sulfur_rock', 'minecraft:lake_lava_surface', 'kiln_bridge', 'cinder_bloom_patch'),
+                     features('lava_channels', 'kiln_spire', 'sulfur_rock', 'lamp_pylon', 'minecraft:lake_lava_surface', 'kiln_bridge', 'cinder_bloom_patch'),
                      [('kiln_brute', 30, 1, 1), ('kilnbound', 40, 1, 2), ('detonator_husk', 15, 1, 1)], [('bellows_hog', 15, 2, 3)], ['kiln_brute']),
     'tripwire_briar': ('Tripwire Briar', 'Stolperdraht-Dickicht', 0.7, 0.8, ('#d8b060', '#b8a060', '#4a7a4a', '#1a2a1a', '#5a6a2a'), None,
-                       features('briar_ambush', 'briar_patch', 'laser_post', 'lichen_tuft_patch'),
+                       features('briar_ambush', 'briar_patch', 'laser_post', 'tower', 'ruin', 'lichen_tuft_patch'),
                        [('spool_weaver', 40, 1, 2), ('tripwire_brood', 35, 1, 2), ('leaking_cell', 15, 1, 2)], [], ['spool_weaver']),
     'arsenal_dunes': ('Arsenal Dunes', 'Arsenal-Dünen', 1.6, 0.0, ('#e04a36', '#c83a2a', '#9a2020', '#3a0a0a', '#b04a30'), fx(RED_DUST, 0.006),
-                      features('dune_rock', 'crashed_shell', 'scrap', 'minecart_loop', 'salt_brush_patch'),
+                      features('dunes', 'dune_rock', 'crashed_shell', 'tower', 'lamp_pylon', 'scrap', 'minecart_loop', 'salt_brush_patch'),
                       [('switchback_crawler', 30, 1, 2), ('detonator_husk', 35, 1, 2), ('kilnbound', 25, 1, 2)], [('bellows_hog', 8, 1, 2)],
                       ['switchback_crawler']),
     'rubedo_gardens': ('Rubedo Gardens', 'Rubedo-Gärten', 0.9, 0.6, ('#e87070', '#d85a5a', '#e0202a', '#5a0a0a', '#c03a3a'), fx(RED_DUST, 0.008),
-                       features('rubedo_spire', 'crystal_dome', 'aqueduct', 'red_coral_shrub_patch', 'crimson_heather_patch', 'pump_station'),
+                       features('terrace_pools', 'rubedo_spire', 'crystal_dome', 'aqueduct', 'red_coral_shrub_patch', 'crimson_heather_patch', 'pump_station'),
                        [('living_capacitor', 40, 1, 3), ('relay_strider', 20, 1, 1), ('leaking_cell', 20, 1, 2)], [], []),
     'landmark_moors': ('Landmark Moors', 'Wegmarken-Moore', 0.6, 0.6, ('#c83030', '#a82424', '#7a1a1a', '#2a0808', '#a02a40'), None,
                        features('monolith', 'bell_tower', 'crimson_heather_patch', 'ruin'),
                        [('bell_stalker', 20, 1, 1), ('relay_strider', 25, 1, 1), ('detonator_husk', 20, 1, 2)], [('flesh_press', 3, 1, 1)], ['bell_stalker']),
     'red_clay_fen': ('Red Clay Fen', 'Rotton-Moor', 0.8, 0.9, ('#b83e32', '#98322a', '#a82418', '#3a0a08', '#8a3a2a'), None,
-                     features('boardwalk', 'kiln_hut', 'pump_station', 'fen_reed_patch'),
+                     features('ponds', 'boardwalk', 'kiln_hut', 'pump_station', 'fen_reed_patch'),
                      [('sluice_chainjaw', 35, 1, 2), ('leaking_cell', 30, 1, 3), ('living_capacitor', 25, 1, 2)], [], ['sluice_chainjaw']),
     'hematite_scarps': ('Hematite Scarps', 'Hämatit-Klippen', 1.1, 0.2, ('#d86040', '#c84e3a', '#7a2a2a', '#2a0a0a', '#a0402a'), fx(RED_DUST, 0.004),
-                        features('hoodoo', 'beast_cage', 'red_coral_shrub_patch', 'crusher_mill'),
+                        features('mesas', 'hoodoo', 'beast_cage', 'ruin', 'red_coral_shrub_patch', 'crusher_mill'),
                         [('karst_colossus', 20, 1, 1), ('tripwire_brood', 30, 1, 2), ('detonator_husk', 25, 1, 2)], [('flesh_press', 4, 1, 1)],
                         ['karst_colossus']),
     'tempest_shoals': ('Tempest Shoals', 'Sturmbänke', 0.5, 0.9, ('#3e4260', '#2e3446', '#22b0a0', '#0a2a28', '#2a6a6a'), fx('minecraft:electric_spark', 0.004),
                        features('tempest_pillar', 'storm_spire', 'aqueduct'),
                        [('sluice_chainjaw', 35, 1, 2), ('relay_strider', 25, 1, 1)], [], ['sluice_chainjaw']),
     'frostwork_wastes': ('Frostwork Wastes', 'Frostwerk-Öde', -0.6, 0.5, ('#8a9ab0', '#a8b8c8', '#3a6a9a', '#0a1a2a', '#8aa0b0'), fx('minecraft:white_ash', 0.02),
-                         features('frost_spire', 'ice_rails', 'frost_fern_patch'),
+                         features('crevasses', 'frost_spire', 'ice_rails', 'tower', 'frost_fern_patch'),
                          [('switchback_crawler', 25, 1, 2), ('spool_weaver', 25, 1, 2), ('karst_colossus', 15, 1, 1)], [], ['karst_colossus']),
     'vein_mire': ('Vein Mire', 'Adermoor', 0.8, 0.9, ('#40403a', '#4a4a40', '#3a1414', '#140404', '#4a3a2a'), fx('minecraft:crimson_spore', 0.01),
-                  features('pale_stalk_patch', 'boardwalk', 'fen_reed_patch', 'kiln_hut'),
+                  features('ponds', 'pale_stalk_patch', 'boardwalk', 'fen_reed_patch', 'kiln_hut'),
                   [('leaking_cell', 35, 1, 3), ('tripwire_brood', 30, 1, 2), ('spool_weaver', 20, 1, 1)], [], []),
     'oxide_salt_flats': ('Oxide Salt Flats', 'Oxid-Salzebene', 1.3, 0.0, ('#eca858', '#e8b878', '#60a080', '#1a3a2a', '#c09060'), fx(RED_DUST, 0.003),
-                         features('salt_mound', 'scrap', 'rail_line', 'salt_brush_patch', 'tower'),
+                         features('salt_mound', 'scrap', 'rail_line', 'ruin', 'lamp_pylon', 'salt_brush_patch', 'tower'),
                          [('switchback_crawler', 30, 1, 2), ('kilnbound', 25, 1, 2), ('detonator_husk', 25, 1, 2)], [('bellows_hog', 10, 2, 3)],
                          ['switchback_crawler']),
     'lamplit_grove': ('Lamplit Grove', 'Lampenhain', 0.6, 0.8, ('#46306a', '#3e2c64', '#2a3a5a', '#0a0a1a', '#2e6a6a'), fx('minecraft:warped_spore', 0.01),
@@ -1108,6 +1113,15 @@ for path in ('recipe/realm_gate.json', 'loot_table/blocks/realm_gate.json', 'loo
     p_ = os.path.join(DATA, *path.split('/'))
     if os.path.exists(p_):
         os.remove(p_)
+# removed blocks must leave every tag too: one unknown entry makes Minecraft drop the whole tag
+REMOVED = {f'{NS}:realm_gate'}
+for tag_path in glob.glob(os.path.join(ROOT, 'data', '**', 'tags', '**', '*.json'), recursive=True):
+    with open(tag_path, encoding='utf-8') as f:
+        tag_data = json.load(f)
+    kept = [v for v in tag_data.get('values', []) if v not in REMOVED]
+    if kept != tag_data.get('values', []):
+        tag_data['values'] = kept
+        write(tag_path, tag_data)
 for lang in ('en_us', 'de_de'):
     path = os.path.join(ASSETS, 'lang', lang + '.json')
     with open(path, encoding='utf-8') as f:

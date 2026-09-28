@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "top": "redstoneplus:block/realm_gate_top_on",
-    "side": "redstoneplus:block/realm_gate_side",
-    "bottom": "minecraft:block/polished_blackstone"
-  }
-}

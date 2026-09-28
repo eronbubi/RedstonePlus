@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:realmstone",
+    "redstoneplus:deep_realmstone",
+    "redstoneplus:hematite",
+    "redstoneplus:dark_hematite",
+    "redstoneplus:cinder_rock",
+    "redstoneplus:tempest_basalt",
+    "redstoneplus:frost_realmstone",
+    "redstoneplus:fossil_circuit",
+    "redstoneplus:salt_crust",
+    "redstoneplus:karst_limestone"
+  ]
+}

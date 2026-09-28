@@ -3,18 +3,18 @@
   "temperature": 2.0,
   "downfall": 0.0,
   "effects": {
-    "fog_color": 9062954,
-    "mood_sound": {
-      "block_search_extent": 8,
-      "offset": 2.0,
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000
-    },
     "sky_color": 11558970,
+    "fog_color": 9062954,
     "water_color": 12610090,
     "water_fog_color": 3807754,
     "grass_color": 6969914,
-    "foliage_color": 5917226,
+    "foliage_color": 6969914,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
     "particle": {
       "probability": 0.01,
       "options": {
@@ -32,13 +32,13 @@
       },
       {
         "type": "redstoneplus:kilnbound",
-        "weight": 50,
+        "weight": 40,
         "minCount": 1,
         "maxCount": 2
       },
       {
         "type": "redstoneplus:detonator_husk",
-        "weight": 20,
+        "weight": 15,
         "minCount": 1,
         "maxCount": 1
       }
@@ -46,9 +46,9 @@
     "creature": [
       {
         "type": "redstoneplus:bellows_hog",
-        "weight": 20,
+        "weight": 15,
         "minCount": 2,
-        "maxCount": 4
+        "maxCount": 3
       }
     ],
     "ambient": [],
@@ -74,59 +74,33 @@
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground",
       "minecraft:lake_lava_surface"
     ],
     [
       "redstoneplus:kiln_spire",
-      "redstoneplus:sulfur_rock"
+      "redstoneplus:sulfur_rock",
+      "redstoneplus:scree"
     ],
-    [
-      "minecraft:monster_room",
-      "minecraft:monster_room_deep"
-    ],
+    [],
     [
       "redstoneplus:kiln_bridge",
-      "redstoneplus:circuit_workshop"
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:lamp_pylon"
     ],
     [],
     [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff",
-      "minecraft:ore_coal_upper",
-      "minecraft:ore_coal_lower",
-      "minecraft:ore_iron_upper",
-      "minecraft:ore_iron_middle",
-      "minecraft:ore_iron_small",
-      "minecraft:ore_gold",
-      "minecraft:ore_gold_lower",
-      "minecraft:ore_redstone",
-      "minecraft:ore_redstone_lower",
-      "minecraft:ore_diamond",
-      "minecraft:ore_diamond_medium",
-      "minecraft:ore_diamond_large",
-      "minecraft:ore_diamond_buried",
-      "minecraft:ore_lapis",
-      "minecraft:ore_lapis_buried",
-      "minecraft:ore_copper",
-      "minecraft:underwater_magma",
-      "minecraft:disk_sand",
-      "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
     ],
     [],
     [
-      "minecraft:spring_water",
-      "minecraft:spring_lava"
+      "redstoneplus:cinder_bloom_patch"
     ],
-    [],
     [
       "minecraft:freeze_top_layer"
     ]

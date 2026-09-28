@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "redstoneplus:block/vein_log"
+    },
+    "axis=z": {
+      "model": "redstoneplus:block/vein_log_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "redstoneplus:block/vein_log_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

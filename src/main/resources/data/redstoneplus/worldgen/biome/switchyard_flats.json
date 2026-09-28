@@ -3,26 +3,26 @@
   "temperature": 1.2,
   "downfall": 0.1,
   "effects": {
-    "fog_color": 13666928,
-    "foliage_color": 9072704,
-    "grass_color": 11047002,
-    "mood_sound": {
-      "block_search_extent": 8,
-      "offset": 2.0,
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000
-    },
     "sky_color": 12614304,
+    "fog_color": 13666928,
     "water_color": 9062970,
     "water_fog_color": 3807760,
+    "grass_color": 11047002,
+    "foliage_color": 11047002,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
     "particle": {
       "probability": 0.004,
       "options": {
         "type": "minecraft:dust",
         "color": [
           1.0,
-          0.2,
-          0.1
+          0.15,
+          0.08
         ],
         "scale": 1.0
       }
@@ -38,7 +38,7 @@
       },
       {
         "type": "redstoneplus:detonator_husk",
-        "weight": 40,
+        "weight": 30,
         "minCount": 1,
         "maxCount": 2
       },
@@ -52,7 +52,7 @@
     "creature": [
       {
         "type": "redstoneplus:bellows_hog",
-        "weight": 12,
+        "weight": 10,
         "minCount": 2,
         "maxCount": 3
       }
@@ -79,61 +79,32 @@
   },
   "features": [
     [],
-    [
-      "minecraft:lake_lava_underground"
-    ],
+    [],
     [
       "redstoneplus:slag_heap",
-      "redstoneplus:coal_heap"
+      "redstoneplus:scree"
     ],
-    [
-      "minecraft:monster_room",
-      "minecraft:monster_room_deep"
-    ],
+    [],
     [
       "redstoneplus:switchyard_junction",
-      "redstoneplus:circuit_workshop",
-      "redstoneplus:rail_line"
+      "redstoneplus:rail_line",
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:lamp_pylon",
+      "redstoneplus:minecart_loop"
     ],
     [],
     [
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff",
-      "minecraft:ore_coal_upper",
-      "minecraft:ore_coal_lower",
-      "minecraft:ore_iron_upper",
-      "minecraft:ore_iron_middle",
-      "minecraft:ore_iron_small",
-      "minecraft:ore_gold",
-      "minecraft:ore_gold_lower",
-      "minecraft:ore_redstone",
-      "minecraft:ore_redstone_lower",
-      "minecraft:ore_diamond",
-      "minecraft:ore_diamond_medium",
-      "minecraft:ore_diamond_large",
-      "minecraft:ore_diamond_buried",
-      "minecraft:ore_lapis",
-      "minecraft:ore_lapis_buried",
-      "minecraft:ore_copper",
-      "minecraft:underwater_magma",
-      "minecraft:disk_sand",
-      "minecraft:disk_clay",
-      "minecraft:disk_gravel"
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
     ],
     [],
     [
-      "minecraft:spring_water",
-      "minecraft:spring_lava"
-    ],
-    [
-      "minecraft:patch_dead_bush_badlands"
+      "redstoneplus:salt_brush_patch"
     ],
     [
       "minecraft:freeze_top_layer"

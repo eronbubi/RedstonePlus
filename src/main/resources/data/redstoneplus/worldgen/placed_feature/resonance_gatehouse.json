@@ -3,7 +3,11 @@
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 4
+      "chance": 5
+    },
+    {
+      "type": "minecraft:count",
+      "count": 1
     },
     {
       "type": "minecraft:in_square"
@@ -29,7 +33,10 @@
       },
       "allowed_search_condition": {
         "type": "minecraft:matching_blocks",
-        "blocks": "minecraft:air"
+        "blocks": [
+          "minecraft:air",
+          "minecraft:cave_air"
+        ]
       }
     },
     {

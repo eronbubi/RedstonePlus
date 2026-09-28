@@ -1,0 +1,15 @@
+{
+  "type": "redstoneplus:spire",
+  "config": {
+    "body": {
+      "Name": "redstoneplus:tempest_basalt"
+    },
+    "accent": {
+      "Name": "redstoneplus:redstone_vein"
+    },
+    "min_height": 8,
+    "max_height": 30,
+    "min_radius": 1,
+    "max_radius": 3
+  }
+}

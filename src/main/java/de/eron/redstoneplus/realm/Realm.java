@@ -18,9 +18,11 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AmethystBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -62,14 +64,74 @@ public final class Realm {
     public static final ResourceKey<Level> REALM = ResourceKey.create(Registries.DIMENSION, id("redstone_realm"));
     /** The biomes of the realm (defined in data/redstoneplus/worldgen/biome, written by tools/gen_realm.py). */
     public static final List<String> BIOMES = List.of("piston_karst", "switchyard_flats", "resonance_hollows", "sluice_gardens",
-            "kiln_barrens", "tripwire_briar");
+            "kiln_barrens", "tripwire_briar", "arsenal_dunes", "circuit_fossil_beds", "rubedo_gardens", "landmark_moors", "red_clay_fen",
+            "hematite_scarps", "tempest_shoals", "frostwork_wastes", "vein_mire", "oxide_salt_flats", "lamplit_grove");
 
-    // ---------- getting there ----------
-    public static final RegistryObject<Block> REALM_GATE = block("realm_gate", RealmGateBlock::new,
-            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(5.0F, 1200.0F).requiresCorrectToolForDrops()
-                    .sound(SoundType.LODESTONE).lightLevel(s -> s.getValue(RealmGateBlock.LIT) ? 12 : 3));
+    // ---------- getting there: a frame of redstone blocks lit with flint and steel ----------
+    public static final RegistryObject<Block> REALM_PORTAL = BLOCKS.register("realm_portal", () -> new RealmPortalBlock(
+            BlockBehaviour.Properties.of().noCollission().strength(-1.0F).sound(SoundType.GLASS).lightLevel(s -> 11)
+                    .pushReaction(PushReaction.BLOCK).noLootTable()));
 
-    // ---------- terrain ----------
+    // ---------- the realm's own rock ----------
+    public static final RegistryObject<Block> REALMSTONE = block("realmstone", Block::new, () -> rock(MapColor.TERRACOTTA_RED));
+    public static final RegistryObject<Block> DEEP_REALMSTONE = block("deep_realmstone", Block::new,
+            () -> rock(MapColor.TERRACOTTA_BLACK).strength(3.0F, 6.0F).sound(SoundType.DEEPSLATE));
+    public static final RegistryObject<Block> REALMSTONE_BRICKS = block("realmstone_bricks", Block::new, () -> rock(MapColor.TERRACOTTA_RED));
+    public static final RegistryObject<Block> HEMATITE = block("hematite", Block::new, () -> rock(MapColor.COLOR_RED));
+    public static final RegistryObject<Block> DARK_HEMATITE = block("dark_hematite", Block::new, () -> rock(MapColor.TERRACOTTA_BLACK));
+    public static final RegistryObject<Block> CINDER_ROCK = block("cinder_rock", Block::new, () -> rock(MapColor.COLOR_BLACK).sound(SoundType.BASALT));
+    public static final RegistryObject<Block> TEMPEST_BASALT = block("tempest_basalt", Block::new,
+            () -> rock(MapColor.COLOR_BLACK).sound(SoundType.POLISHED_DEEPSLATE));
+    public static final RegistryObject<Block> FROST_REALMSTONE = block("frost_realmstone", Block::new, () -> rock(MapColor.ICE).friction(0.9F));
+    public static final RegistryObject<Block> FOSSIL_CIRCUIT = block("fossil_circuit", Block::new,
+            () -> rock(MapColor.TERRACOTTA_RED).lightLevel(s -> 4));
+    public static final RegistryObject<Block> REDSTONE_VEIN = block("redstone_vein", Block::new,
+            () -> rock(MapColor.FIRE).lightLevel(s -> 9).emissiveRendering((s, l, p) -> true));
+    public static final RegistryObject<Block> SALT_CRUST = block("salt_crust", Block::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).strength(0.8F).sound(SoundType.CALCITE).requiresCorrectToolForDrops());
+    public static final RegistryObject<Block> RUST_PLATING = block("rust_plating", Block::new, () -> rock(MapColor.TERRACOTTA_ORANGE).sound(SoundType.METAL));
+    public static final RegistryObject<Block> SHELL_PLATING = block("shell_plating", Block::new, () -> rock(MapColor.METAL).sound(SoundType.METAL));
+
+    // ---------- the realm's own ground ----------
+    public static final RegistryObject<Block> RUST_SAND = block("rust_sand",
+            p -> new net.minecraft.world.level.block.ColoredFallingBlock(new net.minecraft.util.ColorRGBA(0xA83A2A), p),
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.5F).sound(SoundType.SAND));
+    public static final RegistryObject<Block> RED_CLAY = block("red_clay", Block::new, () -> soil(MapColor.TERRACOTTA_RED, SoundType.GRAVEL));
+    public static final RegistryObject<Block> FEN_MUD = block("fen_mud", Block::new, () -> soil(MapColor.TERRACOTTA_BROWN, SoundType.MUD));
+    public static final RegistryObject<Block> CANAL_MOSS = block("canal_moss", Block::new, () -> soil(MapColor.COLOR_CYAN, SoundType.MOSS));
+    public static final RegistryObject<Block> BRIAR_SOIL = block("briar_soil", Block::new, () -> soil(MapColor.DIRT, SoundType.ROOTED_DIRT));
+    public static final RegistryObject<Block> HEATHER_TURF = block("heather_turf", Block::new, () -> soil(MapColor.CRIMSON_NYLIUM, SoundType.NYLIUM));
+    public static final RegistryObject<Block> ROOT_SOIL = block("root_soil", Block::new, () -> soil(MapColor.TERRACOTTA_BLACK, SoundType.ROOTED_DIRT));
+    public static final RegistryObject<Block> GROVE_MOSS = block("grove_moss", Block::new, () -> soil(MapColor.WARPED_NYLIUM, SoundType.MOSS));
+    public static final RegistryObject<Block> PALE_ROOT_LOG = block("pale_root_log", net.minecraft.world.level.block.RotatedPillarBlock::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.WOOL).strength(2.0F).sound(SoundType.WOOD));
+    public static final RegistryObject<Block> VEIN_LOG = block("vein_log", net.minecraft.world.level.block.RotatedPillarBlock::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.CRIMSON_STEM).strength(2.0F).sound(SoundType.WOOD).lightLevel(s -> 6));
+
+    // ---------- the realm's own plants and crystals ----------
+    public static final RegistryObject<Block> CRIMSON_HEATHER = plant("crimson_heather", 0);
+    public static final RegistryObject<Block> FEN_REED = plant("fen_reed", 0);
+    public static final RegistryObject<Block> RED_CORAL_SHRUB = plant("red_coral_shrub", 3);
+    public static final RegistryObject<Block> PALE_STALK = plant("pale_stalk", 7);
+    public static final RegistryObject<Block> SALT_BRUSH = plant("salt_brush", 0);
+    public static final RegistryObject<Block> COPPER_REED = plant("copper_reed", 0);
+    public static final RegistryObject<Block> LICHEN_TUFT = plant("lichen_tuft", 0);
+    public static final RegistryObject<Block> CINDER_BLOOM = plant("cinder_bloom", 6);
+    public static final RegistryObject<Block> FROST_FERN = plant("frost_fern", 0);
+    public static final RegistryObject<Block> REDSTONE_CLUSTER = block("redstone_cluster",
+            p -> new net.minecraft.world.level.block.AmethystClusterBlock(7.0F, 3.0F, p),
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).noOcclusion().strength(1.5F).sound(SoundType.AMETHYST_CLUSTER)
+                    .lightLevel(s -> 9).pushReaction(PushReaction.DESTROY));
+
+    // ---------- the realm's own ores ----------
+    public static final RegistryObject<Block> REALM_REDSTONE_ORE = block("realm_redstone_ore", net.minecraft.world.level.block.RedStoneOreBlock::new,
+            () -> rock(MapColor.TERRACOTTA_RED).strength(3.0F, 3.0F).randomTicks().lightLevel(s -> s.getValue(BlockStateProperties.LIT) ? 9 : 0));
+    public static final RegistryObject<Block> REALM_IRON_ORE = block("realm_iron_ore",
+            p -> new DropExperienceBlock(net.minecraft.util.valueproviders.ConstantInt.of(0), p), () -> rock(MapColor.TERRACOTTA_RED).strength(3.0F, 3.0F));
+    public static final RegistryObject<Block> REALM_COPPER_ORE = block("realm_copper_ore",
+            p -> new DropExperienceBlock(net.minecraft.util.valueproviders.ConstantInt.of(0), p), () -> rock(MapColor.TERRACOTTA_RED).strength(3.0F, 3.0F));
+
+    // ---------- older terrain (Piston Karst and the first biomes) ----------
     public static final RegistryObject<Block> KARST_LIMESTONE = block("karst_limestone", Block::new, () -> rock(MapColor.SAND));
     public static final RegistryObject<Block> LICHEN_KARST = block("lichen_karst", Block::new, () -> rock(MapColor.COLOR_ORANGE));
     public static final RegistryObject<Block> KARST_BRICKS = block("karst_bricks", Block::new, () -> rock(MapColor.SAND));
@@ -150,19 +212,18 @@ public final class Realm {
 
     // ---------- world generation ----------
     public static final RegistryObject<Feature<RealmFeatures.SpireConfig>> SPIRE = FEATURES.register("spire", RealmFeatures.Spire::new);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> CRUSHER_PASSAGE = site("crusher_passage", RealmFeatures.Kind.CRUSHER_PASSAGE);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SWITCHYARD_JUNCTION = site("switchyard_junction", RealmFeatures.Kind.SWITCHYARD_JUNCTION);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> RESONANCE_GATEHOUSE = site("resonance_gatehouse", RealmFeatures.Kind.RESONANCE_GATEHOUSE);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> SLUICE_BRIDGE = site("sluice_bridge", RealmFeatures.Kind.SLUICE_BRIDGE);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> KILN_BRIDGE = site("kiln_bridge", RealmFeatures.Kind.KILN_BRIDGE);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> BRIAR_AMBUSH = site("briar_ambush", RealmFeatures.Kind.BRIAR_AMBUSH);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> CIRCUIT_WORKSHOP = site("circuit_workshop", RealmFeatures.Kind.CIRCUIT_WORKSHOP);
-    public static final RegistryObject<Feature<NoneFeatureConfiguration>> RAIL_LINE = site("rail_line", RealmFeatures.Kind.RAIL_LINE);
+
+    static {
+        // every trap site, piece of scenery and machine is a feature named after its kind (see RealmFeatures.Kind)
+        for (RealmFeatures.Kind kind : RealmFeatures.Kind.values()) {
+            FEATURES.register(kind.id(), () -> new RealmFeatures.Site(kind));
+        }
+    }
 
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("redstone_realm", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.redstoneplus.redstone_realm"))
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
-            .icon(() -> REALM_GATE.get().asItem().getDefaultInstance())
+            .icon(() -> REDSTONE_CLUSTER.get().asItem().getDefaultInstance())
             .displayItems((params, output) -> TAB_ORDER.forEach(item -> output.accept(item.get())))
             .build());
 
@@ -195,6 +256,16 @@ public final class Realm {
                 .instrument(NoteBlockInstrument.BASEDRUM);
     }
 
+    private static BlockBehaviour.Properties soil(MapColor color, SoundType sound) {
+        return BlockBehaviour.Properties.of().mapColor(color).strength(0.6F).sound(sound);
+    }
+
+    private static RegistryObject<Block> plant(String name, int light) {
+        return block(name, RealmBlocks.RealmPlant::new, () -> BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak()
+                .noOcclusion().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).lightLevel(st -> light)
+                .pushReaction(PushReaction.DESTROY));
+    }
+
     private static BlockBehaviour.Properties trap(MapColor color) {
         return BlockBehaviour.Properties.of().mapColor(color).strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.METAL);
     }
@@ -220,10 +291,6 @@ public final class Realm {
         item(name + "_spawn_egg", p -> new ForgeSpawnEggItem(type, background, highlight, p), Item.Properties::new);
     }
 
-    private static RegistryObject<Feature<NoneFeatureConfiguration>> site(String name, RealmFeatures.Kind kind) {
-        return FEATURES.register(name, () -> new RealmFeatures.Site(kind));
-    }
-
     /** Called once from the mod constructor. */
     public static void init(IEventBus modBus) {
         BLOCKS.register(modBus);
@@ -234,10 +301,40 @@ public final class Realm {
         TABS.register(modBus);
         RealmSounds.init(modBus);
         RealmFx.init(modBus);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(Realm::lightPortal);
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {
             de.eron.redstoneplus.realm.client.RealmClient.init(modBus);
+        }
+    }
+
+    /** Flint and steel (or a fire charge) on a frame of redstone blocks opens a realm portal. */
+    private static void lightPortal(net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
+        var stack = event.getItemStack();
+        if (!(stack.getItem() instanceof net.minecraft.world.item.FlintAndSteelItem) && !stack.is(net.minecraft.world.item.Items.FIRE_CHARGE)) {
+            return;
+        }
+        var level = event.getLevel();
+        if (!RealmPortalBlock.isFrame(level.getBlockState(event.getPos()))) {
+            return;
+        }
+        var inside = event.getPos().relative(event.getFace() == null ? net.minecraft.core.Direction.UP : event.getFace());
+        if (level.isClientSide()) {
+            if (RealmPortalBlock.findFrame(level, inside) != null) {
+                event.setCanceled(true);
+                event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+            }
+            return;
+        }
+        if (RealmPortalBlock.tryLight(level, inside)) {
+            if (stack.isDamageableItem()) {
+                stack.hurtAndBreak(1, event.getEntity(), net.minecraft.world.entity.LivingEntity.getSlotForHand(event.getHand()));
+            } else if (!event.getEntity().getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            event.setCanceled(true);
+            event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
         }
     }
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "redstoneplus:block/pale_root_log_top",
+    "side": "redstoneplus:block/pale_root_log"
+  }
+}

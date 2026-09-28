@@ -1,0 +1,94 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.8,
+  "downfall": 0.9,
+  "effects": {
+    "sky_color": 4210746,
+    "fog_color": 4868672,
+    "water_color": 3806228,
+    "water_fog_color": 1311748,
+    "grass_color": 4864554,
+    "foliage_color": 4864554,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "particle": {
+      "probability": 0.01,
+      "options": {
+        "type": "minecraft:crimson_spore"
+      }
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "redstoneplus:leaking_cell",
+        "weight": 35,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:tripwire_brood",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:spool_weaver",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "redstoneplus:scree"
+    ],
+    [],
+    [
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:boardwalk",
+      "redstoneplus:kiln_hut",
+      "redstoneplus:lamp_pylon"
+    ],
+    [],
+    [
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
+    ],
+    [],
+    [
+      "redstoneplus:fen_reed_patch",
+      "redstoneplus:pale_stalk_patch"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ]
+}

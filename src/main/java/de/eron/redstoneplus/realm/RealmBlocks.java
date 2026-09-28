@@ -63,6 +63,32 @@ public final class RealmBlocks {
         }
     }
 
+    /** The realm's small plants: grow on any solid ground, no bonemeal, no drops but themselves. */
+    public static class RealmPlant extends BushBlock {
+        public static final MapCodec<RealmPlant> CODEC = simpleCodec(RealmPlant::new);
+        private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 13, 14);
+
+        public RealmPlant(Properties properties) {
+            super(properties);
+        }
+
+        @Override
+        protected MapCodec<? extends BushBlock> codec() {
+            return CODEC;
+        }
+
+        @Override
+        protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+            return state.isFaceSturdy(level, pos, net.minecraft.core.Direction.UP);
+        }
+
+        @Override
+        protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+            net.minecraft.world.phys.Vec3 offset = state.getOffset(level, pos);
+            return SHAPE.move(offset.x, offset.y, offset.z);
+        }
+    }
+
     /** Thorny briar bush: slows and scratches whoever walks through it. */
     public static class BriarThorns extends BushBlock {
         public static final MapCodec<BriarThorns> CODEC = simpleCodec(BriarThorns::new);

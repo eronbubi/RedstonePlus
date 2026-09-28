@@ -101,8 +101,8 @@ CHAPTERS = {
               'New creatures of the Overworld and the End, and the biomes they live in. The Overworld biomes need TerraBlender.',
               'Neue Kreaturen der Oberwelt und des End und ihre Biome. Die Oberwelt-Biome brauchen TerraBlender.'),
     'realm': ('The Redstone Realm', 'Das Redstone-Reich',
-              'A dimension of machines. Build a Realm Gate, give it a redstone signal and right click it. The pages after this are the realm\'s own field guide, then its blocks, tools, creatures and biomes.',
-              'Eine Dimension der Maschinen. Baue ein Reichstor, gib ihm ein Redstone-Signal und klicke es rechts an. Danach folgen der Feldführer des Reichs, seine Blöcke, Werkzeuge, Kreaturen und Biome.'),
+              'A dimension of machines. Build a frame of redstone blocks like a Nether portal and light it with flint and steel. The pages after this are the realm\'s own field guide, then its blocks, tools, creatures and biomes.',
+              'Eine Dimension der Maschinen. Baue einen Rahmen aus Redstone-Blöcken wie ein Netherportal und entzünde ihn mit Feuerzeug. Danach folgen der Feldführer des Reichs, seine Blöcke, Werkzeuge, Kreaturen und Biome.'),
     'other': ('More', 'Weiteres', 'Everything else.', 'Alles Weitere.'),
 }
 for cid, (e, g, ie, ig) in CHAPTERS.items():
@@ -175,6 +175,29 @@ BIOMES = {
     'tripwire_briar': ('Realm. Thorns and rusted towers. Ambush paths with arrow launchers and a laser watch post. Spool Weaver.',
                        'Reich. Dornen und rostige Türme. Hinterhalt-Pfade mit Pfeilwerfern und Laser-Wachposten. Spulenweber.'),
 }
+BIOMES.update({
+    'arsenal_dunes': ('Realm. Red dunes with crashed shell casings, derelict pylons and a minecart loop that never stops.',
+                      'Reich. Rote Dünen mit abgestürzten Geschosshülsen, verfallenen Masten und einer Lorenschleife, die nie hält.'),
+    'rubedo_gardens': ('Realm. Terraces of redstone crystal, red pools and glass domes over growing crystals.',
+                       'Reich. Terrassen aus Redstone-Kristall, rote Becken und Glaskuppeln über wachsenden Kristallen.'),
+    'landmark_moors': ('Realm. Crimson heather, ruined walls, split monoliths and bell towers that toll by themselves.',
+                       'Reich. Karminrote Heide, Ruinen, gespaltene Monolithen und Glockentürme, die von selbst läuten.'),
+    'red_clay_fen': ('Realm. Red water and clay, reeds, boardwalks and brick kilns that never go out.',
+                     'Reich. Rotes Wasser und Ton, Schilf, Stege und Ziegelöfen, die nie ausgehen.'),
+    'hematite_scarps': ('Realm. Banded red cliffs and hoodoos, stamping crusher mills and caged beasts.',
+                        'Reich. Gebänderte rote Klippen und Felstürme, stampfende Zermalmer-Mühlen und gefangene Bestien.'),
+    'tempest_shoals': ('Realm. A teal sea between black basalt pillars; storm spires call down lightning.',
+                       'Reich. Ein türkises Meer zwischen schwarzen Basaltsäulen; Sturmtürme rufen Blitze herab.'),
+    'frostwork_wastes': ('Realm. Snow and ice over rails, frozen spires and leaning derelict towers.',
+                         'Reich. Schnee und Eis über Schienen, gefrorene Türme und schiefe verlassene Masten.'),
+    'vein_mire': ('Realm. A dark fen threaded with glowing red roots and pale stalks.', 'Reich. Ein dunkles Moor voller leuchtender roter Wurzeln und bleicher Stängel.'),
+    'oxide_salt_flats': ('Realm. White salt with glowing red cracks, scrap heaps and old track.',
+                         'Reich. Weißes Salz mit leuchtenden roten Rissen, Schrotthaufen und alten Gleisen.'),
+    'lamplit_grove': ('Realm. Giant pale-root trees with lamps hanging on chains under a violet sky.',
+                      'Reich. Riesige Bleichwurzel-Bäume mit Lampen an Ketten unter violettem Himmel.'),
+    'circuit_fossil_beds': ('Realm, underground. Caves of fossil circuits, glowing redstone veins and crystal clusters.',
+                            'Reich, unter Tage. Höhlen aus fossilen Schaltungen, leuchtenden Redstone-Adern und Kristallen.'),
+})
 for biome, (e, g) in BIOMES.items():
     name(f'biome.{NS}.{biome}.desc', e, g)
 
@@ -201,7 +224,7 @@ for key in sorted(lang):
 # tools and armor are listed by name only on purpose
 gear = ('_sword', '_pickaxe', '_axe', '_shovel', '_hoe', '_helmet', '_chestplate', '_leggings', '_boots')
 # parts that are never items in a player's hand (model-only blocks, piston parts, vehicles, TNT entities)
-INTERNAL = {'drill_bit_model', 'drill_body_model', 'super_piston_arm', 'super_piston_head',
+INTERNAL = {'realm_portal', 'drill_bit_model', 'drill_body_model', 'super_piston_arm', 'super_piston_head',
             'entity drill', 'entity frozen_tnt', 'entity nuke_tnt'}
 missing = [m for m in missing if not m.endswith(gear) and m not in INTERNAL]
 print(f'guide texts written ({len(en)} entries)')

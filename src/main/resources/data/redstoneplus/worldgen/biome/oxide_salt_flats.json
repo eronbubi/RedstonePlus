@@ -1,0 +1,112 @@
+{
+  "has_precipitation": false,
+  "temperature": 1.3,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 15509592,
+    "fog_color": 15251576,
+    "water_color": 6332544,
+    "water_fog_color": 1718826,
+    "grass_color": 12619872,
+    "foliage_color": 12619872,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "particle": {
+      "probability": 0.003,
+      "options": {
+        "type": "minecraft:dust",
+        "color": [
+          1.0,
+          0.15,
+          0.08
+        ],
+        "scale": 1.0
+      }
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "redstoneplus:switchback_crawler",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:kilnbound",
+        "weight": 25,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:detonator_husk",
+        "weight": 25,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ],
+    "creature": [
+      {
+        "type": "redstoneplus:bellows_hog",
+        "weight": 10,
+        "minCount": 2,
+        "maxCount": 3
+      }
+    ],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {
+    "redstoneplus:switchback_crawler": {
+      "energy_budget": 0.12,
+      "charge": 0.7
+    }
+  },
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "redstoneplus:salt_mound",
+      "redstoneplus:scree"
+    ],
+    [],
+    [
+      "redstoneplus:rail_line",
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:scrap",
+      "redstoneplus:lamp_pylon"
+    ],
+    [],
+    [
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
+    ],
+    [],
+    [
+      "redstoneplus:salt_brush_patch"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ]
+}

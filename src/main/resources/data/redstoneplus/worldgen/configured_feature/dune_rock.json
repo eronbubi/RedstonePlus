@@ -1,0 +1,15 @@
+{
+  "type": "redstoneplus:spire",
+  "config": {
+    "body": {
+      "Name": "redstoneplus:realmstone"
+    },
+    "accent": {
+      "Name": "redstoneplus:rust_sand"
+    },
+    "min_height": 3,
+    "max_height": 8,
+    "min_radius": 2,
+    "max_radius": 4
+  }
+}

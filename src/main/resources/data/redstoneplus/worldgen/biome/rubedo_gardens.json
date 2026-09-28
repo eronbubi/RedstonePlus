@@ -1,0 +1,102 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.9,
+  "downfall": 0.6,
+  "effects": {
+    "sky_color": 15233136,
+    "fog_color": 14178906,
+    "water_color": 14688298,
+    "water_fog_color": 5900810,
+    "grass_color": 12597818,
+    "foliage_color": 12597818,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "particle": {
+      "probability": 0.008,
+      "options": {
+        "type": "minecraft:dust",
+        "color": [
+          1.0,
+          0.15,
+          0.08
+        ],
+        "scale": 1.0
+      }
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "redstoneplus:living_capacitor",
+        "weight": 40,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:relay_strider",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      {
+        "type": "redstoneplus:leaking_cell",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "redstoneplus:rubedo_spire",
+      "redstoneplus:scree"
+    ],
+    [],
+    [
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:crystal_dome",
+      "redstoneplus:aqueduct",
+      "redstoneplus:lamp_pylon",
+      "redstoneplus:pump_station"
+    ],
+    [],
+    [
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
+    ],
+    [],
+    [
+      "redstoneplus:crimson_heather_patch",
+      "redstoneplus:red_coral_shrub_patch"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ]
+}

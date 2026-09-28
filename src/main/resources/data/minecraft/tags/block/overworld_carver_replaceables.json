@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "redstoneplus:realmstone",
+    "redstoneplus:deep_realmstone",
+    "redstoneplus:hematite",
+    "redstoneplus:dark_hematite",
+    "redstoneplus:cinder_rock",
+    "redstoneplus:tempest_basalt",
+    "redstoneplus:frost_realmstone",
+    "redstoneplus:fossil_circuit",
+    "redstoneplus:salt_crust",
+    "redstoneplus:karst_limestone",
+    "redstoneplus:rust_sand",
+    "redstoneplus:red_clay",
+    "redstoneplus:fen_mud",
+    "redstoneplus:canal_moss",
+    "redstoneplus:briar_soil",
+    "redstoneplus:heather_turf",
+    "redstoneplus:root_soil",
+    "redstoneplus:grove_moss",
+    "redstoneplus:lichen_karst",
+    "redstoneplus:rusted_soil",
+    "redstoneplus:slag",
+    "redstoneplus:sulfur_crust",
+    "redstoneplus:redstone_vein"
+  ]
+}

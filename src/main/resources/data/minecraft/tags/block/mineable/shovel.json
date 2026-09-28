@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
-    "redstoneplus:rusted_soil"
+    "redstoneplus:rusted_soil",
+    "redstoneplus:rust_sand",
+    "redstoneplus:red_clay",
+    "redstoneplus:fen_mud",
+    "redstoneplus:canal_moss",
+    "redstoneplus:briar_soil",
+    "redstoneplus:heather_turf",
+    "redstoneplus:root_soil",
+    "redstoneplus:grove_moss"
   ]
 }

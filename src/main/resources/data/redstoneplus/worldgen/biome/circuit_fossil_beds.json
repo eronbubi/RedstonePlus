@@ -1,0 +1,99 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.9,
+  "downfall": 0.4,
+  "effects": {
+    "sky_color": 9050650,
+    "fog_color": 6950928,
+    "water_color": 10493984,
+    "water_fog_color": 3147784,
+    "grass_color": 9052192,
+    "foliage_color": 9052192,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "particle": {
+      "probability": 0.01,
+      "options": {
+        "type": "minecraft:dust",
+        "color": [
+          1.0,
+          0.15,
+          0.08
+        ],
+        "scale": 1.0
+      }
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "redstoneplus:tripwire_brood",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:living_capacitor",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:relay_strider",
+        "weight": 25,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "redstoneplus:scree"
+    ],
+    [],
+    [
+      "redstoneplus:tower",
+      "redstoneplus:ruin",
+      "redstoneplus:lamp_pylon"
+    ],
+    [],
+    [
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper",
+      "redstoneplus:ore_redstone_vein"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor",
+      "redstoneplus:cave_clusters_ceiling"
+    ],
+    [],
+    [
+      "redstoneplus:red_coral_shrub_patch"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ]
+}

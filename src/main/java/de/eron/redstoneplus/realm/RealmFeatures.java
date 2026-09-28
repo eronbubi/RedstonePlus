@@ -203,29 +203,6 @@ public final class RealmFeatures {
                     ResourceKey.create(Registries.LOOT_TABLE, Realm.id("chests/" + lootTable)));
         }
 
-        /** A standing sign whose text faces {@code facing}, with the four translated lines sign.redstoneplus.KEY.0-3. */
-        void sign(int x, int y, int z, Direction facing, String key) {
-            this.set(x, y, z, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION, RotationSegment.convertToSegment(facing)));
-            if (this.level.getBlockEntity(this.at(x, y, z)) instanceof SignBlockEntity sign) {
-                SignText text = new SignText();
-                for (int i = 0; i < 4; i++) {
-                    text = text.setMessage(i, Component.translatable("sign.redstoneplus." + key + "." + i));
-                }
-                text = text.setHasGlowingText(true);
-                if (sign.getLevel() != null) {
-                    sign.setText(text, true);
-                    sign.setWaxed(true);
-                    sign.setChanged();
-                } else {
-                    // a chunk that is still being generated: the sign is not in a world yet, so write its data directly
-                    net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
-                    tag.put("front_text", SignText.DIRECT_CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, text).getOrThrow());
-                    tag.putBoolean("is_waxed", true);
-                    sign.loadCustomOnly(tag, this.level.registryAccess());
-                }
-            }
-        }
-
         BlockState gate(Block gate, Direction output) {
             return gate.defaultBlockState().setValue(GateBlock.FACING, output);
         }
@@ -265,7 +242,25 @@ public final class RealmFeatures {
     // Sites
 
     public enum Kind {
-        CRUSHER_PASSAGE, SWITCHYARD_JUNCTION, RESONANCE_GATEHOUSE, SLUICE_BRIDGE, KILN_BRIDGE, BRIAR_AMBUSH, CIRCUIT_WORKSHOP, RAIL_LINE
+        // trap sites
+        CRUSHER_PASSAGE(true), SWITCHYARD_JUNCTION(true), RESONANCE_GATEHOUSE(false), SLUICE_BRIDGE(false), KILN_BRIDGE(true), BRIAR_AMBUSH(true),
+        // scenery
+        RAIL_LINE(false), TOWER(false), RUIN(true), MONOLITH(false), GIANT_TREE(false), CRASHED_SHELL(false), CRYSTAL_DOME(true), BOARDWALK(false),
+        KILN_HUT(true), AQUEDUCT(false), ICE_RAILS(true), SCRAP(false),
+        // machines that run by themselves
+        LAMP_PYLON(false), CRUSHER_MILL(true), PUMP_STATION(true), MINECART_LOOP(true), STORM_SPIRE(false), BELL_TOWER(true), BEAST_CAGE(true),
+        LASER_POST(true);
+
+        /** Needs fairly flat, dry ground. */
+        final boolean flat;
+
+        Kind(boolean flat) {
+            this.flat = flat;
+        }
+
+        public String id() {
+            return this.name().toLowerCase(java.util.Locale.ROOT);
+        }
     }
 
     public static class Site extends Feature<NoneFeatureConfiguration> {
@@ -282,10 +277,10 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             BlockPos origin = context.origin();
             Rotation rotation = Rotation.getRandom(random);
-            if (this.kind != Kind.RESONANCE_GATEHOUSE && this.kind != Kind.SLUICE_BRIDGE && !flatEnough(level, origin, 6, 4)) {
+            if (this.kind.flat && !flatEnough(level, origin, 6, 4)) {
                 return false;
             }
-            if (this.kind != Kind.RESONANCE_GATEHOUSE && this.kind != Kind.SLUICE_BRIDGE && !level.getFluidState(origin.below()).isEmpty()) {
+            if (this.kind.flat && !level.getFluidState(origin.below()).isEmpty()) {
                 return false;
             }
             Build b = new Build(level, origin, rotation, random, true);
@@ -296,8 +291,26 @@ public final class RealmFeatures {
                 case SLUICE_BRIDGE -> sluiceBridge(b);
                 case KILN_BRIDGE -> kilnBridge(b);
                 case BRIAR_AMBUSH -> briarAmbush(b);
-                case CIRCUIT_WORKSHOP -> Exhibits.workshop(b);
                 case RAIL_LINE -> railLine(b);
+                case TOWER -> RealmStructures.tower(b);
+                case RUIN -> RealmStructures.ruin(b);
+                case MONOLITH -> RealmStructures.monolith(b);
+                case GIANT_TREE -> RealmStructures.giantTree(b);
+                case CRASHED_SHELL -> RealmStructures.crashedShell(b);
+                case CRYSTAL_DOME -> RealmStructures.crystalDome(b);
+                case BOARDWALK -> RealmStructures.boardwalk(b);
+                case KILN_HUT -> RealmStructures.kilnHut(b);
+                case AQUEDUCT -> RealmStructures.aqueduct(b);
+                case ICE_RAILS -> RealmStructures.iceRails(b);
+                case SCRAP -> RealmStructures.scrap(b);
+                case LAMP_PYLON -> RealmStructures.lampPylon(b);
+                case CRUSHER_MILL -> RealmStructures.crusherMill(b);
+                case PUMP_STATION -> RealmStructures.pumpStation(b);
+                case MINECART_LOOP -> RealmStructures.minecartLoop(b);
+                case STORM_SPIRE -> RealmStructures.stormSpire(b);
+                case BELL_TOWER -> RealmStructures.bellTower(b);
+                case BEAST_CAGE -> RealmStructures.beastCage(b);
+                case LASER_POST -> RealmStructures.laserPost(b);
             }
             return true;
         }
@@ -355,8 +368,6 @@ public final class RealmFeatures {
         b.chest(0, 0, 8, Direction.NORTH, "realm_piston_karst");
         b.set(-1, 2, 7, ModRegistry.INSTANT_LAMP.get());
         b.set(-1, 2, 8, Blocks.REDSTONE_BLOCK);
-        b.sign(-2, 0, -6, Direction.NORTH, "crusher_passage");
-        b.sign(2, 0, -6, Direction.NORTH, "vault_and");
     }
 
     // ---------- Switchyard Flats: tripper rail -> hazard switch, spike pit, detector signal posts ----------
@@ -391,7 +402,6 @@ public final class RealmFeatures {
         b.set(-4, 1, -7, Blocks.COAL_BLOCK);
         b.set(-3, 0, -7, Blocks.COAL_BLOCK);
         b.chest(-3, 0, -8, Direction.EAST, "realm_switchyard_flats");
-        b.sign(-2, 0, -9, Direction.NORTH, "switchyard");
     }
 
     // ---------- Resonance Hollows: sculk sensors -> lockdown gates, signal display shows the sensor level ----------
@@ -418,7 +428,6 @@ public final class RealmFeatures {
         b.set(0, 4, -3, Realm.RESONANT_CRYSTAL.get());
         b.set(0, 4, 3, Realm.RESONANT_CRYSTAL.get());
         b.chest(0, 0, 4, Direction.NORTH, "realm_resonance_hollows");
-        b.sign(-2, 0, -4, Direction.NORTH, "gatehouse");
     }
 
     // ---------- Sluice Gardens: bridge tripwire -> floodgates along the bank ----------
@@ -458,7 +467,6 @@ public final class RealmFeatures {
             b.set(side + Integer.signum(side), 0, 0, ModRegistry.INSTANT_LAMP.get());
         }
         b.chest(5, 0, 3, Direction.WEST, "realm_sluice_gardens");
-        b.sign(-5, 0, -3, Direction.NORTH, "sluice");
     }
 
     // ---------- Kiln Barrens: pressure plates -> turret walls; a counter keeps score of the volleys ----------
@@ -487,7 +495,6 @@ public final class RealmFeatures {
         b.set(1, 0, -6, b.gate(ModRegistry.COUNTER.get(), Direction.NORTH));
         b.set(1, 0, -7, ModRegistry.SIGNAL_DISPLAY.get());
         b.chest(0, 0, 8, Direction.NORTH, "realm_kiln_barrens");
-        b.sign(-1, 0, -8, Direction.NORTH, "kiln");
     }
 
     // ---------- Tripwire Briar: tripwire -> launcher walls; a laser sensor watch post further on ----------
@@ -521,7 +528,6 @@ public final class RealmFeatures {
         b.set(3, 0, 5, cobble);
         b.set(3, 1, 5, cobble);
         b.chest(0, 0, 8, Direction.NORTH, "realm_tripwire_briar");
-        b.sign(-2, 0, -7, Direction.NORTH, "briar");
     }
 
     // ---------- Switchyard decoration: straight track with a signal lamp at each end ----------

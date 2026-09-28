@@ -1,6 +1,15 @@
 {
   "replace": false,
   "values": [
-    "redstoneplus:briar_thorns"
+    "redstoneplus:briar_thorns",
+    "redstoneplus:crimson_heather",
+    "redstoneplus:fen_reed",
+    "redstoneplus:red_coral_shrub",
+    "redstoneplus:pale_stalk",
+    "redstoneplus:salt_brush",
+    "redstoneplus:copper_reed",
+    "redstoneplus:lichen_tuft",
+    "redstoneplus:cinder_bloom",
+    "redstoneplus:frost_fern"
   ]
 }

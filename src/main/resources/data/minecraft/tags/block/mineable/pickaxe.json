@@ -93,6 +93,23 @@
     "redstoneplus:kiln_turret",
     "redstoneplus:volley_launcher",
     "redstoneplus:lockdown_gate",
-    "redstoneplus:decoy_beacon"
+    "redstoneplus:decoy_beacon",
+    "redstoneplus:realmstone",
+    "redstoneplus:deep_realmstone",
+    "redstoneplus:realmstone_bricks",
+    "redstoneplus:hematite",
+    "redstoneplus:dark_hematite",
+    "redstoneplus:cinder_rock",
+    "redstoneplus:tempest_basalt",
+    "redstoneplus:frost_realmstone",
+    "redstoneplus:fossil_circuit",
+    "redstoneplus:redstone_vein",
+    "redstoneplus:salt_crust",
+    "redstoneplus:rust_plating",
+    "redstoneplus:shell_plating",
+    "redstoneplus:redstone_cluster",
+    "redstoneplus:realm_redstone_ore",
+    "redstoneplus:realm_iron_ore",
+    "redstoneplus:realm_copper_ore"
   ]
 }

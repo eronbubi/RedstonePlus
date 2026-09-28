@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "redstoneplus:block/pale_root_log"
+    },
+    "axis=z": {
+      "model": "redstoneplus:block/pale_root_log_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "redstoneplus:block/pale_root_log_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

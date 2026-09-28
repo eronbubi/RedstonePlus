@@ -2,16 +2,13 @@
   "type": "redstoneplus:spire",
   "config": {
     "body": {
-      "Name": "minecraft:basalt",
-      "Properties": {
-        "axis": "y"
-      }
+      "Name": "redstoneplus:cinder_rock"
     },
     "accent": {
       "Name": "minecraft:magma_block"
     },
-    "min_height": 6,
-    "max_height": 18,
+    "min_height": 8,
+    "max_height": 22,
     "min_radius": 1,
     "max_radius": 3
   }

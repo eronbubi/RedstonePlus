@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "redstoneplus:block/realm_redstone_ore"
+    },
+    "lit=true": {
+      "model": "redstoneplus:block/realm_redstone_ore"
+    }
+  }
+}

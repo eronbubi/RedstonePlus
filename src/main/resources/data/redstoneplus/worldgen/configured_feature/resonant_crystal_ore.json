@@ -7,7 +7,7 @@
       {
         "target": {
           "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:base_stone_overworld"
+          "tag": "redstoneplus:realm_base_stone"
         },
         "state": {
           "Name": "redstoneplus:resonant_crystal"

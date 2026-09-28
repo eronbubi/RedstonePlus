@@ -207,25 +207,189 @@ name(f'block.{NS}.resonant_crystal', 'Resonant Crystal', 'Resonanzkristall', 'Gl
 name(f'block.{NS}.sulfur_crust', 'Sulfur Crust', 'Schwefelkruste', 'Yellow crust of the Kiln Barrens.', 'Gelbe Kruste der Brennofen-Öde.')
 name(f'block.{NS}.briar_thorns', 'Briar Thorns', 'Dornengestrüpp', 'Slows and scratches whoever walks through it.', 'Bremst und kratzt jeden, der hindurchgeht.')
 
-# ================================================================================================ realm gate
-gate_side = tint(vanilla('block/polished_blackstone_bricks'), '#5a3a3a', gain=1.3)
-px = gate_side.load()
-for i in range(16):
-    for (x, y) in ((i, 0), (i, 15), (0, i), (15, i)):
-        px[x, y] = (200, 30, 20, 255)
-save(gate_side, 'block', 'realm_gate_side')
-save(recolor(vanilla('block/respawn_anchor_top_off'), '#c02020', 0.05), 'block', 'realm_gate_top')
-save(recolor(first_frame(vanilla('block/respawn_anchor_top')), '#ff4020', 0.05), 'block', 'realm_gate_top_on')
-for lit, top in ((False, 'realm_gate_top'), (True, 'realm_gate_top_on')):
-    model(f'block/realm_gate{"_on" if lit else ""}', {'parent': 'minecraft:block/cube_bottom_top', 'textures': {
-        'top': f'{NS}:block/{top}', 'side': f'{NS}:block/realm_gate_side', 'bottom': 'minecraft:block/polished_blackstone'}})
-blockstate('realm_gate', {'variants': {'lit=false': {'model': f'{NS}:block/realm_gate'}, 'lit=true': {'model': f'{NS}:block/realm_gate_on'}}})
-item_model('realm_gate', f'{NS}:block/realm_gate_on')
-pickaxe.append(f'{NS}:realm_gate')
-needs_iron.append(f'{NS}:realm_gate')
-name(f'block.{NS}.realm_gate', 'Realm Gate', 'Reichstor',
-     'Give it a redstone signal, then right click to travel to the Redstone Realm and back.',
-     'Mit Redstone-Signal versorgen, dann Rechtsklick: Reise ins Redstone-Reich und zurück.')
+# ================================================================================================ the realm's own blocks
+def overlay_ore(base, ore_path, stone_path='block/stone', threshold=40):
+    """Puts the ore specks of a vanilla ore texture on our own rock."""
+    ore = vanilla(ore_path)
+    stone = vanilla(stone_path)
+    out = base.copy()
+    op, sp, bp = ore.load(), stone.load(), out.load()
+    for y in range(16):
+        for x in range(16):
+            o, s_ = op[x, y], sp[x, y]
+            if sum(abs(o[i] - s_[i]) for i in range(3)) > threshold:
+                bp[x, y] = o
+    return out
+
+
+def bands(img, dark, every=5, width=2):
+    out = img.copy()
+    px = out.load()
+    d = tuple(round(v * 255) for v in rgb(dark))
+    for y in range(16):
+        if y % every < width:
+            for x in range(16):
+                r, g, b, a = px[x, y]
+                px[x, y] = (round(r * 0.35 + d[0] * 0.65), round(g * 0.35 + d[1] * 0.65), round(b * 0.35 + d[2] * 0.65), a)
+    return out
+
+
+def traces(img, color, seed=7):
+    """Circuit-like lines of light."""
+    out = img.copy()
+    px = out.load()
+    c = tuple(round(v * 255) for v in rgb(color)) + (255,)
+    r = random.Random(seed)
+    for _ in range(4):
+        x, y = r.randrange(16), r.randrange(16)
+        for _ in range(9):
+            px[x, y] = c
+            if r.random() < 0.5:
+                x = (x + r.choice((-1, 1))) % 16
+            else:
+                y = (y + r.choice((-1, 1))) % 16
+    return out
+
+
+realmstone = specks(tint(vanilla('block/stone'), '#a8524a', gain=1.3), '#d02a1a', 0.02)
+TERRAIN = {
+    # id: (texture, tool, english, german, english desc, german desc)
+    'realmstone': (realmstone, 'pickaxe', 'Realmstone', 'Reichsstein', 'The rock the Redstone Realm is made of.', 'Der Fels, aus dem das Redstone-Reich besteht.'),
+    'deep_realmstone': (specks(tint(vanilla('block/deepslate'), '#6a2e2e', gain=1.4), '#ff3020', 0.015), 'pickaxe', 'Deep Realmstone', 'Tiefer Reichsstein',
+                        'Realmstone from deep below.', 'Reichsstein aus der Tiefe.'),
+    'realmstone_bricks': (tint(vanilla('block/stone_bricks'), '#b0564a', gain=1.3), 'pickaxe', 'Realmstone Bricks', 'Reichssteinziegel',
+                          'Building block of the realm\'s old builders.', 'Baublock der alten Erbauer des Reichs.'),
+    'hematite': (bands(tint(vanilla('block/stone'), '#c04a36', gain=1.35), '#3a1a18'), 'pickaxe', 'Hematite', 'Hämatit',
+                 'Banded red rock of the Hematite Scarps.', 'Gebänderter roter Fels der Hämatit-Klippen.'),
+    'dark_hematite': (specks(tint(vanilla('block/stone'), '#4a2a28', gain=1.3), '#d03a2a', 0.03), 'pickaxe', 'Dark Hematite', 'Dunkler Hämatit',
+                      'The dark bands of the scarps.', 'Die dunklen Bänder der Klippen.'),
+    'cinder_rock': (specks(tint(vanilla('block/blackstone'), '#4a3e3a', gain=1.45), '#ff8a20', 0.03), 'pickaxe', 'Cinder Rock', 'Schlackenfels',
+                    'Black rock of the Kiln Barrens.', 'Schwarzer Fels der Brennofen-Öde.'),
+    'tempest_basalt': (specks(tint(vanilla('block/polished_basalt_side'), '#303844', gain=1.5), '#40e0c8', 0.02), 'pickaxe', 'Tempest Basalt', 'Sturmbasalt',
+                       'Glassy black stone of the Tempest Shoals.', 'Glasiger schwarzer Stein der Sturmbänke.'),
+    'frost_realmstone': (specks(tint(vanilla('block/stone'), '#7a8a9c', gain=1.35), '#ffffff', 0.08), 'pickaxe', 'Frost Realmstone', 'Frost-Reichsstein',
+                         'Frozen rock of the Frostwork Wastes. Slippery.', 'Gefrorener Fels der Frostwerk-Öde. Rutschig.'),
+    'fossil_circuit': (traces(tint(vanilla('block/stone'), '#7a3030', gain=1.3), '#ff4a30'), 'pickaxe', 'Fossil Circuit', 'Fossile Schaltung',
+                       'Ancient circuits turned to stone. Glows faintly.', 'Uralte, versteinerte Schaltungen. Leuchtet schwach.'),
+    'redstone_vein': (traces(tint(vanilla('block/redstone_block'), '#e02a1a', gain=1.1), '#ffb080', 3), 'pickaxe', 'Redstone Vein', 'Redstone-Ader',
+                      'Glowing redstone grown through the rock.', 'Leuchtendes Redstone, durch den Fels gewachsen.'),
+    'salt_crust': (specks(tint(vanilla('block/calcite'), '#f2ede4', gain=1.05), '#d8cfc0', 0.12), 'pickaxe', 'Salt Crust', 'Salzkruste',
+                   'White crust of the Oxide Salt Flats.', 'Weiße Kruste der Oxid-Salzebene.'),
+    'rust_plating': (specks(tint(vanilla('block/iron_block'), '#b0582e', gain=1.2), '#6a2a14', 0.1), 'pickaxe', 'Rust Plating', 'Rostplatten',
+                     'Rusted plates from the realm\'s derelict machines.', 'Verrostete Platten der verlassenen Maschinen des Reichs.'),
+    'shell_plating': (specks(tint(vanilla('block/iron_block'), '#8e9098', gain=1.1), '#a0382a', 0.05), 'pickaxe', 'Shell Plating', 'Hüllenplatten',
+                      'Plating of the great shell casings in the dunes.', 'Beplankung der großen Geschosshülsen in den Dünen.'),
+    'rust_sand': (recolor(vanilla('block/red_sand'), '#b8442e'), 'shovel', 'Rust Sand', 'Rostsand', 'Red sand of the Arsenal Dunes. Falls like sand.',
+                  'Roter Sand der Arsenal-Dünen. Fällt wie Sand.'),
+    'red_clay': (tint(vanilla('block/clay'), '#b8503e', gain=1.3), 'shovel', 'Red Clay', 'Roter Ton', 'Clay of the Red Clay Fen.', 'Ton des Rotton-Moors.'),
+    'fen_mud': (tint(vanilla('block/mud'), '#7a3024', gain=1.5), 'shovel', 'Fen Mud', 'Moorschlamm', 'Sticky red mud.', 'Zäher roter Schlamm.'),
+    'canal_moss': (tint(vanilla('block/moss_block'), '#46b89c', gain=1.4), 'shovel', 'Canal Moss', 'Kanalmoos', 'Teal moss of the Sluice Gardens.',
+                   'Türkises Moos der Schleusengärten.'),
+    'briar_soil': (tint(vanilla('block/rooted_dirt'), '#5a4a2c', gain=1.4), 'shovel', 'Briar Soil', 'Dornenerde', 'Root-tangled ground of the Tripwire Briar.',
+                   'Wurzeldurchzogener Boden des Stolperdraht-Dickichts.'),
+    'heather_turf': (specks(tint(vanilla('block/moss_block'), '#a8304a', gain=1.5), '#e05070', 0.1), 'shovel', 'Heather Turf', 'Heidetorf',
+                     'Crimson heather of the Landmark Moors.', 'Karminrote Heide der Wegmarken-Moore.'),
+    'root_soil': (specks(tint(vanilla('block/rooted_dirt'), '#3a2222', gain=1.4), '#ff3a2a', 0.05), 'shovel', 'Root Soil', 'Wurzelerde',
+                  'Dark soil of the Vein Mire, threaded with glowing roots.', 'Dunkle Erde des Adermoors mit leuchtenden Wurzeln.'),
+    'grove_moss': (tint(vanilla('block/moss_block'), '#2e6a6a', gain=1.3), 'shovel', 'Grove Moss', 'Hainmoos', 'Deep teal moss of the Lamplit Grove.',
+                   'Tiefgrünes Moos des Lampenhains.'),
+}
+for bid, (img, tool, e, g, de_, dg) in TERRAIN.items():
+    save(img, 'block', bid)
+    simple_block(bid)
+    self_drop(bid)
+    name(f'block.{NS}.{bid}', e, g, de_, dg)
+    (pickaxe if tool == 'pickaxe' else shovel).append(f'{NS}:{bid}')
+
+# logs
+pale_side = tint(vanilla('block/stripped_birch_log'), '#ece2d2', gain=1.1)
+pale_top = tint(vanilla('block/stripped_birch_log_top'), '#e0d4c0', gain=1.1)
+save(pale_side, 'block', 'pale_root_log')
+save(pale_top, 'block', 'pale_root_log_top')
+save(traces(pale_side, '#ff3020', 11), 'block', 'vein_log')
+save(pale_top, 'block', 'vein_log_top')
+axes = []
+for log, e, g, de_, dg in (('pale_root_log', 'Pale Root', 'Bleichwurzel', 'Wood of the giant trees of the Lamplit Grove.', 'Holz der Riesenbäume des Lampenhains.'),
+                           ('vein_log', 'Vein Root', 'Aderwurzel', 'Pale root with glowing red veins.', 'Bleichwurzel mit leuchtenden roten Adern.')):
+    model(f'block/{log}', {'parent': 'minecraft:block/cube_column', 'textures': {'end': f'{NS}:block/{log}_top', 'side': f'{NS}:block/{log}'}})
+    model(f'block/{log}_horizontal', {'parent': 'minecraft:block/cube_column_horizontal', 'textures': {'end': f'{NS}:block/{log}_top', 'side': f'{NS}:block/{log}'}})
+    blockstate(log, {'variants': {'axis=y': {'model': f'{NS}:block/{log}'}, 'axis=z': {'model': f'{NS}:block/{log}_horizontal', 'x': 90},
+                                  'axis=x': {'model': f'{NS}:block/{log}_horizontal', 'x': 90, 'y': 90}}})
+    item_model(log, f'{NS}:block/{log}')
+    self_drop(log)
+    name(f'block.{NS}.{log}', e, g, de_, dg)
+    axes.append(f'{NS}:{log}')
+
+# plants
+PLANTS = {
+    'crimson_heather': (tint(vanilla('block/short_grass'), '#c83656', gain=1.9), 'Crimson Heather', 'Karminheide', 'Heather of the moors.', 'Heide der Moore.'),
+    'fen_reed': (tint(vanilla('block/sugar_cane'), '#8e2c26', gain=1.5), 'Fen Reed', 'Moorschilf', 'Dark red reeds of the fens.', 'Dunkelrotes Schilf der Moore.'),
+    'red_coral_shrub': (recolor(vanilla('block/fire_coral'), '#e8303e'), 'Red Coral Shrub', 'Rote Korallenstaude',
+                        'Stone coral that grows on dry land in the realm. Glows a little.', 'Steinkoralle, die im Reich an Land wächst. Leuchtet etwas.'),
+    'pale_stalk': (tint(vanilla('block/crimson_roots'), '#f2e6d8', gain=1.4), 'Pale Stalk', 'Bleichstängel', 'Glowing pale stalks of the Vein Mire.',
+                   'Leuchtende bleiche Stängel des Adermoors.'),
+    'salt_brush': (tint(vanilla('block/dead_bush'), '#dcd4c4', gain=1.6), 'Salt Brush', 'Salzbusch', 'Dry brush of the salt flats.', 'Trockener Busch der Salzebene.'),
+    'copper_reed': (tint(vanilla('block/sugar_cane'), '#e89aac', gain=1.5), 'Copper Reed', 'Kupferschilf', 'Pink reeds along the canals.', 'Rosa Schilf an den Kanälen.'),
+    'lichen_tuft': (tint(vanilla('block/short_grass'), '#eca04a', gain=1.9), 'Lichen Tuft', 'Flechtenbüschel', 'Orange lichen of the karst.', 'Orange Flechte des Karsts.'),
+    'cinder_bloom': (recolor(vanilla('block/crimson_fungus'), '#ff8a24'), 'Cinder Bloom', 'Glutblüte', 'A flower that grows from hot cinders. Glows.',
+                     'Eine Blume, die aus heißer Schlacke wächst. Leuchtet.'),
+    'frost_fern': (tint(vanilla('block/fern'), '#cfe4f4', gain=1.6), 'Frost Fern', 'Frostfarn', 'Fern of the frozen wastes.', 'Farn der gefrorenen Öde.'),
+}
+for pid, (img, e, g, de_, dg) in PLANTS.items():
+    save(img, 'block', pid)
+    model(f'block/{pid}', {'parent': 'minecraft:block/cross', 'render_type': 'minecraft:cutout', 'textures': {'cross': f'{NS}:block/{pid}'}})
+    blockstate(pid, {'variants': {'': {'model': f'{NS}:block/{pid}'}}})
+    item_model(pid, texture=f'{NS}:block/{pid}')
+    self_drop(pid)
+    name(f'block.{NS}.{pid}', e, g, de_, dg)
+
+# redstone crystal cluster (placed like an amethyst cluster, on any face)
+save(recolor(vanilla('block/amethyst_cluster'), '#ff2a1a', 0.05), 'block', 'redstone_cluster')
+model('block/redstone_cluster', {'parent': 'minecraft:block/cross', 'render_type': 'minecraft:cutout', 'textures': {'cross': f'{NS}:block/redstone_cluster'}})
+cluster_state = vanilla_json('assets/minecraft/blockstates/amethyst_cluster.json')
+for v in cluster_state['variants'].values():
+    v['model'] = f'{NS}:block/redstone_cluster'
+blockstate('redstone_cluster', cluster_state)
+item_model('redstone_cluster', texture=f'{NS}:block/redstone_cluster')
+write(os.path.join(DATA, 'loot_table', 'blocks', 'redstone_cluster.json'), {
+    'type': 'minecraft:block', 'random_sequence': f'{NS}:blocks/redstone_cluster',
+    'pools': [{'rolls': 1, 'bonus_rolls': 0, 'entries': [{'type': 'minecraft:item', 'name': 'minecraft:redstone', 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': 2, 'max': 5}, 'add': False},
+        {'function': 'minecraft:apply_bonus', 'enchantment': 'minecraft:fortune', 'formula': 'minecraft:uniform_bonus_count', 'parameters': {'bonusMultiplier': 1}}]}]}]})
+pickaxe.append(f'{NS}:redstone_cluster')
+name(f'block.{NS}.redstone_cluster', 'Redstone Crystal', 'Redstone-Kristall', 'Glowing crystal of pure redstone. Breaks into redstone dust.',
+     'Leuchtender Kristall aus reinem Redstone. Zerfällt zu Redstone-Staub.')
+
+# ores in realmstone: same drops as their vanilla ores
+for oid, vanilla_ore, e, g in (('realm_redstone_ore', 'redstone_ore', 'Realm Redstone Ore', 'Reichs-Redstone-Erz'),
+                               ('realm_iron_ore', 'iron_ore', 'Realm Iron Ore', 'Reichs-Eisenerz'),
+                               ('realm_copper_ore', 'copper_ore', 'Realm Copper Ore', 'Reichs-Kupfererz')):
+    save(overlay_ore(realmstone, f'block/{vanilla_ore}'), 'block', oid)
+    simple_block(oid)
+    loot = vanilla_json(f'data/minecraft/loot_table/blocks/{vanilla_ore}.json')
+    write(os.path.join(DATA, 'loot_table', 'blocks', oid + '.json'),
+          json.loads(json.dumps(loot).replace(f'minecraft:{vanilla_ore}', f'{NS}:{oid}').replace(f'minecraft:blocks/{vanilla_ore}', f'{NS}:blocks/{oid}')))
+    pickaxe.append(f'{NS}:{oid}')
+    needs_iron.append(f'{NS}:{oid}') if oid == 'realm_redstone_ore' else None
+    name(f'block.{NS}.{oid}', e, g, f'Found in the realm\'s rock. Drops the same as its Overworld ore.',
+         f'Kommt im Fels des Reichs vor. Lässt dasselbe fallen wie das Erz der Oberwelt.')
+if os.path.exists(os.path.join(DATA, 'loot_table', 'blocks', 'realm_redstone_ore.json')):
+    lit = vanilla_json('assets/minecraft/blockstates/redstone_ore.json')
+    blockstate('realm_redstone_ore', {'variants': {'lit=false': {'model': f'{NS}:block/realm_redstone_ore'},
+                                                   'lit=true': {'model': f'{NS}:block/realm_redstone_ore'}}})
+
+# ================================================================================================ the realm portal
+portal = recolor(vanilla('block/nether_portal'), '#ff2a1a', 0.05)
+save(portal, 'block', 'realm_portal')
+with open(os.path.join(ASSETS, 'textures', 'block', 'realm_portal.png.mcmeta'), 'w', encoding='utf-8') as f:
+    f.write(JAR.read('assets/minecraft/textures/block/nether_portal.png.mcmeta').decode('utf-8'))
+for suffix in ('ns', 'ew'):
+    m = vanilla_json(f'assets/minecraft/models/block/nether_portal_{suffix}.json')
+    m['textures'] = {'particle': f'{NS}:block/realm_portal', 'portal': f'{NS}:block/realm_portal'}
+    m['render_type'] = 'minecraft:translucent'
+    model(f'block/realm_portal_{suffix}', m)
+blockstate('realm_portal', {'variants': {'axis=x': {'model': f'{NS}:block/realm_portal_ns'}, 'axis=z': {'model': f'{NS}:block/realm_portal_ew'}}})
+name(f'block.{NS}.realm_portal', 'Realm Portal', 'Reichsportal')
 
 # ================================================================================================ tripper rail
 save(recolor(vanilla('block/detector_rail'), '#e0a020', 0.3), 'block', 'tripper_rail')
@@ -400,7 +564,7 @@ name(f'block.{NS}.decoy_beacon', 'Decoy Beacon', 'Köderleuchtfeuer',
      'Klingt wie Schritte: Glockenpirscher im Umkreis von 24 Blöcken gehen hin, Sperrgitter im Umkreis von 16 bleiben offen.')
 
 for block in ('karst_limestone', 'lichen_karst', 'karst_bricks', 'rusted_soil', 'slag', 'resonant_crystal', 'sulfur_crust',
-              'briar_thorns', 'realm_gate', 'tripper_rail', 'decoy_beacon', *TRAPS):
+              'briar_thorns', 'tripper_rail', 'decoy_beacon', *TRAPS):
     self_drop(block)
 
 # ================================================================================================ counter items
@@ -509,21 +673,7 @@ for chest_name, counter in COUNTERS.items():
         {'rolls': {'type': 'minecraft:uniform', 'min': 4, 'max': 7}, 'bonus_rolls': 0, 'entries': COMMON},
         {'rolls': 1, 'bonus_rolls': 0, 'conditions': [{'condition': 'minecraft:random_chance', 'chance': 0.75}],
          'entries': [entry(counter, count[0], count[1])]}])
-LOGIC = ['and_gate', 'or_gate', 'xor_gate', 'not_gate', 't_flip_flop', 'rs_latch', 'counter', 'sequencer', 'clock', 'delay_block',
-         'pulse_extender', 'edge_detector', 'instant_lamp', 'signal_display', 'player_detector', 'laser_sensor', 'wireless_transmitter',
-         'wireless_receiver', 'multimeter']
-chest('realm_workshop', [
-    {'rolls': {'type': 'minecraft:uniform', 'min': 3, 'max': 6}, 'bonus_rolls': 0, 'entries': [entry(f'{NS}:{b}', 1, 3) for b in LOGIC]},
-    {'rolls': 2, 'bonus_rolls': 0, 'entries': COMMON}])
-chest('realm_arrival', [
-    {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry(c, 2 if c.endswith('brace') else 1, 3 if c.endswith('brace') else 1)]} for c in COUNTERS.values()
-] + [{'rolls': 1, 'bonus_rolls': 0, 'entries': [entry(f'{NS}:realm_cog', 4, 6)]},
-     {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry('minecraft:redstone', 16, 24)]},
-     {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry('minecraft:cooked_beef', 6, 8)]},
-     {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry(f'{NS}:multimeter')]}])
-
 # ================================================================================================ recipes
-shaped('realm_gate', ['IRI', 'RCR', 'IRI'], {'I': 'minecraft:iron_ingot', 'R': 'minecraft:redstone_block', 'C': f'{NS}:redstone_circuit'}, f'{NS}:realm_gate')
 shaped('piston_brace', ['I I', 'ICI', 'I I'], {'I': 'minecraft:iron_ingot', 'C': f'{NS}:realm_cog'}, f'{NS}:piston_brace', 3)
 shaped('pulse_injector', ['  R', ' C ', 'I  '], {'R': 'minecraft:redstone_block', 'C': f'{NS}:realm_cog', 'I': 'minecraft:iron_ingot'}, f'{NS}:pulse_injector')
 shaped('decoy_beacon', ['AAA', 'ACA', 'KKK'], {'A': 'minecraft:amethyst_shard', 'C': f'{NS}:realm_cog', 'K': 'minecraft:copper_ingot'}, f'{NS}:decoy_beacon')
@@ -563,6 +713,8 @@ merge_tag(os.path.join(MC_DATA, 'tags', 'item', 'rails.json'), [f'{NS}:tripper_r
 merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'sword_efficient.json'), [f'{NS}:briar_thorns'])
 
 # ================================================================================================ world generation
+# The realm uses only its own blocks, plants and features. Vanilla feature *types* (ore, random_patch, block_column...)
+# are fine; what they place is always the realm's own content.
 def placed(name_, configured, placement):
     write(os.path.join(DATA, 'worldgen', 'configured_feature', name_ + '.json'), configured)
     write(os.path.join(DATA, 'worldgen', 'placed_feature', name_ + '.json'), {'feature': f'{NS}:{name_}', 'placement': placement})
@@ -577,76 +729,129 @@ def surface(count=None, rarity=None, heightmap='MOTION_BLOCKING_NO_LEAVES'):
     return p + [{'type': 'minecraft:in_square'}, {'type': 'minecraft:heightmap', 'heightmap': heightmap}, {'type': 'minecraft:biome'}]
 
 
+def underground(count, lo, hi, direction='down', rarity=None):
+    p = [{'type': 'minecraft:rarity_filter', 'chance': rarity}] if rarity else []
+    return p + [{'type': 'minecraft:count', 'count': count}, {'type': 'minecraft:in_square'},
+                {'type': 'minecraft:height_range', 'height': {'type': 'minecraft:uniform', 'min_inclusive': {'absolute': lo}, 'max_inclusive': {'absolute': hi}}},
+                {'type': 'minecraft:environment_scan', 'direction_of_search': direction, 'max_steps': 16, 'target_condition': {'type': 'minecraft:solid'},
+                 'allowed_search_condition': {'type': 'minecraft:matching_blocks', 'blocks': ['minecraft:air', 'minecraft:cave_air']}},
+                {'type': 'minecraft:random_offset', 'xz_spread': 0, 'y_spread': 1 if direction == 'down' else -1}, {'type': 'minecraft:biome'}]
+
+
 def none_feature(kind):
     return {'type': f'{NS}:{kind}', 'config': {}}
 
 
 def state(name_, props=None):
-    s = {'Name': name_}
+    s_ = {'Name': name_ if ':' in name_ else f'{NS}:{name_}'}
     if props:
-        s['Properties'] = props
-    return s
+        s_['Properties'] = props
+    return s_
 
 
-placed('karst_spire', {'type': f'{NS}:spire', 'config': {'body': state(f'{NS}:karst_limestone'), 'accent': state(f'{NS}:lichen_karst'),
-                                                          'min_height': 12, 'max_height': 34, 'min_radius': 2, 'max_radius': 4}},
-       surface({'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2}))
-placed('kiln_spire', {'type': f'{NS}:spire', 'config': {'body': state('minecraft:basalt', {'axis': 'y'}), 'accent': state('minecraft:magma_block'),
-                                                         'min_height': 6, 'max_height': 18, 'min_radius': 1, 'max_radius': 3}},
-       surface({'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}))
-for kind, chance in (('crusher_passage', 10), ('switchyard_junction', 9), ('sluice_bridge', 10), ('kiln_bridge', 10), ('briar_ambush', 10),
-                     ('circuit_workshop', 36), ('rail_line', 3)):
-    placed(kind, none_feature(kind), surface(rarity=chance, heightmap='WORLD_SURFACE_WG'))
-placed('resonance_gatehouse', none_feature('resonance_gatehouse'), [
-    {'type': 'minecraft:rarity_filter', 'chance': 4}, {'type': 'minecraft:in_square'},
-    {'type': 'minecraft:height_range', 'height': {'type': 'minecraft:uniform', 'min_inclusive': {'absolute': -40}, 'max_inclusive': {'absolute': 30}}},
-    {'type': 'minecraft:environment_scan', 'direction_of_search': 'down', 'max_steps': 16, 'target_condition': {'type': 'minecraft:solid'},
-     'allowed_search_condition': {'type': 'minecraft:matching_blocks', 'blocks': 'minecraft:air'}},
-    {'type': 'minecraft:random_offset', 'xz_spread': 0, 'y_spread': 1}, {'type': 'minecraft:biome'}])
-placed('resonant_crystal_ore', {'type': 'minecraft:ore', 'config': {'size': 9, 'discard_chance_on_air_exposure': 0.0, 'targets': [
-    {'target': {'predicate_type': 'minecraft:tag_match', 'tag': 'minecraft:base_stone_overworld'}, 'state': state(f'{NS}:resonant_crystal')}]}},
-       [{'type': 'minecraft:count', 'count': 14}, {'type': 'minecraft:in_square'},
-        {'type': 'minecraft:height_range', 'height': {'type': 'minecraft:uniform', 'min_inclusive': {'absolute': -60}, 'max_inclusive': {'absolute': 40}}},
-        {'type': 'minecraft:biome'}])
-placed('briar_patch', {'type': 'minecraft:random_patch', 'config': {'tries': 24, 'xz_spread': 5, 'y_spread': 2, 'feature': {
-    'feature': {'type': 'minecraft:simple_block', 'config': {'to_place': {'type': 'minecraft:simple_state_provider', 'state': state(f'{NS}:briar_thorns')}}},
-    'placement': [{'type': 'minecraft:block_predicate_filter', 'predicate': {'type': 'minecraft:all_of', 'predicates': [
-        {'type': 'minecraft:matching_blocks', 'blocks': 'minecraft:air'},
-        {'type': 'minecraft:would_survive', 'state': state(f'{NS}:briar_thorns')}]}}]}}}, surface(3))
-placed('slag_heap', {'type': 'minecraft:forest_rock', 'config': {'state': state(f'{NS}:slag')}}, surface(1))
-placed('coal_heap', {'type': 'minecraft:forest_rock', 'config': {'state': state('minecraft:coal_block')}}, surface(rarity=3))
-placed('sulfur_rock', {'type': 'minecraft:forest_rock', 'config': {'state': state(f'{NS}:sulfur_crust')}}, surface(rarity=2))
+def spire(name_, body, accent, h, r, count):
+    placed(name_, {'type': f'{NS}:spire', 'config': {'body': state(body), 'accent': state(accent), 'min_height': h[0], 'max_height': h[1],
+                                                      'min_radius': r[0], 'max_radius': r[1]}}, surface(count))
 
-# every biome picks its features from this one ordered list per step, so the order is the same everywhere
-plains = vanilla_json('data/minecraft/worldgen/biome/plains.json')
-ORES = plains['features'][6]
+
+def patch(name_, plant, tries, count, spread=6):
+    placed(name_, {'type': 'minecraft:random_patch', 'config': {'tries': tries, 'xz_spread': spread, 'y_spread': 2, 'feature': {
+        'feature': {'type': 'minecraft:simple_block', 'config': {'to_place': {'type': 'minecraft:simple_state_provider', 'state': state(plant)}}},
+        'placement': [{'type': 'minecraft:block_predicate_filter', 'predicate': {'type': 'minecraft:all_of', 'predicates': [
+            {'type': 'minecraft:matching_blocks', 'blocks': 'minecraft:air'}, {'type': 'minecraft:would_survive', 'state': state(plant)}]}}]}}},
+          surface(count))
+
+
+def rock(name_, block, count=None, rarity=None):
+    placed(name_, {'type': 'minecraft:forest_rock', 'config': {'state': state(block)}}, surface(count, rarity))
+
+
+def ore(name_, block, size, count, lo, hi):
+    placed(name_, {'type': 'minecraft:ore', 'config': {'size': size, 'discard_chance_on_air_exposure': 0.0, 'targets': [
+        {'target': {'predicate_type': 'minecraft:tag_match', 'tag': f'{NS}:realm_base_stone'}, 'state': state(block)}]}},
+        [{'type': 'minecraft:count', 'count': count}, {'type': 'minecraft:in_square'},
+         {'type': 'minecraft:height_range', 'height': {'type': 'minecraft:trapezoid', 'min_inclusive': {'absolute': lo}, 'max_inclusive': {'absolute': hi}}},
+         {'type': 'minecraft:biome'}])
+
+
+def cluster(name_, count, lo, hi, direction):
+    facing = 'up' if direction == 'down' else 'down'
+    placed(name_, {'type': 'minecraft:simple_block', 'config': {'to_place': {'type': 'minecraft:simple_state_provider',
+                                                                            'state': state('redstone_cluster', {'facing': facing, 'waterlogged': 'false'})}}},
+           underground(count, lo, hi, direction))
+
+
+def site(kind, rarity, heightmap='WORLD_SURFACE_WG'):
+    placed(kind, none_feature(kind), surface(rarity=rarity, heightmap=heightmap))
+
+
+# rock shapes
+spire('karst_spire', 'karst_limestone', 'lichen_karst', (12, 34), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
+spire('kiln_spire', 'cinder_rock', 'minecraft:magma_block', (8, 22), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
+spire('hoodoo', 'hematite', 'dark_hematite', (10, 28), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
+spire('tempest_pillar', 'tempest_basalt', 'redstone_vein', (8, 30), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
+spire('rubedo_spire', 'redstone_vein', 'realmstone_bricks', (6, 16), (1, 2), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
+spire('frost_spire', 'frost_realmstone', 'minecraft:packed_ice', (10, 26), (1, 3), 1)
+spire('dune_rock', 'realmstone', 'rust_sand', (3, 8), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
+rock('slag_heap', 'slag', 1)
+rock('sulfur_rock', 'sulfur_crust', rarity=2)
+rock('salt_mound', 'salt_crust', 1)
+rock('scree', 'realmstone', rarity=3)
+
+# plants
+for pid, tries, count in (('crimson_heather', 48, 6), ('fen_reed', 40, 5), ('red_coral_shrub', 24, 3), ('pale_stalk', 32, 4), ('salt_brush', 12, 2),
+                          ('copper_reed', 32, 4), ('lichen_tuft', 24, 3), ('cinder_bloom', 16, 2), ('frost_fern', 16, 2)):
+    patch(pid + '_patch', pid, tries, count)
+patch('briar_patch', 'briar_thorns', 24, 3)
+
+# ores and crystals
+ore('ore_realm_redstone', 'realm_redstone_ore', 8, 10, -64, 64)
+ore('ore_realm_iron', 'realm_iron_ore', 9, 12, -32, 96)
+ore('ore_realm_copper', 'realm_copper_ore', 10, 8, 0, 96)
+ore('ore_redstone_vein', 'redstone_vein', 12, 10, -64, 40)
+ore('resonant_crystal_ore', 'resonant_crystal', 9, 14, -60, 40)
+cluster('cave_clusters_floor', 18, -60, 50, 'down')
+cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
+
+# trap sites, scenery and machines: rare and spread out
+placed('resonance_gatehouse', none_feature('resonance_gatehouse'), underground(1, -40, 30, rarity=5))
+for kind, rarity in (('crusher_passage', 28), ('switchyard_junction', 26), ('sluice_bridge', 26), ('kiln_bridge', 26), ('briar_ambush', 26),
+                     ('rail_line', 8), ('tower', 10), ('ruin', 12), ('monolith', 30), ('crashed_shell', 18), ('crystal_dome', 30),
+                     ('boardwalk', 10), ('kiln_hut', 20), ('aqueduct', 16), ('ice_rails', 14), ('scrap', 10),
+                     ('lamp_pylon', 40), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
+                     ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40)):
+    site(kind, rarity)
+placed('giant_tree', none_feature('giant_tree'), surface(count={'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=2))
+
+# one ordered list per generation step, so every biome uses the same order
 STEPS = [
     [],
-    ['minecraft:lake_lava_underground', 'minecraft:lake_lava_surface'],
-    ['minecraft:amethyst_geode', f'{NS}:karst_spire', f'{NS}:kiln_spire', f'{NS}:slag_heap', f'{NS}:coal_heap', f'{NS}:sulfur_rock'],
-    ['minecraft:monster_room', 'minecraft:monster_room_deep', f'{NS}:resonance_gatehouse'],
-    [f'{NS}:crusher_passage', f'{NS}:switchyard_junction', f'{NS}:sluice_bridge', f'{NS}:kiln_bridge', f'{NS}:briar_ambush',
-     f'{NS}:circuit_workshop', f'{NS}:rail_line'],
+    ['minecraft:lake_lava_surface'],
+    ['redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+     'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
+     'redstoneplus:scree'],
+    ['redstoneplus:resonance_gatehouse'],
+    ['redstoneplus:crusher_passage', 'redstoneplus:switchyard_junction', 'redstoneplus:sluice_bridge', 'redstoneplus:kiln_bridge',
+     'redstoneplus:briar_ambush', 'redstoneplus:rail_line', 'redstoneplus:tower', 'redstoneplus:ruin', 'redstoneplus:monolith',
+     'redstoneplus:crashed_shell', 'redstoneplus:crystal_dome', 'redstoneplus:boardwalk', 'redstoneplus:kiln_hut', 'redstoneplus:aqueduct',
+     'redstoneplus:ice_rails', 'redstoneplus:scrap', 'redstoneplus:lamp_pylon', 'redstoneplus:crusher_mill', 'redstoneplus:pump_station',
+     'redstoneplus:minecart_loop', 'redstoneplus:storm_spire', 'redstoneplus:bell_tower', 'redstoneplus:beast_cage', 'redstoneplus:laser_post'],
     [],
-    ORES + [f'{NS}:resonant_crystal_ore'],
-    ['minecraft:large_dripstone', 'minecraft:dripstone_cluster', 'minecraft:pointed_dripstone', 'minecraft:sculk_vein', 'minecraft:sculk_patch_deep_dark'],
-    ['minecraft:spring_water', 'minecraft:spring_lava'],
-    ['minecraft:glow_lichen', 'minecraft:flower_cherry', 'minecraft:patch_waterlily', 'minecraft:trees_swamp', 'minecraft:seagrass_swamp',
-     'minecraft:patch_sugar_cane_swamp', 'minecraft:dark_forest_vegetation', 'minecraft:vines', f'{NS}:briar_patch',
-     'minecraft:patch_tall_grass', 'minecraft:patch_grass_forest', 'minecraft:patch_dead_bush_badlands', 'minecraft:patch_dead_bush',
-     'minecraft:patch_berry_common'],
+    ['redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:ore_redstone_vein',
+     'redstoneplus:resonant_crystal_ore'],
+    ['redstoneplus:cave_clusters_floor', 'redstoneplus:cave_clusters_ceiling'],
+    [],
+    ['redstoneplus:giant_tree', 'redstoneplus:crimson_heather_patch', 'redstoneplus:fen_reed_patch', 'redstoneplus:red_coral_shrub_patch',
+     'redstoneplus:pale_stalk_patch', 'redstoneplus:salt_brush_patch', 'redstoneplus:copper_reed_patch', 'redstoneplus:lichen_tuft_patch',
+     'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
     ['minecraft:freeze_top_layer'],
 ]
-known = set(n.split('/')[-1][:-5] for n in JAR.namelist() if n.startswith('data/minecraft/worldgen/placed_feature/'))
-for step in STEPS:
-    for f in step:
-        if f.startswith('minecraft:') and f.split(':')[1] not in known:
-            raise SystemExit('unknown vanilla placed feature ' + f)
+EVERYWHERE = {'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
+              'redstoneplus:lamp_pylon', 'redstoneplus:tower', 'redstoneplus:ruin', 'redstoneplus:scree', 'minecraft:freeze_top_layer'}
 
 
 def features(*wanted):
-    w = set(wanted) | set(ORES) | {'minecraft:lake_lava_underground', 'minecraft:monster_room', 'minecraft:monster_room_deep',
-                                   'minecraft:spring_water', 'minecraft:spring_lava', 'minecraft:freeze_top_layer', f'{NS}:circuit_workshop'}
+    w = {f if ':' in f else f'{NS}:{f}' for f in wanted} | EVERYWHERE
     return [[f for f in step if f in w] for step in STEPS]
 
 
@@ -658,76 +863,90 @@ def c(hexcolor):
     return int(hexcolor.lstrip('#'), 16)
 
 
+def fx(particle, probability):
+    return {'probability': probability, 'options': particle if isinstance(particle, dict) else {'type': particle}}
+
+
+RED_DUST = {'type': 'minecraft:dust', 'color': [1.0, 0.15, 0.08], 'scale': 1.0}
+
+# name: english, german, temperature, downfall, colours (sky, fog, water, water fog, grass/foliage), particle, features, monsters, creatures, costs
 BIOMES = {
-    'piston_karst': dict(
-        en='Piston Karst', de='Kolbenkarst', base='stony_peaks', temperature=0.9, downfall=0.3,
-        effects={'sky_color': c('#78a8ff'), 'fog_color': c('#d8c8a8'), 'water_color': c('#3a9ad8'), 'water_fog_color': c('#10304a'),
-                 'grass_color': c('#b8a060'), 'foliage_color': c('#a88a40')},
-        features=features(f'{NS}:karst_spire', f'{NS}:crusher_passage'),
-        monster=[spawn('karst_colossus', 25, 1, 1), spawn('relay_strider', 30, 1, 1), spawn('detonator_husk', 40, 1, 2)],
-        creature=[spawn('flesh_press', 4, 1, 1)], costs=['karst_colossus']),
-    'switchyard_flats': dict(
-        en='Switchyard Flats', de='Weichenebene', base='badlands', temperature=1.2, downfall=0.1,
-        effects={'sky_color': c('#c07aa0'), 'fog_color': c('#d08a70'), 'water_color': c('#8a4a3a'), 'water_fog_color': c('#3a1a10'),
-                 'grass_color': c('#a8905a'), 'foliage_color': c('#8a7040'),
-                 'particle': {'probability': 0.004, 'options': {'type': 'minecraft:dust', 'color': [1.0, 0.2, 0.1], 'scale': 1.0}}},
-        features=features(f'{NS}:slag_heap', f'{NS}:coal_heap', f'{NS}:switchyard_junction', f'{NS}:rail_line', 'minecraft:patch_dead_bush_badlands'),
-        monster=[spawn('switchback_crawler', 40, 1, 2), spawn('detonator_husk', 40, 1, 2), spawn('kilnbound', 20, 1, 1)],
-        creature=[spawn('bellows_hog', 12, 2, 3)], costs=['switchback_crawler']),
-    'resonance_hollows': dict(
-        en='Resonance Hollows', de='Resonanzhöhlen', base='dripstone_caves', temperature=0.6, downfall=0.4,
-        effects={'sky_color': c('#6a5aa8'), 'fog_color': c('#3a2a6a'), 'water_color': c('#40c8ff'), 'water_fog_color': c('#10205a'),
-                 'particle': {'probability': 0.008, 'options': {'type': 'minecraft:glow'}}},
-        features=features('minecraft:amethyst_geode', f'{NS}:resonance_gatehouse', f'{NS}:resonant_crystal_ore', 'minecraft:large_dripstone',
-                          'minecraft:dripstone_cluster', 'minecraft:pointed_dripstone', 'minecraft:sculk_vein', 'minecraft:glow_lichen'),
-        monster=[spawn('bell_stalker', 30, 1, 1), spawn('tripwire_brood', 40, 1, 2), spawn('living_capacitor', 30, 1, 2), spawn('relay_strider', 15, 1, 1)],
-        creature=[], costs=['bell_stalker']),
-    'sluice_gardens': dict(
-        en='Sluice Gardens', de='Schleusengärten', base='swamp', temperature=0.7, downfall=0.9,
-        effects={'sky_color': c('#8ab0a0'), 'fog_color': c('#a8c8b8'), 'water_color': c('#3ab8a0'), 'water_fog_color': c('#10403a'),
-                 'grass_color': c('#4a9a70'), 'foliage_color': c('#3a8a60')},
-        features=features('minecraft:flower_cherry', 'minecraft:patch_waterlily', 'minecraft:trees_swamp', 'minecraft:seagrass_swamp',
-                          'minecraft:patch_sugar_cane_swamp', 'minecraft:patch_tall_grass', f'{NS}:sluice_bridge'),
-        monster=[spawn('sluice_chainjaw', 40, 1, 2), spawn('leaking_cell', 40, 1, 3), spawn('living_capacitor', 30, 1, 3)],
-        creature=[], costs=['sluice_chainjaw']),
-    'kiln_barrens': dict(
-        en='Kiln Barrens', de='Brennofen-Öde', base='desert', temperature=2.0, downfall=0.0,
-        effects={'sky_color': c('#b0603a'), 'fog_color': c('#8a4a2a'), 'water_color': c('#c06a2a'), 'water_fog_color': c('#3a1a0a'),
-                 'grass_color': c('#6a5a3a'), 'foliage_color': c('#5a4a2a'),
-                 'particle': {'probability': 0.01, 'options': {'type': 'minecraft:white_ash'}}},
-        features=features(f'{NS}:kiln_spire', f'{NS}:sulfur_rock', 'minecraft:lake_lava_surface', f'{NS}:kiln_bridge'),
-        monster=[spawn('kiln_brute', 30, 1, 1), spawn('kilnbound', 50, 1, 2), spawn('detonator_husk', 20, 1, 1)],
-        creature=[spawn('bellows_hog', 20, 2, 4)], costs=['kiln_brute']),
-    'tripwire_briar': dict(
-        en='Tripwire Briar', de='Stolperdraht-Dickicht', base='dark_forest', temperature=0.7, downfall=0.8,
-        effects={'sky_color': c('#d8b060'), 'fog_color': c('#b8a060'), 'water_color': c('#4a7a4a'), 'water_fog_color': c('#1a2a1a'),
-                 'grass_color': c('#5a6a2a'), 'foliage_color': c('#4a5a20'), 'grass_color_modifier': 'none'},
-        features=features('minecraft:dark_forest_vegetation', 'minecraft:vines', f'{NS}:briar_patch', 'minecraft:patch_berry_common',
-                          'minecraft:patch_grass_forest', f'{NS}:briar_ambush'),
-        monster=[spawn('spool_weaver', 40, 1, 2), spawn('tripwire_brood', 40, 1, 2), spawn('leaking_cell', 20, 1, 2)],
-        creature=[spawn('flesh_press', 3, 1, 1)], costs=['spool_weaver']),
+    'piston_karst': ('Piston Karst', 'Kolbenkarst', 0.9, 0.3, ('#78a8ff', '#d8c8a8', '#3a9ad8', '#10304a', '#c0a060'), None,
+                     features('karst_spire', 'crusher_passage', 'crusher_mill', 'lichen_tuft_patch', 'beast_cage'),
+                     [('karst_colossus', 25, 1, 1), ('relay_strider', 20, 1, 1), ('detonator_husk', 30, 1, 2)], [('flesh_press', 3, 1, 1)], ['karst_colossus']),
+    'switchyard_flats': ('Switchyard Flats', 'Weichenebene', 1.2, 0.1, ('#c07aa0', '#d08a70', '#8a4a3a', '#3a1a10', '#a8905a'), fx(RED_DUST, 0.004),
+                         features('slag_heap', 'switchyard_junction', 'rail_line', 'minecart_loop', 'salt_brush_patch'),
+                         [('switchback_crawler', 40, 1, 2), ('detonator_husk', 30, 1, 2), ('kilnbound', 20, 1, 1)], [('bellows_hog', 10, 2, 3)],
+                         ['switchback_crawler']),
+    'sluice_gardens': ('Sluice Gardens', 'Schleusengärten', 0.7, 0.9, ('#8ab0a0', '#a8c8b8', '#3ab8a0', '#10403a', '#4a9a70'), None,
+                       features('sluice_bridge', 'aqueduct', 'pump_station', 'copper_reed_patch', 'fen_reed_patch'),
+                       [('sluice_chainjaw', 40, 1, 2), ('leaking_cell', 30, 1, 2), ('living_capacitor', 20, 1, 2)], [], ['sluice_chainjaw']),
+    'kiln_barrens': ('Kiln Barrens', 'Brennofen-Öde', 2.0, 0.0, ('#b0603a', '#8a4a2a', '#c06a2a', '#3a1a0a', '#6a5a3a'), fx('minecraft:white_ash', 0.01),
+                     features('kiln_spire', 'sulfur_rock', 'minecraft:lake_lava_surface', 'kiln_bridge', 'cinder_bloom_patch'),
+                     [('kiln_brute', 30, 1, 1), ('kilnbound', 40, 1, 2), ('detonator_husk', 15, 1, 1)], [('bellows_hog', 15, 2, 3)], ['kiln_brute']),
+    'tripwire_briar': ('Tripwire Briar', 'Stolperdraht-Dickicht', 0.7, 0.8, ('#d8b060', '#b8a060', '#4a7a4a', '#1a2a1a', '#5a6a2a'), None,
+                       features('briar_ambush', 'briar_patch', 'laser_post', 'lichen_tuft_patch'),
+                       [('spool_weaver', 40, 1, 2), ('tripwire_brood', 35, 1, 2), ('leaking_cell', 15, 1, 2)], [], ['spool_weaver']),
+    'arsenal_dunes': ('Arsenal Dunes', 'Arsenal-Dünen', 1.6, 0.0, ('#e04a36', '#c83a2a', '#9a2020', '#3a0a0a', '#b04a30'), fx(RED_DUST, 0.006),
+                      features('dune_rock', 'crashed_shell', 'scrap', 'minecart_loop', 'salt_brush_patch'),
+                      [('switchback_crawler', 30, 1, 2), ('detonator_husk', 35, 1, 2), ('kilnbound', 25, 1, 2)], [('bellows_hog', 8, 1, 2)],
+                      ['switchback_crawler']),
+    'rubedo_gardens': ('Rubedo Gardens', 'Rubedo-Gärten', 0.9, 0.6, ('#e87070', '#d85a5a', '#e0202a', '#5a0a0a', '#c03a3a'), fx(RED_DUST, 0.008),
+                       features('rubedo_spire', 'crystal_dome', 'aqueduct', 'red_coral_shrub_patch', 'crimson_heather_patch', 'pump_station'),
+                       [('living_capacitor', 40, 1, 3), ('relay_strider', 20, 1, 1), ('leaking_cell', 20, 1, 2)], [], []),
+    'landmark_moors': ('Landmark Moors', 'Wegmarken-Moore', 0.6, 0.6, ('#c83030', '#a82424', '#7a1a1a', '#2a0808', '#a02a40'), None,
+                       features('monolith', 'bell_tower', 'crimson_heather_patch', 'ruin'),
+                       [('bell_stalker', 20, 1, 1), ('relay_strider', 25, 1, 1), ('detonator_husk', 20, 1, 2)], [('flesh_press', 3, 1, 1)], ['bell_stalker']),
+    'red_clay_fen': ('Red Clay Fen', 'Rotton-Moor', 0.8, 0.9, ('#b83e32', '#98322a', '#a82418', '#3a0a08', '#8a3a2a'), None,
+                     features('boardwalk', 'kiln_hut', 'pump_station', 'fen_reed_patch'),
+                     [('sluice_chainjaw', 35, 1, 2), ('leaking_cell', 30, 1, 3), ('living_capacitor', 25, 1, 2)], [], ['sluice_chainjaw']),
+    'hematite_scarps': ('Hematite Scarps', 'Hämatit-Klippen', 1.1, 0.2, ('#d86040', '#c84e3a', '#7a2a2a', '#2a0a0a', '#a0402a'), fx(RED_DUST, 0.004),
+                        features('hoodoo', 'beast_cage', 'red_coral_shrub_patch', 'crusher_mill'),
+                        [('karst_colossus', 20, 1, 1), ('tripwire_brood', 30, 1, 2), ('detonator_husk', 25, 1, 2)], [('flesh_press', 4, 1, 1)],
+                        ['karst_colossus']),
+    'tempest_shoals': ('Tempest Shoals', 'Sturmbänke', 0.5, 0.9, ('#3e4260', '#2e3446', '#22b0a0', '#0a2a28', '#2a6a6a'), fx('minecraft:electric_spark', 0.004),
+                       features('tempest_pillar', 'storm_spire', 'aqueduct'),
+                       [('sluice_chainjaw', 35, 1, 2), ('relay_strider', 25, 1, 1)], [], ['sluice_chainjaw']),
+    'frostwork_wastes': ('Frostwork Wastes', 'Frostwerk-Öde', -0.6, 0.5, ('#8a9ab0', '#a8b8c8', '#3a6a9a', '#0a1a2a', '#8aa0b0'), fx('minecraft:white_ash', 0.02),
+                         features('frost_spire', 'ice_rails', 'frost_fern_patch'),
+                         [('switchback_crawler', 25, 1, 2), ('spool_weaver', 25, 1, 2), ('karst_colossus', 15, 1, 1)], [], ['karst_colossus']),
+    'vein_mire': ('Vein Mire', 'Adermoor', 0.8, 0.9, ('#40403a', '#4a4a40', '#3a1414', '#140404', '#4a3a2a'), fx('minecraft:crimson_spore', 0.01),
+                  features('pale_stalk_patch', 'boardwalk', 'fen_reed_patch', 'kiln_hut'),
+                  [('leaking_cell', 35, 1, 3), ('tripwire_brood', 30, 1, 2), ('spool_weaver', 20, 1, 1)], [], []),
+    'oxide_salt_flats': ('Oxide Salt Flats', 'Oxid-Salzebene', 1.3, 0.0, ('#eca858', '#e8b878', '#60a080', '#1a3a2a', '#c09060'), fx(RED_DUST, 0.003),
+                         features('salt_mound', 'scrap', 'rail_line', 'salt_brush_patch', 'tower'),
+                         [('switchback_crawler', 30, 1, 2), ('kilnbound', 25, 1, 2), ('detonator_husk', 25, 1, 2)], [('bellows_hog', 10, 2, 3)],
+                         ['switchback_crawler']),
+    'lamplit_grove': ('Lamplit Grove', 'Lampenhain', 0.6, 0.8, ('#46306a', '#3e2c64', '#2a3a5a', '#0a0a1a', '#2e6a6a'), fx('minecraft:warped_spore', 0.01),
+                      features('giant_tree', 'crimson_heather_patch', 'pale_stalk_patch', 'bell_tower'),
+                      [('spool_weaver', 30, 1, 2), ('relay_strider', 25, 1, 1), ('bell_stalker', 15, 1, 1)], [], []),
+    'resonance_hollows': ('Resonance Hollows', 'Resonanzhöhlen', 0.6, 0.4, ('#6a5aa8', '#3a2a6a', '#40c8ff', '#10205a', '#6a5aa8'), fx('minecraft:glow', 0.008),
+                          features('resonance_gatehouse', 'resonant_crystal_ore', 'cave_clusters_ceiling'),
+                          [('bell_stalker', 30, 1, 1), ('tripwire_brood', 35, 1, 2), ('living_capacitor', 25, 1, 2)], [], ['bell_stalker']),
+    'circuit_fossil_beds': ('Circuit Fossil Beds', 'Schaltungs-Fossilbetten', 0.9, 0.4, ('#8a1a1a', '#6a1010', '#a02020', '#300808', '#8a2020'), fx(RED_DUST, 0.01),
+                            features('ore_redstone_vein', 'cave_clusters_ceiling', 'red_coral_shrub_patch'),
+                            [('tripwire_brood', 30, 1, 2), ('living_capacitor', 30, 1, 2), ('relay_strider', 25, 1, 1)], [], []),
 }
-for biome_name, b in BIOMES.items():
-    base = vanilla_json(f'data/minecraft/worldgen/biome/{b["base"]}.json')
-    effects = dict(base['effects'])
-    for key in ('music', 'additions_sound', 'ambient_sound', 'grass_color_modifier'):
-        effects.pop(key, None)
-    effects.update(b['effects'])
-    if effects.get('grass_color_modifier') == 'none':
-        effects.pop('grass_color_modifier')
+for biome_name, (e, g, temp, rain, cols, particle, feats, monsters, creatures, costs) in BIOMES.items():
+    sky, fog, water, water_fog, plant = cols
+    effects = {'sky_color': c(sky), 'fog_color': c(fog), 'water_color': c(water), 'water_fog_color': c(water_fog),
+               'grass_color': c(plant), 'foliage_color': c(plant),
+               'mood_sound': {'sound': 'minecraft:ambient.cave', 'tick_delay': 6000, 'block_search_extent': 8, 'offset': 2.0}}
+    if particle:
+        effects['particle'] = particle
     biome = {
-        'has_precipitation': b['downfall'] > 0.2, 'temperature': b['temperature'], 'downfall': b['downfall'], 'effects': effects,
-        'spawners': {'monster': b['monster'], 'creature': b['creature'], 'ambient': [], 'axolotls': [], 'underground_water_creature': [],
-                     'water_creature': [], 'water_ambient': [], 'misc': []},
-        'spawn_costs': {f'{NS}:{m}': {'energy_budget': 0.12, 'charge': 0.7} for m in b['costs']},
+        'has_precipitation': rain > 0.2, 'temperature': temp, 'downfall': rain, 'effects': effects,
+        'spawners': {'monster': [spawn(*m) for m in monsters], 'creature': [spawn(*cr) for cr in creatures], 'ambient': [], 'axolotls': [],
+                     'underground_water_creature': [], 'water_creature': [], 'water_ambient': [], 'misc': []},
+        'spawn_costs': {f'{NS}:{m}': {'energy_budget': 0.12, 'charge': 0.7} for m in costs},
         'carvers': {'air': ['minecraft:cave', 'minecraft:cave_extra_underground', 'minecraft:canyon']},
-        'features': b['features'],
+        'features': feats,
     }
     write(os.path.join(DATA, 'worldgen', 'biome', biome_name + '.json'), biome)
-    name(f'biome.{NS}.{biome_name}', b['en'], b['de'])
+    name(f'biome.{NS}.{biome_name}', e, g)
 
 
-# surface rules: each biome gets its own ground, cliffs and cave floors
+# ---- surface rules: every realm biome paints its own ground; nothing falls through to vanilla grass or sand
 def cond(condition, then):
     return {'type': 'minecraft:condition', 'if_true': condition, 'then_run': then}
 
@@ -744,8 +963,8 @@ def biome_is(*names):
     return {'type': 'minecraft:biome', 'biome_is': [f'{NS}:{n}' for n in names]}
 
 
-def depth(surface_type='floor', add=False, offset=0):
-    return {'type': 'minecraft:stone_depth', 'offset': offset, 'add_surface_depth': add, 'secondary_depth_range': 0, 'surface_type': surface_type}
+def depth(surface_type='floor', add=False, offset=0, secondary=0):
+    return {'type': 'minecraft:stone_depth', 'offset': offset, 'add_surface_depth': add, 'secondary_depth_range': secondary, 'surface_type': surface_type}
 
 
 def noise_range(lo, hi, noise='minecraft:surface'):
@@ -756,41 +975,75 @@ def y_above(y):
     return {'type': 'minecraft:y_above', 'anchor': {'absolute': y}, 'surface_depth_multiplier': 0, 'add_stone_depth': False}
 
 
+def not_(condition):
+    return {'type': 'minecraft:not', 'invert': condition}
+
+
 ABOVE_WATER = {'type': 'minecraft:water', 'offset': -1, 'surface_depth_multiplier': 0, 'add_stone_depth': False}
 ON_FLOOR, UNDER_FLOOR = depth('floor'), depth('floor', add=True)
+DEEP_FLOOR = depth('floor', add=True, secondary=6)
 PRELIM = {'type': 'minecraft:above_preliminary_surface'}
+
+
+def ground(top, underwater, under, deeper=None):
+    """top: a block, or a list of (noise_lo, noise_hi, block) patches ending with the default block."""
+    if isinstance(top, str):
+        top_rule = blk(top)
+    else:
+        top_rule = seq(*[cond(noise_range(lo, hi), blk(b)) for lo, hi, b in top[:-1]], blk(top[-1]))
+    rules = [cond(ON_FLOOR, seq(cond(ABOVE_WATER, top_rule), blk(underwater))), cond(UNDER_FLOOR, blk(under))]
+    if deeper:
+        rules.append(cond(DEEP_FLOOR, blk(deeper)))
+    return seq(*rules)
+
+
+GROUND = {
+    'piston_karst': ground([(0.1, 9, 'lichen_karst'), 'karst_limestone'], 'karst_limestone', 'karst_limestone'),
+    'switchyard_flats': ground([(0.45, 9, 'slag'), (-9, -0.5, 'realmstone'), 'rusted_soil'], 'slag', 'rusted_soil'),
+    'sluice_gardens': ground([(0.35, 9, 'realmstone_bricks'), 'canal_moss'], 'fen_mud', 'red_clay'),
+    'kiln_barrens': ground([(0.4, 9, 'sulfur_crust'), (-9, -0.55, 'minecraft:magma_block'), 'cinder_rock'], 'cinder_rock', 'cinder_rock'),
+    'tripwire_briar': ground([(0.3, 9, 'grove_moss'), 'briar_soil'], 'fen_mud', 'briar_soil'),
+    'arsenal_dunes': ground('rust_sand', 'rust_sand', 'rust_sand', 'realmstone'),
+    'rubedo_gardens': ground([(0.5, 9, 'redstone_vein'), (-9, -0.4, 'red_clay'), 'heather_turf'], 'red_clay', 'realmstone'),
+    'landmark_moors': ground([(0.55, 9, 'realmstone'), 'heather_turf'], 'fen_mud', 'red_clay'),
+    'red_clay_fen': ground([(0.2, 9, 'fen_mud'), 'red_clay'], 'fen_mud', 'red_clay'),
+    'hematite_scarps': ground([(0.3, 9, 'dark_hematite'), 'hematite'], 'hematite', 'hematite'),
+    'tempest_shoals': ground('tempest_basalt', 'tempest_basalt', 'tempest_basalt'),
+    'frostwork_wastes': ground([(0.35, 9, 'minecraft:packed_ice'), 'minecraft:snow_block'], 'frost_realmstone', 'frost_realmstone'),
+    'vein_mire': ground([(0.55, 9, 'redstone_vein'), 'root_soil'], 'root_soil', 'root_soil'),
+    'oxide_salt_flats': ground([(-0.04, 0.04, 'redstone_vein'), (0.5, 9, 'rusted_soil'), 'salt_crust'], 'salt_crust', 'salt_crust'),
+    'lamplit_grove': ground('grove_moss', 'root_soil', 'root_soil'),
+}
+# whole cliffs in some biomes are their own rock; the scarps are banded
+cliffs = [cond(biome_is('piston_karst'), cond(y_above(40), blk('karst_limestone'))),
+          cond(biome_is('kiln_barrens'), cond(y_above(36), blk('cinder_rock'))),
+          cond(biome_is('tempest_shoals'), cond(y_above(20), blk('tempest_basalt'))),
+          cond(biome_is('frostwork_wastes'), cond(y_above(40), blk('frost_realmstone')))]
+band_rules = []
+for y in range(40, 260, 7):
+    band_rules.append(cond(y_above(y), cond(not_(y_above(y + 3)), blk('dark_hematite'))))
+cliffs.append(cond(biome_is('hematite_scarps'), cond(y_above(40), seq(*band_rules, blk('hematite')))))
+
 realm_rules = seq(
-    # the cave biome: crystal-studded floors and pale ceilings wherever it is
+    # underground biomes: crystal-lit floors and pale ceilings / fossil circuits and red veins
     cond(biome_is('resonance_hollows'), seq(
-        cond(ON_FLOOR, seq(cond(noise_range(0.35, 9), blk(f'{NS}:resonant_crystal')), cond(noise_range(-0.2, 9), blk('minecraft:calcite')),
-                           blk('minecraft:smooth_basalt'))),
-        cond(depth('ceiling'), blk('minecraft:calcite')))),
-    cond(PRELIM, seq(
-        cond(biome_is('piston_karst'), seq(
-            cond(ON_FLOOR, seq(cond(noise_range(0.1, 9), blk(f'{NS}:lichen_karst')), blk(f'{NS}:karst_limestone'))),
-            cond(UNDER_FLOOR, blk(f'{NS}:karst_limestone')))),
-        cond(biome_is('switchyard_flats'), seq(
-            cond(ON_FLOOR, seq(cond(noise_range(0.45, 9), blk(f'{NS}:slag')), cond(noise_range(-9, -0.5), blk('minecraft:gravel')),
-                               blk(f'{NS}:rusted_soil'))),
-            cond(UNDER_FLOOR, blk(f'{NS}:rusted_soil')))),
-        cond(biome_is('sluice_gardens'), seq(
-            cond(ON_FLOOR, seq(cond(ABOVE_WATER, seq(cond(noise_range(0.2, 9), blk('minecraft:moss_block')), blk('minecraft:grass_block', {'snowy': 'false'}))),
-                               blk('minecraft:mud'))),
-            cond(UNDER_FLOOR, blk('minecraft:dirt')))),
-        cond(biome_is('kiln_barrens'), seq(
-            cond(ON_FLOOR, seq(cond(noise_range(0.4, 9), blk(f'{NS}:sulfur_crust')), cond(noise_range(-9, -0.55), blk('minecraft:magma_block')),
-                               blk('minecraft:blackstone'))),
-            cond(UNDER_FLOOR, blk('minecraft:basalt', {'axis': 'y'})))),
-        cond(biome_is('tripwire_briar'), seq(
-            cond(ON_FLOOR, seq(cond(noise_range(0.3, 9), blk('minecraft:moss_block')), cond(noise_range(-9, -0.4), blk('minecraft:rooted_dirt')),
-                               blk('minecraft:podzol', {'snowy': 'false'}))),
-            cond(UNDER_FLOOR, blk('minecraft:dirt')))),
-    )),
-    # whole cliffs of the karst and the barrens are their own rock
-    cond(biome_is('piston_karst'), cond(y_above(40), blk(f'{NS}:karst_limestone'))),
-    cond(biome_is('kiln_barrens'), cond(y_above(36), blk('minecraft:blackstone'))),
+        cond(ON_FLOOR, seq(cond(noise_range(0.35, 9), blk('resonant_crystal')), cond(noise_range(-0.2, 9), blk('salt_crust')), blk('deep_realmstone'))),
+        cond(depth('ceiling'), blk('salt_crust')))),
+    cond(biome_is('circuit_fossil_beds'), seq(
+        cond(ON_FLOOR, seq(cond(noise_range(0.4, 9), blk('redstone_vein')), blk('fossil_circuit'))),
+        cond(depth('ceiling'), blk('dark_hematite')),
+        cond(depth('floor', add=True, secondary=4), blk('fossil_circuit')))),
+    cond(PRELIM, seq(*[cond(biome_is(b), rule) for b, rule in GROUND.items()],
+                     # anything left: plain realmstone, never vanilla grass
+                     cond(ON_FLOOR, blk('realmstone')), cond(UNDER_FLOOR, blk('realmstone')))),
+    *cliffs,
+    # the deep rock
+    cond({'type': 'minecraft:vertical_gradient', 'random_name': 'redstoneplus:deep_realmstone',
+          'true_at_and_below': {'absolute': 0}, 'false_at_and_above': {'absolute': 8}}, blk('deep_realmstone')),
 )
 settings = vanilla_json('data/minecraft/worldgen/noise_settings/overworld.json')
+settings['default_block'] = state('realmstone')
+settings['ore_veins_enabled'] = False
 settings['surface_rule']['sequence'].insert(1, realm_rules)
 write(os.path.join(DATA, 'worldgen', 'noise_settings', 'redstone_realm.json'), settings)
 
@@ -801,23 +1054,71 @@ write(os.path.join(DATA, 'dimension_type', 'redstone_realm.json'), {
     'logical_height': 384, 'min_y': -64, 'height': 384, 'infiniburn': '#minecraft:infiniburn_overworld', 'effects': 'minecraft:overworld'})
 
 
-def point(biome, t=(-1, 1), h=(-1, 1), cont=(-1.2, 1.2), ero=(-1, 1), weird=(-1, 1), dep=0.0):
+# ---- biome layout: seas and coasts, mountains by heat, and a temperature x humidity grid on the flatter land
+def point(biome, t=(-1, 1), h=(-1, 1), cont=(-0.11, 1.2), ero=(-1, 1), weird=(-1, 1), dep=0.0):
     return {'biome': f'{NS}:{biome}', 'parameters': {'temperature': list(t), 'humidity': list(h), 'continentalness': list(cont),
                                                      'erosion': list(ero), 'weirdness': list(weird), 'depth': dep, 'offset': 0.0}}
 
 
-INLAND = (-0.11, 1.2)
+T = [(-1.0, -0.45), (-0.45, -0.15), (-0.15, 0.2), (0.2, 0.55), (0.55, 1.0)]
+H = [(-1.0, -0.2), (-0.2, 0.3), (0.3, 1.0)]
+FLAT = [['frostwork_wastes', 'frostwork_wastes', 'frostwork_wastes'],
+        ['oxide_salt_flats', 'landmark_moors', 'lamplit_grove'],
+        ['switchyard_flats', 'tripwire_briar', 'vein_mire'],
+        ['arsenal_dunes', 'rubedo_gardens', 'red_clay_fen'],
+        ['kiln_barrens', 'arsenal_dunes', 'sluice_gardens']]
+PEAKS = ['frostwork_wastes', 'hematite_scarps', 'piston_karst', 'hematite_scarps', 'kiln_barrens']
+points = [point('tempest_shoals', cont=(-1.2, -0.35)),
+          point('sluice_gardens', t=(0.0, 1.0), cont=(-0.35, -0.11)),
+          point('red_clay_fen', t=(-1.0, 0.0), cont=(-0.35, -0.11))]
+for ti, tr in enumerate(T):
+    points.append(point(PEAKS[ti], t=tr, ero=(-1.0, -0.375)))
+    for hi, hr in enumerate(H):
+        points.append(point(FLAT[ti][hi], t=tr, h=hr, ero=(-0.375, 1.0)))
+points.append(point('circuit_fossil_beds', h=(-1.0, 0.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
+points.append(point('resonance_hollows', h=(0.0, 1.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
 write(os.path.join(DATA, 'dimension', 'redstone_realm.json'), {
     'type': f'{NS}:redstone_realm',
-    'generator': {'type': 'minecraft:noise', 'settings': f'{NS}:redstone_realm', 'biome_source': {'type': 'minecraft:multi_noise', 'biomes': [
-        point('sluice_gardens', cont=(-1.2, -0.11)),
-        point('piston_karst', cont=INLAND, ero=(-1, -0.3)),
-        point('kiln_barrens', t=(0.2, 1), h=(-1, 0.1), cont=INLAND, ero=(-0.3, 1)),
-        point('switchyard_flats', t=(-1, 0.2), h=(-1, 0.1), cont=INLAND, ero=(-0.3, 1)),
-        point('tripwire_briar', t=(-1, 0.2), h=(0.1, 1), cont=INLAND, ero=(-0.3, 1)),
-        point('sluice_gardens', t=(0.2, 1), h=(0.1, 1), cont=INLAND, ero=(-0.3, 1)),
-        point('resonance_hollows', dep=[0.2, 0.9]),
-    ]}}})
+    'generator': {'type': 'minecraft:noise', 'settings': f'{NS}:redstone_realm', 'biome_source': {'type': 'minecraft:multi_noise', 'biomes': points}}})
+
+# ---- tags: the realm's rock is where its ores grow and where caves are carved
+REALM_ROCK = [f'{NS}:{b}' for b in ('realmstone', 'deep_realmstone', 'hematite', 'dark_hematite', 'cinder_rock', 'tempest_basalt', 'frost_realmstone',
+                                    'fossil_circuit', 'salt_crust', 'karst_limestone')]
+write(os.path.join(DATA, 'tags', 'block', 'realm_base_stone.json'), {'replace': False, 'values': REALM_ROCK})
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'overworld_carver_replaceables.json'),
+          REALM_ROCK + [f'{NS}:{b}' for b in ('rust_sand', 'red_clay', 'fen_mud', 'canal_moss', 'briar_soil', 'heather_turf', 'root_soil', 'grove_moss',
+                                              'lichen_karst', 'rusted_soil', 'slag', 'sulfur_crust', 'redstone_vein')])
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'mineable', 'axe.json'), axes)
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'logs.json'), axes)
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'mineable', 'pickaxe.json'), pickaxe)
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'mineable', 'shovel.json'), shovel)
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'needs_iron_tool.json'), needs_iron)
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'sword_efficient.json'), [f'{NS}:{p}' for p in PLANTS] + [f'{NS}:briar_thorns'])
+merge_tag(os.path.join(MC_DATA, 'tags', 'block', 'replaceable_by_trees.json'), [f'{NS}:{p}' for p in PLANTS])
+
+# ---- things the realm no longer has: the gate, the arrival station and its signs, the workshop
+for path in ('models/block/realm_gate.json', 'models/block/realm_gate_on.json', 'models/item/realm_gate.json', 'blockstates/realm_gate.json',
+             'textures/block/realm_gate_side.png', 'textures/block/realm_gate_top.png', 'textures/block/realm_gate_top_on.png'):
+    p_ = os.path.join(ASSETS, *path.split('/'))
+    if os.path.exists(p_):
+        os.remove(p_)
+for path in ('recipe/realm_gate.json', 'loot_table/blocks/realm_gate.json', 'loot_table/chests/realm_arrival.json', 'loot_table/chests/realm_workshop.json',
+             'worldgen/configured_feature/circuit_workshop.json', 'worldgen/placed_feature/circuit_workshop.json',
+             'worldgen/configured_feature/coal_heap.json', 'worldgen/placed_feature/coal_heap.json'):
+    p_ = os.path.join(DATA, *path.split('/'))
+    if os.path.exists(p_):
+        os.remove(p_)
+for lang in ('en_us', 'de_de'):
+    path = os.path.join(ASSETS, 'lang', lang + '.json')
+    with open(path, encoding='utf-8') as f:
+        current = json.load(f)
+    stale = [k for k in current if k.startswith(f'sign.{NS}.') or k.startswith(f'block.{NS}.realm_gate')
+             or k in (f'message.{NS}.gate_unpowered', f'message.{NS}.realm_first', f'message.{NS}.realm_enter', f'message.{NS}.realm_leave',
+                      f'message.{NS}.realm_missing')]
+    for k in stale:
+        del current[k]
+    write(path, current)
+
 
 # ================================================================================================ particles
 def particle_frames(name, frames):
@@ -862,12 +1163,6 @@ particle_frames('realm_drip', [radial(8, lambda d, x, y, k=k: (
 # ================================================================================================ texts
 name(f'itemGroup.{NS}.redstone_realm', 'Redstone Realm', 'Redstone-Reich')
 MESSAGES = {
-    'gate_unpowered': ('The Realm Gate needs a redstone signal.', 'Das Reichstor braucht ein Redstone-Signal.'),
-    'realm_enter': ('You enter the Redstone Realm.', 'Du betrittst das Redstone-Reich.'),
-    'realm_first': ('Welcome to the Redstone Realm! Read the Field Guide, open the kit chest and look at the example circuits on this platform. The gate on the redstone block takes you home.',
-                    'Willkommen im Redstone-Reich! Lies den Feldführer, öffne die Starterkiste und schau dir die Beispielschaltungen auf dieser Plattform an. Das Tor auf dem Redstone-Block bringt dich heim.'),
-    'realm_leave': ('Back home.', 'Wieder zu Hause.'),
-    'realm_missing': ('The Redstone Realm is missing from this world.', 'Das Redstone-Reich fehlt in dieser Welt.'),
     'wrench_sneak': ('Sneak + right click to switch this trap between armed and safe.', 'Schleichen + Rechtsklick schaltet diese Falle zwischen scharf und sicher.'),
     'trap_armed': ('Trap armed', 'Falle scharf'),
     'trap_disarmed': ('Trap disarmed', 'Falle entschärft'),
@@ -875,35 +1170,9 @@ MESSAGES = {
 for key, (e, g) in MESSAGES.items():
     name(f'message.{NS}.{key}', e, g)
 
-# signs: four lines of at most ~15 characters
-SIGNS = {
-    'crusher_passage': (('CRUSHING', 'PASSAGE', 'Plates fire the', 'crushers!'), ('QUETSCH-', 'GANG', 'Platten lösen', 'Zermalmer aus!')),
-    'vault_and': (('THE VAULT', 'Both levers', '-> AND gate', '-> door opens'), ('DER TRESOR', 'Beide Hebel', '-> UND-Gatter', '-> Tür geht auf')),
-    'switchyard': (('JUNCTION', 'Tripper rail', 'flips the Hazard', 'Switch. Mind pit'), ('WEICHE', 'Auslöseschiene', 'stellt die Weiche', 'Vorsicht Grube')),
-    'gatehouse': (('LOCKDOWN', 'Sculk hears you,', 'gates slam shut.', 'Sneak or decoy!'), ('ABRIEGELUNG', 'Sculk hört dich,', 'Gitter fallen.', 'Schleich/Köder!')),
-    'sluice': (('SLUICE BRIDGE', 'Tripwire opens', 'the floodgates.', 'Wrench = safe'), ('SCHLEUSEN-', 'BRÜCKE: Draht', 'öffnet Schleusen', 'Schlüssel=sicher')),
-    'kiln': (('KILN BRIDGE', 'Plates fire the', 'turret walls.', 'Counter = score'), ('OFENBRÜCKE', 'Platten zünden', 'die Geschütze.', 'Zähler zählt mit')),
-    'briar': (('AMBUSH PATH', 'Tripwire = arrow', 'volley. Laser', 'post = siren'), ('HINTERHALT', 'Draht = Pfeil-', 'salve. Laser-', 'posten = Sirene')),
-    'station_gate': (('RETURN GATE', 'Sits on a', 'redstone block:', 'right click it'), ('RÜCKKEHR-TOR', 'Steht auf', 'Redstone-Block:', 'Rechtsklick')),
-    'station_kit': (('STARTER KIT', 'One counter', 'tool for every', 'trap. Good luck'), ('STARTERKISTE', 'Ein Gegenmittel', 'für jede Falle.', 'Viel Glück!')),
-    'ex_blinker': (('BLINKER', 'Clock -> lamps', 'Right click the', 'clock: speed'), ('BLINKER', 'Taktgeber->Lampe', 'Rechtsklick auf', 'Takt: Tempo')),
-    'ex_and': (('AND GATE', 'Lever left and', 'lever right', 'both on = light'), ('UND-GATTER', 'Hebel links und', 'Hebel rechts:', 'beide = Licht')),
-    'ex_toggle': (('TOGGLE', 'Button on block', '-> T flip-flop', 'on, off, on...'), ('UMSCHALTER', 'Knopf auf Block', '-> T-Flipflop', 'an, aus, an...')),
-    'ex_counter': (('COUNTER', 'Top button +1', 'Floor button', 'resets to 0'), ('ZÄHLER', 'Oberer Knopf +1', 'Bodenknopf', 'setzt auf 0')),
-    'ex_sequencer': (('RUNNING LIGHT', 'Clock ->', 'Sequencer: left', 'front, right..'), ('LAUFLICHT', 'Taktgeber ->', 'Sequenzer: li,', 'vorne, re, ...')),
-    'ex_wireless': (('WIRELESS', 'Lever -> sender', 'Receiver on', 'channel 15'), ('FUNK', 'Hebel -> Sender', 'Empfänger auf', 'Kanal 15')),
-    'ex_detector': (('DETECTOR', 'Player near:', 'lamp on, the', 'inverted off'), ('DETEKTOR', 'Spieler nah:', 'Lampe an, die', 'invertierte aus')),
-    'ex_laser': (('LASER FENCE', 'Step into the', 'beam: siren +', 'lamp go off'), ('LASERZAUN', 'Tritt in den', 'Strahl: Sirene', '+ Lampe an')),
-    'ex_trap': (('REALM TRAP', 'Lever fires', 'crushers, they', 'ripple along'), ('REICHSFALLE', 'Hebel zündet', 'Zermalmer, die', 'sich weitergeben')),
-    'ex_rail': (('TRIPPER RAIL', 'Walk on it:', 'lamp + pulse', 'extender stays'), ('AUSLÖSESCHIENE', 'Drüberlaufen:', 'Lampe + Puls-', 'verlängerer')),
-}
-for key, (e_lines, g_lines) in SIGNS.items():
-    for i in range(4):
-        name(f'sign.{NS}.{key}.{i}', e_lines[i], g_lines[i])
-
 BOOK_EN = [
-    'REDSTONE REALM\nField Guide\n\nThis world runs on redstone. Every biome has a machine creature, a trap with a TRIGGER and a RESPONSE, and a COUNTER tool that beats it.\n\nThe arrival platform shows working example circuits.',
-    'GETTING AROUND\n\nThe Realm Gate works only while it gets a redstone signal. Right click it to travel. Your return gate sits on a redstone block, so it is always on.\n\nCrafting the counters needs Realm Cogs, dropped by constructs.',
+    'REDSTONE REALM\nField Guide\n\nA world that runs on redstone. Every land has its own machines, creatures and traps. Nothing explains itself: watch the machines to see how they work.',
+    'GETTING THERE\n\nBuild a frame of redstone blocks like a Nether portal (inside at least 2 wide, 3 high) and light it with flint and steel. Step in. A portal waits on the other side to bring you back.',
     'PISTON KARST\nPale limestone towers.\n\nTrigger: pressure plate\nResponse: crushing passage\nCounter: Piston Brace (right click a Crusher)\n\nThe vault at the end opens with two levers and an AND gate.',
     'SWITCHYARD FLATS\nRust, slag and rails.\n\nTrigger: Tripper Rail\nResponse: hazard diversion into a spike pit\nCounter: Pulse Injector (burns out a Hazard Switch, and stuns constructs).',
     'RESONANCE HOLLOWS\nCrystal caves deep below.\n\nTrigger: footstep vibration (sculk sensor)\nResponse: gate lockdown\nCounter: Decoy Beacon\n\nSneak: the Bell Stalker hunts by sound.',
@@ -918,8 +1187,8 @@ BOOK_EN = [
     'CREATURE JOBS 2\nLeaking Cell: its spill makes crops grow.\nDetonator Husk: its blast fires traps.\nBrood: bursts into cave spiders.\nKilnbound: fires the Kiln Turrets.\nCapacitor: shocks traps.\nBellows Hog: feed coal, it smelts.\nFlesh Press: give a redstone block, it guards you.',
 ]
 BOOK_DE = [
-    'REDSTONE-REICH\nFeldführer\n\nDiese Welt läuft mit Redstone. Jedes Biom hat eine Maschinenkreatur, eine Falle mit AUSLÖSER und REAKTION und ein GEGENMITTEL.\n\nDie Ankunftsplattform zeigt funktionierende Beispielschaltungen.',
-    'UNTERWEGS\n\nDas Reichstor funktioniert nur mit Redstone-Signal. Rechtsklick zum Reisen. Dein Rückkehr-Tor steht auf einem Redstone-Block und ist immer an.\n\nFür die Gegenmittel brauchst du Reichszahnräder von Konstrukten.',
+    'REDSTONE-REICH\nFeldführer\n\nEine Welt, die mit Redstone läuft. Jedes Land hat eigene Maschinen, Kreaturen und Fallen. Nichts erklärt sich selbst: beobachte die Maschinen, dann siehst du, wie sie funktionieren.',
+    'DER WEG HIN\n\nBaue einen Rahmen aus Redstone-Blöcken wie ein Netherportal (innen mindestens 2 breit, 3 hoch) und entzünde ihn mit Feuerzeug. Tritt hinein. Drüben wartet ein Portal für den Rückweg.',
     'KOLBENKARST\nHelle Kalktürme.\n\nAuslöser: Druckplatte\nReaktion: Quetschgang\nGegenmittel: Kolbenstrebe (Rechtsklick auf Zermalmer)\n\nDer Tresor am Ende öffnet mit zwei Hebeln und einem UND-Gatter.',
     'WEICHENEBENE\nRost, Schlacke und Schienen.\n\nAuslöser: Auslöseschiene\nReaktion: Umleitung in eine Stachelgrube\nGegenmittel: Impulsinjektor (brennt Weichen durch, lähmt Konstrukte).',
     'RESONANZHÖHLEN\nKristallhöhlen tief unten.\n\nAuslöser: Schrittvibration (Sculk-Sensor)\nReaktion: Abriegelung\nGegenmittel: Köderleuchtfeuer\n\nSchleichen: der Glockenpirscher jagt nach Gehör.',

@@ -289,6 +289,9 @@ public final class RealmFeatures {
             if (!waterside && (!level.getFluidState(origin.below()).isEmpty() || !level.getFluidState(origin).isEmpty())) {
                 return false;
             }
+            if (this.kind == Kind.BOARDWALK && level.getFluidState(origin.below()).isEmpty()) {
+                return false; // walkways only cross the fen's ponds
+            }
             Build b = new Build(level, origin, rotation, random, true);
             switch (this.kind) {
                 case CRUSHER_PASSAGE -> crusherPassage(b);

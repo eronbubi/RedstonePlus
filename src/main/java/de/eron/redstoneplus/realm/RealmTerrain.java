@@ -10,6 +10,10 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.world.level.block.RailBlock;
+import net.minecraft.world.level.block.PoweredRailBlock;
+import de.eron.redstoneplus.registry.ModRegistry;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -20,8 +24,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Landforms the shared terrain noise cannot make: dune ridges, mesas, ponds, crevasses, lava channels and terraced
- * pools. Each runs once per chunk over its 16x16 columns, driven by world-space noise so neighbouring chunks line up,
+ * Landforms the shared terrain noise cannot make: dune ridges, mesas, ponds, crevasses, lava channels, terraced
+ * pools and the long rail tracks of the switchyard. Each runs once per chunk over its 16x16 columns, driven by world-space noise so neighbouring chunks line up,
  * and only touches columns of its own biome.
  */
 public final class RealmTerrain {
@@ -30,7 +34,7 @@ public final class RealmTerrain {
 
     public enum Shape {
         DUNES("arsenal_dunes"), MESAS("hematite_scarps"), PONDS("red_clay_fen", "vein_mire"), CREVASSES("frostwork_wastes"),
-        LAVA_CHANNELS("kiln_barrens"), TERRACE_POOLS("rubedo_gardens");
+        LAVA_CHANNELS("kiln_barrens"), TERRACE_POOLS("rubedo_gardens"), TRACKS("switchyard_flats");
 
         final String[] biomes;
 
@@ -82,6 +86,7 @@ public final class RealmTerrain {
                         case CREVASSES -> crevasse(level, a, b, x, z, top);
                         case LAVA_CHANNELS -> lavaChannel(level, a, b, x, z, top, sea);
                         case TERRACE_POOLS -> pond(level, a, x, z, top, sea, true);
+                        case TRACKS -> track(level, a, x, z, top, sea);
                     };
                 }
             }
@@ -162,7 +167,7 @@ public final class RealmTerrain {
             }
             return false;
         }
-        if (n < 0.25) {
+        if (n < 0.05) {
             return false;
         }
         int depth = n > 0.5 ? 2 : 1;
@@ -202,5 +207,71 @@ public final class RealmTerrain {
             set(level, x, top - 2, z, Blocks.LAVA.defaultBlockState());
         }
         return true;
+    }
+
+    // switchyard grid: pairs of parallel north-south tracks every 56 blocks, single east-west tracks every 72 blocks
+    private static final int NS_SPACING = 56;
+    private static final int EW_SPACING = 72;
+
+    private static boolean nsTrack(SimplexNoise a, int x, int z) {
+        int m = Math.floorMod(x - 7, NS_SPACING);
+        return (m == 0 || m == 3) && a.getValue(Math.floorDiv(x - 7, NS_SPACING) * 1.7, z * 0.006) > -0.15;
+    }
+
+    private static boolean ewTrack(SimplexNoise a, int x, int z) {
+        return Math.floorMod(z - 23, EW_SPACING) == 0 && a.getValue(x * 0.006, Math.floorDiv(z - 23, EW_SPACING) * 1.7 + 50) > -0.15;
+    }
+
+    /**
+     * Long straight tracks across the switchyard that run on from chunk to chunk, climbing one-block steps. Every so
+     * often a powered rail sits on a redstone block, and signal posts light up when someone walks by.
+     */
+    private static boolean track(WorldGenLevel level, SimplexNoise a, int x, int z, int top, int sea) {
+        boolean ns = nsTrack(a, x, z);
+        boolean ew = ewTrack(a, x, z);
+        if ((!ns && !ew) || !dry(level, x, top, z, sea) || !level.getBlockState(new BlockPos(x, top, z)).canBeReplaced()) {
+            return false;
+        }
+        int before = ns ? height(level, x, z - 1) : height(level, x - 1, z);
+        int after = ns ? height(level, x, z + 1) : height(level, x + 1, z);
+        if (Math.abs(before - top) > 1 && Math.abs(after - top) > 1) {
+            return false; // a cliff: the track breaks off here
+        }
+        RailShape shape;
+        if (ns && ew) {
+            shape = RailShape.NORTH_SOUTH;
+        } else if (ns) {
+            shape = after == top + 1 ? RailShape.ASCENDING_SOUTH : before == top + 1 ? RailShape.ASCENDING_NORTH : RailShape.NORTH_SOUTH;
+        } else {
+            shape = after == top + 1 ? RailShape.ASCENDING_EAST : before == top + 1 ? RailShape.ASCENDING_WEST : RailShape.EAST_WEST;
+        }
+        int along = ns ? z : x;
+        boolean flat = !shape.isAscending() && !(ns && ew);
+        if (flat && Math.floorMod(along, 16) == 5) {
+            set(level, x, top - 1, z, Blocks.REDSTONE_BLOCK.defaultBlockState());
+            set(level, x, top, z, Blocks.POWERED_RAIL.defaultBlockState().setValue(PoweredRailBlock.SHAPE, shape).setValue(PoweredRailBlock.POWERED, true));
+        } else {
+            set(level, x, top - 1, z, Realm.SLAG.get().defaultBlockState());
+            set(level, x, top, z, Blocks.RAIL.defaultBlockState().setValue(RailBlock.SHAPE, shape));
+        }
+        // a signal post beside the outer track now and then
+        if (flat && Math.floorMod(along, 40) == 17) {
+            int px = ns ? x - 1 : x;
+            int pz = ns ? z : z - 1;
+            boolean outer = !ns || Math.floorMod(x - 7, NS_SPACING) == 0;
+            if (outer && height(level, px, pz) == top && dry(level, px, top, pz, sea)) {
+                set(level, px, top, pz, Blocks.DARK_OAK_FENCE.defaultBlockState());
+                set(level, px, top + 1, pz, Blocks.DARK_OAK_FENCE.defaultBlockState());
+                BlockPos sensor = new BlockPos(px, top + 2, pz);
+                level.setBlock(sensor, ModRegistry.PLAYER_DETECTOR.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.scheduleTick(sensor, ModRegistry.PLAYER_DETECTOR.get(), 2);
+                set(level, px, top + 3, pz, ModRegistry.INSTANT_LAMP.get().defaultBlockState());
+            }
+        }
+        return true;
+    }
+
+    private static int height(WorldGenLevel level, int x, int z) {
+        return level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z);
     }
 }

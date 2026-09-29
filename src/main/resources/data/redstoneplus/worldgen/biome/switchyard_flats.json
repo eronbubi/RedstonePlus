@@ -81,13 +81,13 @@
     [],
     [],
     [
+      "redstoneplus:tracks",
       "redstoneplus:slag_heap",
       "redstoneplus:scree"
     ],
     [],
     [
       "redstoneplus:switchyard_junction",
-      "redstoneplus:rail_line",
       "redstoneplus:tower",
       "redstoneplus:lamp_pylon",
       "redstoneplus:minecart_loop"

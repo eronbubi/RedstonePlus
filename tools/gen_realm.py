@@ -749,9 +749,9 @@ def state(name_, props=None):
     return s_
 
 
-def spire(name_, body, accent, h, r, count):
+def spire(name_, body, accent, h, r, count, rarity=None):
     placed(name_, {'type': f'{NS}:spire', 'config': {'body': state(body), 'accent': state(accent), 'min_height': h[0], 'max_height': h[1],
-                                                      'min_radius': r[0], 'max_radius': r[1]}}, surface(count))
+                                                      'min_radius': r[0], 'max_radius': r[1]}}, surface(count, rarity))
 
 
 def patch(name_, plant, tries, count, spread=6):
@@ -791,7 +791,7 @@ spire('kiln_spire', 'cinder_rock', 'minecraft:magma_block', (8, 22), (1, 3), {'t
 spire('hoodoo', 'hematite', 'dark_hematite', (10, 28), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
 spire('tempest_pillar', 'tempest_basalt', 'redstone_vein', (8, 30), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
 spire('rubedo_spire', 'redstone_vein', 'realmstone_bricks', (6, 16), (1, 2), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
-spire('frost_spire', 'frost_realmstone', 'minecraft:packed_ice', (10, 26), (1, 3), 1)
+spire('frost_spire', 'frost_realmstone', 'minecraft:packed_ice', (10, 26), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=3)
 spire('dune_rock', 'realmstone', 'rust_sand', (3, 8), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
 rock('slag_heap', 'slag', 1)
 rock('sulfur_rock', 'sulfur_crust', rarity=2)
@@ -814,14 +814,14 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools'):
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks'):
     placed(shape, none_feature(shape), [])
 
 # trap sites, scenery and machines: rare and spread out
 placed('resonance_gatehouse', none_feature('resonance_gatehouse'), underground(1, -40, 30, rarity=5))
 for kind, rarity in (('crusher_passage', 28), ('switchyard_junction', 26), ('sluice_bridge', 26), ('kiln_bridge', 26), ('briar_ambush', 26),
-                     ('rail_line', 14), ('tower', 22), ('ruin', 20), ('monolith', 30), ('crashed_shell', 18), ('crystal_dome', 30),
-                     ('boardwalk', 16), ('kiln_hut', 20), ('aqueduct', 16), ('ice_rails', 22), ('scrap', 18),
+                     ('rail_line', 40), ('tower', 40), ('ruin', 56), ('monolith', 36), ('crashed_shell', 36), ('crystal_dome', 36),
+                     ('boardwalk', 10), ('kiln_hut', 36), ('aqueduct', 40), ('ice_rails', 40), ('scrap', 36),
                      ('lamp_pylon', 70), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
                      ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40)):
     site(kind, rarity)
@@ -832,7 +832,7 @@ STEPS = [
     [],
     ['minecraft:lake_lava_surface'],
     ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
-     'redstoneplus:terrace_pools', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree'],
     ['redstoneplus:resonance_gatehouse'],
@@ -880,7 +880,7 @@ BIOMES = {
                      features('karst_spire', 'crusher_passage', 'crusher_mill', 'lichen_tuft_patch', 'beast_cage'),
                      [('karst_colossus', 25, 1, 1), ('relay_strider', 20, 1, 1), ('detonator_husk', 30, 1, 2)], [('flesh_press', 3, 1, 1)], ['karst_colossus']),
     'switchyard_flats': ('Switchyard Flats', 'Weichenebene', 1.2, 0.1, ('#c07aa0', '#d08a70', '#8a4a3a', '#3a1a10', '#a8905a'), fx(RED_DUST, 0.004),
-                         features('slag_heap', 'switchyard_junction', 'rail_line', 'tower', 'lamp_pylon', 'minecart_loop', 'salt_brush_patch'),
+                         features('tracks', 'slag_heap', 'switchyard_junction', 'tower', 'lamp_pylon', 'minecart_loop', 'salt_brush_patch'),
                          [('switchback_crawler', 40, 1, 2), ('detonator_husk', 30, 1, 2), ('kilnbound', 20, 1, 1)], [('bellows_hog', 10, 2, 3)],
                          ['switchback_crawler']),
     'sluice_gardens': ('Sluice Gardens', 'Schleusengärten', 0.7, 0.9, ('#8ab0a0', '#a8c8b8', '#3ab8a0', '#10403a', '#4a9a70'), None,
@@ -910,7 +910,7 @@ BIOMES = {
                         [('karst_colossus', 20, 1, 1), ('tripwire_brood', 30, 1, 2), ('detonator_husk', 25, 1, 2)], [('flesh_press', 4, 1, 1)],
                         ['karst_colossus']),
     'tempest_shoals': ('Tempest Shoals', 'Sturmbänke', 0.5, 0.9, ('#3e4260', '#2e3446', '#22b0a0', '#0a2a28', '#2a6a6a'), fx('minecraft:electric_spark', 0.004),
-                       features('tempest_pillar', 'storm_spire', 'aqueduct'),
+                       features('tempest_pillar', 'storm_spire'),
                        [('sluice_chainjaw', 35, 1, 2), ('relay_strider', 25, 1, 1)], [], ['sluice_chainjaw']),
     'frostwork_wastes': ('Frostwork Wastes', 'Frostwerk-Öde', -0.6, 0.5, ('#8a9ab0', '#a8b8c8', '#3a6a9a', '#0a1a2a', '#8aa0b0'), fx('minecraft:white_ash', 0.02),
                          features('crevasses', 'frost_spire', 'ice_rails', 'tower', 'frost_fern_patch'),
@@ -1050,6 +1050,10 @@ settings = vanilla_json('data/minecraft/worldgen/noise_settings/overworld.json')
 settings['default_block'] = state('realmstone')
 settings['ore_veins_enabled'] = False
 settings['surface_rule']['sequence'].insert(1, realm_rules)
+# biomes a third of the overworld's size, so all of them are within reach: only the biome noises are sampled faster,
+# the terrain shape is untouched
+for climate in ('temperature', 'vegetation'):
+    settings['noise_router'][climate]['xz_scale'] = 0.75
 write(os.path.join(DATA, 'worldgen', 'noise_settings', 'redstone_realm.json'), settings)
 
 write(os.path.join(DATA, 'dimension_type', 'redstone_realm.json'), {

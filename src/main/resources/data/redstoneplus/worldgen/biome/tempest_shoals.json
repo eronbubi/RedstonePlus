@@ -62,12 +62,17 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:tempest_pillar",
       "redstoneplus:scree"
     ],
     [],
     [
-      "redstoneplus:storm_spire"
+      "redstoneplus:storm_spire",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

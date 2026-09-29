@@ -82,6 +82,8 @@
     [],
     [
       "redstoneplus:tracks",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:slag_heap",
       "redstoneplus:scree"
     ],
@@ -90,7 +92,10 @@
       "redstoneplus:switchyard_junction",
       "redstoneplus:tower",
       "redstoneplus:lamp_pylon",
-      "redstoneplus:minecart_loop"
+      "redstoneplus:minecart_loop",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

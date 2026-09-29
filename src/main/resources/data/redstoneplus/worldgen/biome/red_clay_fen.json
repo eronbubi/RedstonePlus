@@ -63,13 +63,18 @@
     [],
     [
       "redstoneplus:ponds",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:scree"
     ],
     [],
     [
       "redstoneplus:boardwalk",
       "redstoneplus:kiln_hut",
-      "redstoneplus:pump_station"
+      "redstoneplus:pump_station",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

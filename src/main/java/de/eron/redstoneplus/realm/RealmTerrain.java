@@ -25,7 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Landforms the shared terrain noise cannot make: dune ridges, mesas, ponds, crevasses, lava channels, terraced
- * pools and the long rail tracks of the switchyard. Each runs once per chunk over its 16x16 columns, driven by world-space noise so neighbouring chunks line up,
+ * pools, the long rail tracks of the switchyard, and through every biome glowing redstone veins and the broken roads
+ * of the world that ran on redstone before. Each runs once per chunk over its 16x16 columns, driven by world-space noise so neighbouring chunks line up,
  * and only touches columns of its own biome.
  */
 public final class RealmTerrain {
@@ -34,7 +35,9 @@ public final class RealmTerrain {
 
     public enum Shape {
         DUNES("arsenal_dunes"), MESAS("hematite_scarps"), PONDS("red_clay_fen", "vein_mire"), CREVASSES("frostwork_wastes"),
-        LAVA_CHANNELS("kiln_barrens"), TERRACE_POOLS("rubedo_gardens"), TRACKS("switchyard_flats");
+        LAVA_CHANNELS("kiln_barrens"), TERRACE_POOLS("rubedo_gardens"), TRACKS("switchyard_flats"),
+        // everywhere: glowing veins in the ground, and the broken roads of the old world
+        VEINS(), ROADS();
 
         final String[] biomes;
 
@@ -87,6 +90,8 @@ public final class RealmTerrain {
                         case LAVA_CHANNELS -> lavaChannel(level, a, b, x, z, top, sea);
                         case TERRACE_POOLS -> pond(level, a, x, z, top, sea, true);
                         case TRACKS -> track(level, a, x, z, top, sea);
+                        case VEINS -> vein(level, a, b, x, z, top);
+                        case ROADS -> road(level, a, b, x, z, top, sea);
                     };
                 }
             }
@@ -95,6 +100,10 @@ public final class RealmTerrain {
 
         private boolean inBiome(WorldGenLevel level, BlockPos pos) {
             var biome = level.getBiome(pos);
+            if (this.shape.biomes.length == 0) {
+                // the shapes that run through every biome; roads stay out of the sea
+                return this.shape != Shape.ROADS || !biome.is(ResourceKey.create(Registries.BIOME, Realm.id("tempest_shoals")));
+            }
             for (String name : this.shape.biomes) {
                 if (biome.is(ResourceKey.create(Registries.BIOME, Realm.id(name)))) {
                     return true;
@@ -273,5 +282,93 @@ public final class RealmTerrain {
 
     private static int height(WorldGenLevel level, int x, int z) {
         return level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z);
+    }
+
+    /**
+     * Redstone veins in every biome: long winding lines of glowing vein rock at the surface with thinner branches off
+     * them, a crystal breaking through here and there. Under water they glow on the sea floor.
+     */
+    private static boolean vein(WorldGenLevel level, SimplexNoise a, SimplexNoise b, int x, int z, int top) {
+        double main = Math.abs(a.getValue(x * 0.011, z * 0.011));
+        double branch = Math.abs(b.getValue(x * 0.035, z * 0.035));
+        boolean trunk = main < 0.022;
+        if (!trunk && !(branch < 0.012 && a.getValue(x * 0.004, z * 0.004) > -0.2)) {
+            return false;
+        }
+        BlockState vein = Realm.REDSTONE_VEIN.get().defaultBlockState();
+        int depth = trunk ? 3 : 1;
+        for (int d = 1; d <= depth; d++) {
+            set(level, x, top - d, z, d == depth && trunk ? Realm.REALM_REDSTONE_ORE.get().defaultBlockState() : vein);
+        }
+        BlockPos above = new BlockPos(x, top, z);
+        if (trunk && main < 0.004 && level.getBlockState(above).isAir() && Math.floorMod(x * 31 + z * 17, 13) == 0) {
+            set(level, x, top, z, Realm.REDSTONE_CLUSTER.get().defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING, net.minecraft.core.Direction.UP));
+        }
+        return true;
+    }
+
+    private static final int ROAD_GRID = 176;
+
+    /** Distance across the nearest road running east-west (0 = middle), or -1 off the road; the roads wind with the noise. */
+    private static int across(double pos, double warp) {
+        int d = Math.floorMod((int) Math.round(pos + warp), ROAD_GRID) - ROAD_GRID / 2;
+        return Math.abs(d) <= 2 ? d : Integer.MIN_VALUE;
+    }
+
+    /**
+     * The roads of the old world: five blocks wide with kerbs, a glowing power line down the middle where the conduit
+     * still carries current, and lamp posts along the side. Long stretches are ruined: paving missing, lamps dead or
+     * fallen; some stretches are gone altogether.
+     */
+    private static boolean road(WorldGenLevel level, SimplexNoise a, SimplexNoise b, int x, int z, int top, int sea) {
+        if (!dry(level, x, top, z, sea)) {
+            return false;
+        }
+        int ew = across(z, a.getValue(x * 0.004, 7.3) * 30);
+        int ns = across(x, a.getValue(3.1, z * 0.004) * 30);
+        if (ew == Integer.MIN_VALUE && ns == Integer.MIN_VALUE) {
+            return false;
+        }
+        boolean eastWest = ew != Integer.MIN_VALUE;
+        int d = eastWest ? ew : ns;
+        int along = eastWest ? x : z;
+        // how well this stretch has survived: gone, broken, or intact
+        double state = b.getValue(eastWest ? x * 0.006 : 11.7, eastWest ? 5.9 : z * 0.006);
+        if (state < -0.45) {
+            return false;
+        }
+        boolean broken = state < 0.05;
+        int hash = Math.floorMod(x * 734287 + z * 912931, 100);
+        if (broken && hash < 35) {
+            return false; // a hole in the paving
+        }
+        BlockState paving;
+        if (Math.abs(d) == 2) {
+            paving = Realm.DEEP_REALMSTONE.get().defaultBlockState(); // kerb
+        } else if (d == 0 && !broken) {
+            paving = Realm.REDSTONE_VEIN.get().defaultBlockState(); // the live conduit
+        } else {
+            paving = broken && hash < 60 ? Realm.REALMSTONE.get().defaultBlockState() : Realm.REALMSTONE_BRICKS.get().defaultBlockState();
+        }
+        set(level, x, top - 1, z, paving);
+        // a lamp post on the kerb every 24 blocks: lit where the road still has power, dark or toppled where not
+        if (d == -2 && Math.floorMod(along, 24) == 0 && level.getBlockState(new BlockPos(x, top, z)).canBeReplaced()) {
+            BlockState plating = Realm.RUST_PLATING.get().defaultBlockState();
+            if (!broken) {
+                set(level, x, top, z, plating);
+                set(level, x, top + 1, z, plating);
+                set(level, x, top + 2, z, Blocks.REDSTONE_BLOCK.defaultBlockState());
+                set(level, x, top + 3, z, ModRegistry.INSTANT_LAMP.get().defaultBlockState()
+                        .setValue(de.eron.redstoneplus.block.SimpleBlocks.Lamp.LIT, true));
+            } else if (hash < 80) {
+                set(level, x, top, z, plating);
+                if (hash < 65) {
+                    set(level, x, top + 1, z, plating);
+                    set(level, x, top + 2, z, ModRegistry.INSTANT_LAMP.get().defaultBlockState());
+                }
+            }
+        }
+        return true;
     }
 }

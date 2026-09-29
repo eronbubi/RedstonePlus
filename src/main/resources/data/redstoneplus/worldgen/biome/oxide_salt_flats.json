@@ -81,6 +81,8 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:salt_mound",
       "redstoneplus:scree"
     ],
@@ -90,7 +92,10 @@
       "redstoneplus:tower",
       "redstoneplus:ruin",
       "redstoneplus:scrap",
-      "redstoneplus:lamp_pylon"
+      "redstoneplus:lamp_pylon",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

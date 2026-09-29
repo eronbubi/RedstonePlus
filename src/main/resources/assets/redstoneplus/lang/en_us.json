@@ -570,7 +570,7 @@
   "guide.redstoneplus.chapter.world": "Mobs and biomes",
   "guide.redstoneplus.chapter.world.intro": "New creatures of the Overworld and the End, and the biomes they live in. The Overworld biomes need TerraBlender.",
   "guide.redstoneplus.chapter.realm": "The Redstone Realm",
-  "guide.redstoneplus.chapter.realm.intro": "A dimension of machines. Build a frame of redstone blocks like a Nether portal and light it with flint and steel. The pages after this are the realm's own field guide, then its blocks, tools, creatures and biomes.",
+  "guide.redstoneplus.chapter.realm.intro": "A dimension of machines. Build a frame of redstone blocks like a Nether portal and light it with flint and steel. It is the ruin of a world that once ran on redstone: glowing veins run through every biome, old roads cross it with lamps that still burn where power remains, and its great buildings (generator halls, relay spires, circuit temples) stand either humming or in ruins. The pages after this are the realm's own field guide, then its blocks, tools, creatures and biomes.",
   "guide.redstoneplus.chapter.other": "More",
   "guide.redstoneplus.chapter.other.intro": "Everything else.",
   "entity.redstoneplus.uranium_zombie.desc": "Glowing zombie that never burns in daylight. Its hits poison. Drops Uranium Flesh.",

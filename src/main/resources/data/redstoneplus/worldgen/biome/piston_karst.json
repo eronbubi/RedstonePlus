@@ -69,6 +69,8 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:karst_spire",
       "redstoneplus:scree"
     ],
@@ -76,7 +78,10 @@
     [
       "redstoneplus:crusher_passage",
       "redstoneplus:crusher_mill",
-      "redstoneplus:beast_cage"
+      "redstoneplus:beast_cage",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

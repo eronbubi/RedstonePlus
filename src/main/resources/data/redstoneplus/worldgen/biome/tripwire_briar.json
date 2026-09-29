@@ -62,6 +62,8 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:scree"
     ],
     [],
@@ -69,7 +71,10 @@
       "redstoneplus:briar_ambush",
       "redstoneplus:tower",
       "redstoneplus:ruin",
-      "redstoneplus:laser_post"
+      "redstoneplus:laser_post",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

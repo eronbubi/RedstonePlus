@@ -82,6 +82,8 @@
     [],
     [
       "redstoneplus:mesas",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:hoodoo",
       "redstoneplus:scree"
     ],
@@ -89,7 +91,10 @@
     [
       "redstoneplus:ruin",
       "redstoneplus:crusher_mill",
-      "redstoneplus:beast_cage"
+      "redstoneplus:beast_cage",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

@@ -82,6 +82,8 @@
     [],
     [
       "redstoneplus:dunes",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:dune_rock",
       "redstoneplus:scree"
     ],
@@ -91,7 +93,10 @@
       "redstoneplus:crashed_shell",
       "redstoneplus:scrap",
       "redstoneplus:lamp_pylon",
-      "redstoneplus:minecart_loop"
+      "redstoneplus:minecart_loop",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

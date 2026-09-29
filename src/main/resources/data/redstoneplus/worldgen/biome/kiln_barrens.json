@@ -78,6 +78,8 @@
     ],
     [
       "redstoneplus:lava_channels",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:kiln_spire",
       "redstoneplus:sulfur_rock",
       "redstoneplus:scree"
@@ -85,7 +87,10 @@
     [],
     [
       "redstoneplus:kiln_bridge",
-      "redstoneplus:lamp_pylon"
+      "redstoneplus:lamp_pylon",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

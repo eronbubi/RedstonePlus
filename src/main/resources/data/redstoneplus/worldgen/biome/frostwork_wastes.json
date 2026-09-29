@@ -69,13 +69,18 @@
     [],
     [
       "redstoneplus:crevasses",
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:frost_spire",
       "redstoneplus:scree"
     ],
     [],
     [
       "redstoneplus:tower",
-      "redstoneplus:ice_rails"
+      "redstoneplus:ice_rails",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

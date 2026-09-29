@@ -62,13 +62,18 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:scree"
     ],
     [],
     [
       "redstoneplus:sluice_bridge",
       "redstoneplus:aqueduct",
-      "redstoneplus:pump_station"
+      "redstoneplus:pump_station",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

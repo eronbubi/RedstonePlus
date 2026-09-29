@@ -125,6 +125,8 @@ public final class RealmFeatures {
         final Rotation rotation;
         final RandomSource random;
         private final boolean worldgen;
+        /** 0 for a building still standing; above 0 the chance that a block has fallen away (ruins). */
+        float decay;
 
         Build(LevelAccessor level, BlockPos origin, Rotation rotation, RandomSource random, boolean worldgen) {
             this.level = level;
@@ -152,6 +154,13 @@ public final class RealmFeatures {
                 // a feature may only write into the chunks next to the one it starts in: long pieces are cut off there
                 return;
             }
+            if (this.decay > 0 && !state.isAir() && y >= 0) {
+                // a ruin: the higher up, the more has fallen away; what is left is cracked, rusted and its glass broken
+                if (this.random.nextFloat() < this.decay * Math.min(1F, 0.2F + y / 18F)) {
+                    return;
+                }
+                state = this.weathered(state);
+            }
             BlockState rotated = state.rotate(this.rotation);
             this.level.setBlock(pos, rotated, this.worldgen ? Block.UPDATE_CLIENTS : Block.UPDATE_ALL);
             if (this.worldgen) {
@@ -162,6 +171,25 @@ public final class RealmFeatures {
                     this.level.scheduleTick(pos, block, 2 + this.random.nextInt(4));
                 }
             }
+        }
+
+        private BlockState weathered(BlockState state) {
+            if (this.random.nextFloat() >= this.decay) {
+                return state;
+            }
+            if (state.is(Realm.REALMSTONE_BRICKS.get()) || state.is(Realm.KARST_BRICKS.get()) || state.is(Realm.FROST_REALMSTONE.get())) {
+                return Realm.REALMSTONE.get().defaultBlockState();
+            }
+            if (state.is(Realm.SHELL_PLATING.get()) || state.is(Blocks.WEATHERED_COPPER) || state.is(Blocks.OXIDIZED_CUT_COPPER)) {
+                return Realm.RUST_PLATING.get().defaultBlockState();
+            }
+            if (state.is(Blocks.RED_STAINED_GLASS) || state.is(Blocks.GLASS)) {
+                return Blocks.AIR.defaultBlockState();
+            }
+            if (state.is(Blocks.REDSTONE_BLOCK)) {
+                return Realm.REDSTONE_VEIN.get().defaultBlockState(); // drained
+            }
+            return state;
         }
 
         void set(int x, int y, int z, Block block) {
@@ -253,7 +281,9 @@ public final class RealmFeatures {
         KILN_HUT(true), AQUEDUCT(false), ICE_RAILS(true), SCRAP(false),
         // machines that run by themselves
         LAMP_PYLON(false), CRUSHER_MILL(true), PUMP_STATION(true), MINECART_LOOP(true), STORM_SPIRE(false), BELL_TOWER(true), BEAST_CAGE(true),
-        LASER_POST(true);
+        LASER_POST(true),
+        // the great buildings of the old world, standing or in ruins
+        GENERATOR_HALL(false), RELAY_SPIRE(false), CIRCUIT_TEMPLE(false);
 
         /** Needs fairly flat, dry ground. */
         final boolean flat;
@@ -282,6 +312,10 @@ public final class RealmFeatures {
             BlockPos origin = context.origin();
             Rotation rotation = Rotation.getRandom(random);
             if (this.kind.flat && !flatEnough(level, origin, 6, 4)) {
+                return false;
+            }
+            boolean relic = this.kind == Kind.GENERATOR_HALL || this.kind == Kind.RELAY_SPIRE || this.kind == Kind.CIRCUIT_TEMPLE;
+            if (relic && !flatEnough(level, origin, 12, 7)) {
                 return false;
             }
             boolean waterside = this.kind == Kind.BOARDWALK || this.kind == Kind.AQUEDUCT || this.kind == Kind.STORM_SPIRE
@@ -320,6 +354,9 @@ public final class RealmFeatures {
                 case BELL_TOWER -> RealmStructures.bellTower(b);
                 case BEAST_CAGE -> RealmStructures.beastCage(b);
                 case LASER_POST -> RealmStructures.laserPost(b);
+                case GENERATOR_HALL -> RealmRelics.generatorHall(b);
+                case RELAY_SPIRE -> RealmRelics.relaySpire(b);
+                case CIRCUIT_TEMPLE -> RealmRelics.circuitTemple(b);
             }
             return true;
         }

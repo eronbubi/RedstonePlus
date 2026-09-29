@@ -101,8 +101,8 @@ CHAPTERS = {
               'New creatures of the Overworld and the End, and the biomes they live in. The Overworld biomes need TerraBlender.',
               'Neue Kreaturen der Oberwelt und des End und ihre Biome. Die Oberwelt-Biome brauchen TerraBlender.'),
     'realm': ('The Redstone Realm', 'Das Redstone-Reich',
-              'A dimension of machines. Build a frame of redstone blocks like a Nether portal and light it with flint and steel. The pages after this are the realm\'s own field guide, then its blocks, tools, creatures and biomes.',
-              'Eine Dimension der Maschinen. Baue einen Rahmen aus Redstone-Blöcken wie ein Netherportal und entzünde ihn mit Feuerzeug. Danach folgen der Feldführer des Reichs, seine Blöcke, Werkzeuge, Kreaturen und Biome.'),
+              'A dimension of machines. Build a frame of redstone blocks like a Nether portal and light it with flint and steel. It is the ruin of a world that once ran on redstone: glowing veins run through every biome, old roads cross it with lamps that still burn where power remains, and its great buildings (generator halls, relay spires, circuit temples) stand either humming or in ruins. The pages after this are the realm\'s own field guide, then its blocks, tools, creatures and biomes.',
+              'Eine Dimension der Maschinen. Baue einen Rahmen aus Redstone-Blöcken wie ein Netherportal und entzünde ihn mit Feuerzeug. Es ist die Ruine einer Welt, die einst mit Redstone lief: Leuchtende Adern ziehen durch jedes Biom, alte Straßen durchqueren es, deren Lampen noch brennen, wo Strom übrig ist, und seine großen Bauten (Generatorhallen, Relaistürme, Schaltkreistempel) stehen summend da oder liegen in Trümmern. Danach folgen der Feldführer des Reichs, seine Blöcke, Werkzeuge, Kreaturen und Biome.'),
     'other': ('More', 'Weiteres', 'Everything else.', 'Alles Weitere.'),
 }
 for cid, (e, g, ie, ig) in CHAPTERS.items():

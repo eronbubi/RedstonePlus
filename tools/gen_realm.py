@@ -814,7 +814,7 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks'):
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads'):
     placed(shape, none_feature(shape), [])
 
 # trap sites, scenery and machines: rare and spread out
@@ -825,6 +825,11 @@ for kind, rarity in (('crusher_passage', 28), ('switchyard_junction', 26), ('slu
                      ('lamp_pylon', 70), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
                      ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40)):
     site(kind, rarity)
+# the great buildings of the old world: centred on their chunk so they have room, and very rare
+for kind, rarity in (('generator_hall', 260), ('relay_spire', 220), ('circuit_temple', 300)):
+    placed(kind, none_feature(kind), [{'type': 'minecraft:rarity_filter', 'chance': rarity},
+                                      {'type': 'minecraft:random_offset', 'xz_spread': 8, 'y_spread': 0},
+                                      {'type': 'minecraft:heightmap', 'heightmap': 'WORLD_SURFACE_WG'}, {'type': 'minecraft:biome'}])
 placed('giant_tree', none_feature('giant_tree'), surface(count={'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=2))
 
 # one ordered list per generation step, so every biome uses the same order
@@ -832,7 +837,7 @@ STEPS = [
     [],
     ['minecraft:lake_lava_surface'],
     ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
-     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree'],
     ['redstoneplus:resonance_gatehouse'],
@@ -840,7 +845,8 @@ STEPS = [
      'redstoneplus:briar_ambush', 'redstoneplus:rail_line', 'redstoneplus:tower', 'redstoneplus:ruin', 'redstoneplus:monolith',
      'redstoneplus:crashed_shell', 'redstoneplus:crystal_dome', 'redstoneplus:boardwalk', 'redstoneplus:kiln_hut', 'redstoneplus:aqueduct',
      'redstoneplus:ice_rails', 'redstoneplus:scrap', 'redstoneplus:lamp_pylon', 'redstoneplus:crusher_mill', 'redstoneplus:pump_station',
-     'redstoneplus:minecart_loop', 'redstoneplus:storm_spire', 'redstoneplus:bell_tower', 'redstoneplus:beast_cage', 'redstoneplus:laser_post'],
+     'redstoneplus:minecart_loop', 'redstoneplus:storm_spire', 'redstoneplus:bell_tower', 'redstoneplus:beast_cage', 'redstoneplus:laser_post',
+     'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple'],
     [],
     ['redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:ore_redstone_vein',
      'redstoneplus:resonant_crystal_ore'],
@@ -851,7 +857,7 @@ STEPS = [
      'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
     ['minecraft:freeze_top_layer'],
 ]
-EVERYWHERE = {'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
+EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
               'redstoneplus:scree', 'minecraft:freeze_top_layer'}
 
 

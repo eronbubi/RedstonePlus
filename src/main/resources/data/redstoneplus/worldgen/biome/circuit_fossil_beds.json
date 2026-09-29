@@ -69,10 +69,16 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:scree"
     ],
     [],
-    [],
+    [
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
+    ],
     [],
     [
       "redstoneplus:ore_realm_redstone",

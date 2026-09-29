@@ -69,13 +69,18 @@
     [],
     [],
     [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
       "redstoneplus:scree"
     ],
     [],
     [
       "redstoneplus:ruin",
       "redstoneplus:monolith",
-      "redstoneplus:bell_tower"
+      "redstoneplus:bell_tower",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
     ],
     [],
     [

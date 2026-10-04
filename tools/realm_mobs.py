@@ -1108,3 +1108,139 @@ replace_clip('flesh_press', 'idle', L, True, {
     'arm_r': R(lambda u: (5 * s(u, 2) - 4, 0, 3), L), 'arm_l': R(lambda u: (5 * s(u, 2, 0.5) - 4, 0, -3), L),
     'screw': rot(spin(L, 180, 'y')),
 })
+
+
+# ================================================================================================ wildlife
+# The bottom of the realm's food chain: grazers on the veins, moths at the lamps, and the jackals that hunt them.
+
+# ---- Spark Mite: a copper beetle with a glowing belly; scuttles on a tripod gait and grazes on redstone veins
+_mite_legs = []
+for _i, _z in enumerate((-3, 0, 3)):
+    _spread = (-25, 0, 25)[_i]
+    _mite_legs.append(part(f'leg_l{_i}', (4, 20, _z), [cube((4, 19.5, _z - 0.5), (4, 1, 1), 'dark_iron')], parent='body', rot=(0, -_spread, 40)))
+    _mite_legs.append(part(f'leg_r{_i}', (-4, 20, _z), [cube((-8, 19.5, _z - 0.5), (4, 1, 1), 'dark_iron')], parent='body', rot=(0, _spread, -40)))
+mob('spark_mite', [
+    part('body', (0, 20, 0), [
+        cube((-4, 16, -5), (8, 5, 10), 'copper', {'top': 'circuit'}),
+        cube((-3, 20.5, -4), (6, 1, 8), 'redstone'),
+    ]),
+    part('head', (0, 19, -5), [cube((-2.5, 16.5, -8), (5, 4, 3), 'dark_iron', {'front': 'eyes2'})], parent='body'),
+    part('mand_l', (1.5, 19.5, -8), [cube((1, 19, -10), (1, 1, 2), 'brass')], parent='head'),
+    part('mand_r', (-1.5, 19.5, -8), [cube((-2, 19, -10), (1, 1, 2), 'brass')], parent='head'),
+    part('ant_l', (1.5, 16.5, -7), [cube((1, 12.5, -8), (1, 4, 1), 'cable'), cube((1, 11.5, -8), (1, 1, 1), 'redstone')], parent='head', rot=(20, 0, 15)),
+    part('ant_r', (-1.5, 16.5, -7), [cube((-2, 12.5, -8), (1, 4, 1), 'cable'), cube((-2, 11.5, -8), (1, 1, 1), 'redstone')], parent='head', rot=(20, 0, -15)),
+    part('shell_l', (0.2, 15.8, -4), [cube((0.2, 15.2, -4.8), (4.2, 1, 10), 'copper_ox')], parent='body'),
+    part('shell_r', (-0.2, 15.8, -4), [cube((-4.4, 15.2, -4.8), (4.2, 1, 10), 'copper_ox')], parent='body'),
+    *_mite_legs,
+], {}, shadow=0.35)
+L = 0.5
+_tri_a = ('leg_l0', 'leg_r1', 'leg_l2')
+_walk = {'body': merge(P(lambda u: (0, -0.3 * abs(s(u, 2)), 0), L), R(lambda u: (0, 0, 3 * s(u)), L)),
+         'head': R(lambda u: (0, 4 * s(u, 1, 0.25), 0), L),
+         'ant_l': R(lambda u: (10 * s(u, 2), 0, 0), L), 'ant_r': R(lambda u: (10 * s(u, 2, 0.3), 0, 0), L)}
+for _n in ('leg_l0', 'leg_l1', 'leg_l2', 'leg_r0', 'leg_r1', 'leg_r2'):
+    _ph = 0.0 if _n in _tri_a else 0.5
+    _sg = 1 if _n.startswith('leg_l') else -1
+    _walk[_n] = R(lambda u, ph=_ph, sg=_sg: (0, sg * gait_value(u + ph, 22, 0.5), sg * swing_lift(u + ph, -25, 0.5)), L)
+replace_clip('spark_mite', 'walk', L, True, _walk)
+L = 3.0
+replace_clip('spark_mite', 'idle', L, True, {
+    'ant_l': rot(keys3((0, (0, 0, 0)), (0.4, (-20, 0, 10)), (0.6, (5, 0, 0)), (1.8, (0, 0, 0)), (2.0, (-15, 0, -5)), (3.0, (0, 0, 0)))),
+    'ant_r': rot(keys3((0, (0, 0, 0)), (1.0, (0, 0, 0)), (1.2, (-25, 0, -10)), (1.5, (5, 0, 0)), (3.0, (0, 0, 0)))),
+    'mand_l': R(lambda u: (0, -12 * max(0, s(u, 3)), 0), L), 'mand_r': R(lambda u: (0, 12 * max(0, s(u, 3)), 0), L),
+    'body': S(lambda u: (1 + 0.03 * s(u, 2), 1 + 0.05 * s(u, 2), 1), L),
+})
+L = 1.0
+replace_clip('spark_mite', 'ability', L, False, {
+    'head': rot(keys3((0, (0, 0, 0)), (0.15, (28, 0, 0)), (0.85, (28, 0, 0)), (1.0, (0, 0, 0)))),
+    'mand_l': R(lambda u: (0, -20 * max(0, s(u, 5)), 0), L), 'mand_r': R(lambda u: (0, 20 * max(0, s(u, 5)), 0), L),
+    'shell_l': rot(keys3((0, (0, 0, 0)), (0.2, (0, 0, -35)), (0.7, (0, 0, -30)), (1.0, (0, 0, 0)))),
+    'shell_r': rot(keys3((0, (0, 0, 0)), (0.2, (0, 0, 35)), (0.7, (0, 0, 30)), (1.0, (0, 0, 0)))),
+    'body': merge(R(lambda u: (6 * min(1, u * 6) * min(1, (1 - u) * 6), 0, 0), L), S(lambda u: (1 + 0.06 * s(u, 5), 1, 1 + 0.06 * s(u, 5)), L)),
+})
+add_clip('spark_mite', 'hurt', hurt('body', 'head', 14), 0.4, False)
+
+# ---- Lamp Moth: a moth of rusted foil with a glowing abdomen, always fluttering
+mob('lamp_moth', [
+    part('body', (0, 16, 0), [cube((-1.5, 14, -3), (3, 3, 6), 'rust')]),
+    part('abdomen', (0, 15.5, 3), [cube((-1.5, 14, 3), (3, 3, 5), 'bellows'), cube((-1, 14.5, 6), (2, 2, 2), 'ember')], parent='body'),
+    part('head', (0, 15.5, -3), [cube((-1.5, 14, -5.5), (3, 3, 2.5), 'dark_iron', {'front': 'eyes2'})], parent='body'),
+    part('ant_l', (0.8, 14, -5), [cube((0.5, 10, -6), (1, 4, 1), 'brass')], parent='head', rot=(-25, 0, 20)),
+    part('ant_r', (-0.8, 14, -5), [cube((-1.5, 10, -6), (1, 4, 1), 'brass')], parent='head', rot=(-25, 0, -20)),
+    part('wing_l', (1.5, 14.5, 0), [cube((1.5, 14, -4), (9, 1, 8), 'brass', {'top': 'veins'})], parent='body'),
+    part('wing_r', (-1.5, 14.5, 0), [cube((-10.5, 14, -4), (9, 1, 8), 'brass', {'top': 'veins'})], parent='body'),
+    part('hind_l', (1.5, 15, 2), [cube((1.5, 14.5, 2), (6, 1, 5), 'copper')], parent='body'),
+    part('hind_r', (-1.5, 15, 2), [cube((-7.5, 14.5, 2), (6, 1, 5), 'copper')], parent='body'),
+], {}, look=('head',), shadow=0.2)
+for _clip, L, _amp in (('walk', 0.3, 55), ('idle', 0.45, 45)):
+    replace_clip('lamp_moth', _clip, L, True, {
+        'wing_l': R(lambda u, a=_amp: (0, 0, -a * s(u) - 10), L, 8), 'wing_r': R(lambda u, a=_amp: (0, 0, a * s(u) + 10), L, 8),
+        'hind_l': R(lambda u, a=_amp: (0, 0, -a * 0.7 * s(u, 1, -0.1) - 5), L, 8),
+        'hind_r': R(lambda u, a=_amp: (0, 0, a * 0.7 * s(u, 1, -0.1) + 5), L, 8),
+        'body': P(lambda u: (0, 1.2 * s(u, 1, 0.25), 0), L, 8),
+        'abdomen': R(lambda u: (6 * s(u, 1, 0.4), 0, 0), L, 8),
+    })
+L = 1.2
+replace_clip('lamp_moth', 'ability', L, False, {
+    'wing_l': R(lambda u: (0, 0, -60 * s(u, 6) - 10), L, 48), 'wing_r': R(lambda u: (0, 0, 60 * s(u, 6) + 10), L, 48),
+    'body': R(lambda u: (-15 * s(u), 360 * u, 20 * s(u, 2)), L, 24),
+    'ant_l': R(lambda u: (15 * s(u, 3), 0, 0), L), 'ant_r': R(lambda u: (15 * s(u, 3, 0.2), 0, 0), L),
+})
+add_clip('lamp_moth', 'hurt', hurt('body', 'head', 20), 0.4, False)
+
+# ---- Scrap Jackal: a lean pack hunter of dark iron and rusted plates, a cable tail with a live tip
+mob('scrap_jackal', [
+    part('body', (0, 12, 0), [
+        cube((-3, 8, -6), (6, 6, 12), 'rust', {'top': 'rivets'}),
+        cube((-3.5, 9, -3), (7, 4, 5), 'dark_iron', {'right': 'ribs', 'left': 'ribs'}),
+        cube((-0.5, 7, -5), (1, 1, 10), 'cable'),
+    ]),
+    part('head', (0, 10, -6), [
+        cube((-3, 5, -11), (6, 5, 5), 'dark_iron', {'front': 'eyes2'}),
+        cube((-1.5, 6.5, -15), (3, 2, 4), 'rust'),
+    ], parent='body'),
+    part('jaw', (0, 9.5, -11), [cube((-1.5, 8.5, -15), (3, 1.5, 4), 'iron', {'top': 'teeth'})], parent='head'),
+    part('ear_l', (2, 5, -8), [cube((1, 2, -9), (2, 3, 1), 'rust')], parent='head', rot=(0, 0, 10)),
+    part('ear_r', (-2, 5, -8), [cube((-3, 2, -9), (2, 3, 1), 'rust')], parent='head', rot=(0, 0, -10)),
+    part('tail', (0, 9, 6), [cube((-0.5, 8.5, 6), (1, 1, 7), 'cable'), cube((-1, 8, 12), (2, 2, 2), 'redstone')], parent='body', rot=(25, 0, 0)),
+    part('leg_fl', (2, 13, -4), [cube((1, 13, -5), (2, 9, 2), 'dark_iron'), cube((0.5, 22, -5.5), (3, 2, 3), 'rust')]),
+    part('leg_fr', (-2, 13, -4), [cube((-3, 13, -5), (2, 9, 2), 'dark_iron'), cube((-3.5, 22, -5.5), (3, 2, 3), 'rust')]),
+    part('leg_bl', (2, 13, 4), [cube((1, 13, 3), (2, 9, 2), 'dark_iron'), cube((0.5, 22, 2.5), (3, 2, 3), 'rust')]),
+    part('leg_br', (-2, 13, 4), [cube((-3, 13, 3), (2, 9, 2), 'dark_iron'), cube((-3.5, 22, 2.5), (3, 2, 3), 'rust')]),
+], {}, shadow=0.45)
+L = 0.6
+replace_clip('scrap_jackal', 'walk', L, True, {
+    'leg_fl': R(lambda u: (gait_value(u, 30, 0.55), 0, 0), L), 'leg_br': R(lambda u: (gait_value(u + 0.05, 30, 0.55), 0, 0), L),
+    'leg_fr': R(lambda u: (gait_value(u + 0.5, 30, 0.55), 0, 0), L), 'leg_bl': R(lambda u: (gait_value(u + 0.55, 30, 0.55), 0, 0), L),
+    'body': merge(P(lambda u: (0, -0.8 * abs(s(u)), 0), L), R(lambda u: (2 * s(u, 2), 0, 2 * s(u)), L)),
+    'head': R(lambda u: (4 * s(u, 2, 0.2), 3 * s(u), 0), L),
+    'tail': R(lambda u: (5 * s(u, 2), 20 * s(u), 0), L),
+    'ear_l': R(lambda u: (8 * s(u, 2, 0.3), 0, 0), L), 'ear_r': R(lambda u: (8 * s(u, 2, 0.35), 0, 0), L),
+})
+L = 3.5
+replace_clip('scrap_jackal', 'idle', L, True, {
+    'head': rot(keys3((0, (0, 0, 0)), (0.8, (25, 10, 0)), (1.1, (28, -5, 0)), (1.4, (25, 10, 0)), (1.8, (0, 0, 0)),
+                      (2.6, (-8, -30, 0)), (3.2, (-8, -30, 0)), (3.5, (0, 0, 0)))),
+    'ear_l': rot(keys3((0, (0, 0, 0)), (2.0, (0, 0, 0)), (2.1, (-20, 0, 0)), (2.3, (0, 0, 0)), (3.5, (0, 0, 0)))),
+    'ear_r': rot(keys3((0, (0, 0, 0)), (2.6, (0, 0, 0)), (2.7, (-20, 0, 0)), (2.9, (0, 0, 0)), (3.5, (0, 0, 0)))),
+    'tail': R(lambda u: (4 * s(u, 2), 12 * s(u, 3), 0), L),
+    'jaw': rot(keys3((0, (0, 0, 0)), (0.9, (12, 0, 0)), (1.0, (0, 0, 0)), (1.15, (12, 0, 0)), (1.25, (0, 0, 0)), (3.5, (0, 0, 0)))),
+    'body': S(lambda u: (1 + 0.03 * s(u, 3), 1 + 0.03 * s(u, 3), 1), L),
+})
+L = 0.5
+replace_clip('scrap_jackal', 'attack', L, False, {
+    'body': merge(P(lambda u: (0, 0, -3 * s(u * 0.5)), L), R(lambda u: (-10 * s(u * 0.5), 0, 0), L)),
+    'head': rot(keys3((0, (0, 0, 0)), (0.12, (-20, 0, 0)), (0.25, (15, 0, 0)), (0.5, (0, 0, 0)))),
+    'jaw': rot(keys3((0, (0, 0, 0)), (0.12, (40, 0, 0)), (0.22, (0, 0, 0)), (0.5, (0, 0, 0)))),
+    'leg_fl': rot(keys3((0, (0, 0, 0)), (0.15, (-40, 0, 0)), (0.5, (0, 0, 0)))),
+    'leg_fr': rot(keys3((0, (0, 0, 0)), (0.15, (-40, 0, 0)), (0.5, (0, 0, 0)))),
+})
+L = 1.0
+replace_clip('scrap_jackal', 'ability', L, False, {
+    'body': R(lambda u: (12 * min(1, u * 5) * min(1, (1 - u) * 5), 0, 0), L),
+    'head': R(lambda u: (30 * min(1, u * 5) * min(1, (1 - u) * 5), 8 * s(u, 4), 0), L),
+    'leg_fl': R(lambda u: (-45 * max(0, s(u, 5)), 0, 0), L, 40), 'leg_fr': R(lambda u: (-45 * max(0, s(u, 5, 0.5)), 0, 0), L, 40),
+    'tail': R(lambda u: (10, 30 * s(u, 4), 0), L),
+    'jaw': R(lambda u: (15 * max(0, s(u, 4)), 0, 0), L),
+})
+add_clip('scrap_jackal', 'hurt', merge(hurt('body', 'head', 12), {'tail': rot(keys((0, 0), (0.1, -30), (0.4, 0)))}), 0.4, False)

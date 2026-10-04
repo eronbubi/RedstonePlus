@@ -20,13 +20,13 @@
     "monster": [
       {
         "type": "redstoneplus:karst_colossus",
-        "weight": 25,
+        "weight": 40,
         "minCount": 1,
-        "maxCount": 1
+        "maxCount": 2
       },
       {
         "type": "redstoneplus:relay_strider",
-        "weight": 20,
+        "weight": 8,
         "minCount": 1,
         "maxCount": 1
       },
@@ -34,7 +34,7 @@
         "type": "redstoneplus:detonator_husk",
         "weight": 30,
         "minCount": 1,
-        "maxCount": 2
+        "maxCount": 3
       }
     ],
     "creature": [
@@ -43,9 +43,28 @@
         "weight": 3,
         "minCount": 1,
         "maxCount": 1
+      },
+      {
+        "type": "redstoneplus:spark_mite",
+        "weight": 14,
+        "minCount": 3,
+        "maxCount": 6
+      },
+      {
+        "type": "redstoneplus:scrap_jackal",
+        "weight": 5,
+        "minCount": 2,
+        "maxCount": 3
       }
     ],
-    "ambient": [],
+    "ambient": [
+      {
+        "type": "redstoneplus:lamp_moth",
+        "weight": 30,
+        "minCount": 3,
+        "maxCount": 6
+      }
+    ],
     "axolotls": [],
     "underground_water_creature": [],
     "water_creature": [],
@@ -54,8 +73,8 @@
   },
   "spawn_costs": {
     "redstoneplus:karst_colossus": {
-      "energy_budget": 0.12,
-      "charge": 0.7
+      "energy_budget": 1.0,
+      "charge": 0.4
     }
   },
   "carvers": {

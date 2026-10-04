@@ -26,19 +26,19 @@
     "monster": [
       {
         "type": "redstoneplus:bell_stalker",
-        "weight": 30,
+        "weight": 48,
         "minCount": 1,
-        "maxCount": 1
+        "maxCount": 2
       },
       {
         "type": "redstoneplus:tripwire_brood",
         "weight": 35,
         "minCount": 1,
-        "maxCount": 2
+        "maxCount": 3
       },
       {
         "type": "redstoneplus:living_capacitor",
-        "weight": 25,
+        "weight": 6,
         "minCount": 1,
         "maxCount": 2
       }
@@ -53,8 +53,8 @@
   },
   "spawn_costs": {
     "redstoneplus:bell_stalker": {
-      "energy_budget": 0.12,
-      "charge": 0.7
+      "energy_budget": 1.0,
+      "charge": 0.4
     }
   },
   "carvers": {

@@ -469,5 +469,104 @@
       "redstoneplus:block/realm_gate/travel"
     ],
     "subtitle": "subtitles.redstoneplus.block.realm_gate.travel"
+  },
+  "entity.spark_mite.ambient": {
+    "sounds": [
+      "redstoneplus:entity/spark_mite/ambient1",
+      "redstoneplus:entity/spark_mite/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spark_mite.ambient"
+  },
+  "entity.spark_mite.hurt": {
+    "sounds": [
+      "redstoneplus:entity/spark_mite/hurt1",
+      "redstoneplus:entity/spark_mite/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spark_mite.hurt"
+  },
+  "entity.spark_mite.death": {
+    "sounds": [
+      "redstoneplus:entity/spark_mite/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spark_mite.death"
+  },
+  "entity.spark_mite.step": {
+    "sounds": [
+      "redstoneplus:entity/spark_mite/step1",
+      "redstoneplus:entity/spark_mite/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spark_mite.step"
+  },
+  "entity.spark_mite.ability": {
+    "sounds": [
+      "redstoneplus:entity/spark_mite/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.spark_mite.ability"
+  },
+  "entity.lamp_moth.ambient": {
+    "sounds": [
+      "redstoneplus:entity/lamp_moth/ambient1",
+      "redstoneplus:entity/lamp_moth/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.lamp_moth.ambient"
+  },
+  "entity.lamp_moth.hurt": {
+    "sounds": [
+      "redstoneplus:entity/lamp_moth/hurt1",
+      "redstoneplus:entity/lamp_moth/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.lamp_moth.hurt"
+  },
+  "entity.lamp_moth.death": {
+    "sounds": [
+      "redstoneplus:entity/lamp_moth/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.lamp_moth.death"
+  },
+  "entity.lamp_moth.step": {
+    "sounds": [
+      "redstoneplus:entity/lamp_moth/step1",
+      "redstoneplus:entity/lamp_moth/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.lamp_moth.step"
+  },
+  "entity.lamp_moth.ability": {
+    "sounds": [
+      "redstoneplus:entity/lamp_moth/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.lamp_moth.ability"
+  },
+  "entity.scrap_jackal.ambient": {
+    "sounds": [
+      "redstoneplus:entity/scrap_jackal/ambient1",
+      "redstoneplus:entity/scrap_jackal/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.ambient"
+  },
+  "entity.scrap_jackal.hurt": {
+    "sounds": [
+      "redstoneplus:entity/scrap_jackal/hurt1",
+      "redstoneplus:entity/scrap_jackal/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.hurt"
+  },
+  "entity.scrap_jackal.death": {
+    "sounds": [
+      "redstoneplus:entity/scrap_jackal/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.death"
+  },
+  "entity.scrap_jackal.step": {
+    "sounds": [
+      "redstoneplus:entity/scrap_jackal/step1",
+      "redstoneplus:entity/scrap_jackal/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.step"
+  },
+  "entity.scrap_jackal.ability": {
+    "sounds": [
+      "redstoneplus:entity/scrap_jackal/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.ability"
   }
 }

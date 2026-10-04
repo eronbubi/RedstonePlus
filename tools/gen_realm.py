@@ -628,6 +628,9 @@ CREATURES = {
     'relay_strider': ('Relay Strider', 'Relais-Schreiter', [('minecraft:ender_pearl', 0, 1, 1), ('minecraft:redstone', 1, 3, 1), (f'{NS}:realm_cog', 1, 1, 0.4)]),
     'bellows_hog': ('Bellows Hog', 'Blasebalg-Keiler', [(f'{NS}:ember_pork', 1, 3, 1), ('minecraft:leather', 0, 1, 1)]),
     'flesh_press': ('Flesh Press', 'Fleischpresse', [('minecraft:redstone', 4, 9, 1), ('minecraft:iron_ingot', 2, 4, 1), (f'{NS}:realm_cog', 2, 3, 1)]),
+    'spark_mite': ('Spark Mite', 'Funkenmilbe', [('minecraft:redstone', 1, 2, 1), ('minecraft:copper_ingot', 0, 1, 0.3)]),
+    'lamp_moth': ('Lamp Moth', 'Lampenmotte', [('minecraft:glowstone_dust', 0, 2, 1)]),
+    'scrap_jackal': ('Scrap Jackal', 'Schrottschakal', [('minecraft:iron_nugget', 1, 4, 1), (f'{NS}:realm_cog', 1, 1, 0.3)]),
 }
 for mob, (e, g, drops) in CREATURES.items():
     name(f'entity.{NS}.{mob}', e, g)
@@ -938,6 +941,10 @@ BIOMES = {
                             features('ore_redstone_vein', 'cave_clusters_ceiling', 'red_coral_shrub_patch'),
                             [('tripwire_brood', 30, 1, 2), ('living_capacitor', 30, 1, 2), ('relay_strider', 25, 1, 1)], [], []),
 }
+UNDERGROUND = {'resonance_hollows', 'circuit_fossil_beds'}
+CONSTRUCTS = {'karst_colossus', 'switchback_crawler', 'bell_stalker', 'sluice_chainjaw', 'kiln_brute', 'spool_weaver'}
+# the realm's own wildlife lives everywhere on the surface: grazing mites in herds and the jackal packs that hunt them
+WILDLIFE = [('spark_mite', 14, 3, 6), ('scrap_jackal', 5, 2, 3)]
 for biome_name, (e, g, temp, rain, cols, particle, feats, monsters, creatures, costs) in BIOMES.items():
     sky, fog, water, water_fog, plant = cols
     effects = {'sky_color': c(sky), 'fog_color': c(fog), 'water_color': c(water), 'water_fog_color': c(water_fog),
@@ -945,11 +952,19 @@ for biome_name, (e, g, temp, rain, cols, particle, feats, monsters, creatures, c
                'mood_sound': {'sound': 'minecraft:ambient.cave', 'tick_delay': 6000, 'block_search_extent': 8, 'offset': 2.0}}
     if particle:
         effects['particle'] = particle
+    if biome_name not in UNDERGROUND:
+        creatures = creatures + WILDLIFE
+        ambient = [spawn('lamp_moth', 30, 3, 6)]
+    else:
+        ambient = []
+    # balance: capacitors and striders otherwise fill the monster cap before the big constructs get a chance
+    damp = {'living_capacitor': 0.25, 'relay_strider': 0.4}
+    monsters = [(m, max(4, int(w * damp.get(m, 1.6 if m in CONSTRUCTS else 1.0))), lo, hi + (0 if m in damp else 1)) for m, w, lo, hi in monsters]
     biome = {
         'has_precipitation': rain > 0.2, 'temperature': temp, 'downfall': rain, 'effects': effects,
-        'spawners': {'monster': [spawn(*m) for m in monsters], 'creature': [spawn(*cr) for cr in creatures], 'ambient': [], 'axolotls': [],
+        'spawners': {'monster': [spawn(*m) for m in monsters], 'creature': [spawn(*cr) for cr in creatures], 'ambient': ambient, 'axolotls': [],
                      'underground_water_creature': [], 'water_creature': [], 'water_ambient': [], 'misc': []},
-        'spawn_costs': {f'{NS}:{m}': {'energy_budget': 0.12, 'charge': 0.7} for m in costs},
+        'spawn_costs': {f'{NS}:{m}': {'energy_budget': 1.0, 'charge': 0.4} for m in costs},
         'carvers': {'air': ['minecraft:cave', 'minecraft:cave_extra_underground', 'minecraft:canyon']},
         'features': feats,
     }

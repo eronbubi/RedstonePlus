@@ -267,6 +267,30 @@ RECIPES = {
     },
 }
 
+RECIPES.update({
+    'spark_mite': {
+        'ambient': v(lambda: mix(sparks(0.6, 10) * 0.4, metal(3200, 0.05) * 0.2, at(metal(3600, 0.04), 0.15) * 0.2)),
+        'hurt': v(lambda: mix(zap(0.2) * 0.6, metal(2600, 0.1) * 0.4)),
+        'death': [lambda: mix(sparks(0.7, 24), zap(0.5) * 0.6, at(metal(2000, 0.3), 0.1) * 0.3)],
+        'step': v(lambda: metal(3800, 0.03, bright=0.6) * 0.15),
+        'ability': [lambda: mix(crackle(0.9, 220) * 0.5, sparks(0.9, 16) * 0.4)],
+    },
+    'lamp_moth': {
+        'ambient': v(lambda: mix(whoosh(0.3, 300, 1500) * 0.3, at(whoosh(0.3, 300, 1500), 0.28) * 0.3, at(metal(2800, 0.08), 0.1) * 0.1)),
+        'hurt': v(lambda: mix(metal(2800, 0.1) * 0.5, whoosh(0.2, 500, 3000) * 0.4)),
+        'death': [lambda: mix(whoosh(0.8, 200, 2000), at(metal(2000, 0.3), 0.2) * 0.4)],
+        'step': v(lambda: whoosh(0.1, 500, 2000) * 0.1),
+        'ability': [lambda: mix(whoosh(1.1, 300, 3000) * 0.6, sparks(1.1, 8) * 0.3)],
+    },
+    'scrap_jackal': {
+        'ambient': v(lambda: mix(growl(180, 0.6, 0.8) * 0.5, at(metal(1200, 0.1), 0.2) * 0.2)),
+        'hurt': v(lambda: mix(growl(320, 0.3, 1.0), metal(900, 0.15) * 0.4)),
+        'death': [lambda: mix(growl(160, 1.2, 1.0), at(metal(600, 0.5), 0.4) * 0.5, at(thud(90, 0.3), 0.8) * 0.4)],
+        'step': v(lambda: mix(metal(1500, 0.05, bright=0.5) * 0.2, thud(160, 0.05) * 0.2)),
+        'ability': [lambda: mix(growl(260, 0.5, 1.0) * 0.6, crackle(0.7, 120) * 0.4)],
+    },
+})
+
 SPECIAL = {
     'block.realm_gate.travel': [lambda: mix(servo(80, 600, 1.5, 0.2) * 0.6, whoosh(1.6, 100, 3000), at(bell(196, 2.0), 0.9) * 0.5,
                                             at(sparks(1.0, 25), 0.4) * 0.3)],
@@ -284,6 +308,7 @@ NAMES = {
     'tripwire_brood': ('Tripwire Brood', 'Stolperdraht-Brut'), 'kilnbound': ('Kilnbound', 'Ofengebundener'),
     'living_capacitor': ('Living Capacitor', 'Lebender Kondensator'), 'relay_strider': ('Relay Strider', 'Relais-Schreiter'),
     'bellows_hog': ('Bellows Hog', 'Blasebalg-Keiler'), 'flesh_press': ('Flesh Press', 'Fleischpresse'),
+    'spark_mite': ('Spark Mite', 'Funkenmilbe'), 'lamp_moth': ('Lamp Moth', 'Lampenmotte'), 'scrap_jackal': ('Scrap Jackal', 'Schrottschakal'),
 }
 
 

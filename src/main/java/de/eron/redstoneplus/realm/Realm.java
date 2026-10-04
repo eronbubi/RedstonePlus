@@ -210,6 +210,14 @@ public final class Realm {
     public static final RegistryObject<EntityType<MachineBound.FleshPress>> FLESH_PRESS = mob("flesh_press",
             () -> EntityType.Builder.<MachineBound.FleshPress>of(MachineBound.FleshPress::new, MobCategory.CREATURE).sized(1.8F, 2.9F).clientTrackingRange(10));
 
+    // ---------- wildlife: the bottom of the realm's food chain ----------
+    public static final RegistryObject<EntityType<RealmFauna.SparkMite>> SPARK_MITE = mob("spark_mite",
+            () -> EntityType.Builder.<RealmFauna.SparkMite>of(RealmFauna.SparkMite::new, MobCategory.CREATURE).sized(0.7F, 0.45F).eyeHeight(0.3F).clientTrackingRange(8));
+    public static final RegistryObject<EntityType<RealmFauna.LampMoth>> LAMP_MOTH = mob("lamp_moth",
+            () -> EntityType.Builder.<RealmFauna.LampMoth>of(RealmFauna.LampMoth::new, MobCategory.AMBIENT).sized(0.6F, 0.45F).eyeHeight(0.25F).clientTrackingRange(8));
+    public static final RegistryObject<EntityType<RealmFauna.ScrapJackal>> SCRAP_JACKAL = mob("scrap_jackal",
+            () -> EntityType.Builder.<RealmFauna.ScrapJackal>of(RealmFauna.ScrapJackal::new, MobCategory.CREATURE).sized(0.8F, 0.9F).eyeHeight(0.75F).clientTrackingRange(10));
+
     // ---------- world generation ----------
     public static final RegistryObject<Feature<RealmFeatures.SpireConfig>> SPIRE = FEATURES.register("spire", RealmFeatures.Spire::new);
 
@@ -246,6 +254,9 @@ public final class Realm {
         egg("relay_strider", RELAY_STRIDER, 0x2a1a3a, 0xc060ff);
         egg("bellows_hog", BELLOWS_HOG, 0xd08a80, 0xff7a20);
         egg("flesh_press", FLESH_PRESS, 0xa06060, 0xe02020);
+        egg("spark_mite", SPARK_MITE, 0xb86a30, 0xff3a1a);
+        egg("lamp_moth", LAMP_MOTH, 0x8a6a4a, 0xffd060);
+        egg("scrap_jackal", SCRAP_JACKAL, 0x6a5a50, 0xe04020);
     }
 
     private Realm() {
@@ -357,6 +368,9 @@ public final class Realm {
         event.put(RELAY_STRIDER.get(), MachineBound.RelayStrider.attributes().build());
         event.put(BELLOWS_HOG.get(), MachineBound.BellowsHog.attributes().build());
         event.put(FLESH_PRESS.get(), MachineBound.FleshPress.attributes().build());
+        event.put(SPARK_MITE.get(), RealmFauna.SparkMite.attributes().build());
+        event.put(LAMP_MOTH.get(), RealmFauna.LampMoth.attributes().build());
+        event.put(SCRAP_JACKAL.get(), RealmFauna.ScrapJackal.attributes().build());
     }
 
     private static void spawnPlacements(SpawnPlacementRegisterEvent event) {
@@ -370,14 +384,17 @@ public final class Realm {
         event.register(SLUICE_CHAINJAW.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
         event.register(KILN_BRUTE.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
         event.register(SPOOL_WEAVER.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
-        // the Machine-Bound keep the habits of what they were: monsters come out in the dark
-        event.register(LEAKING_CELL.get(), ground, height, Monster::checkMonsterSpawnRules, op);
-        event.register(DETONATOR_HUSK.get(), ground, height, Monster::checkMonsterSpawnRules, op);
-        event.register(TRIPWIRE_BROOD.get(), ground, height, Monster::checkMonsterSpawnRules, op);
-        event.register(KILNBOUND.get(), ground, height, Monster::checkMonsterSpawnRules, op);
+        // the Machine-Bound are machines now too: in the realm they walk by day as well
+        event.register(LEAKING_CELL.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
+        event.register(DETONATOR_HUSK.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
+        event.register(TRIPWIRE_BROOD.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
+        event.register(KILNBOUND.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
         event.register(LIVING_CAPACITOR.get(), ground, height, Mob::checkMobSpawnRules, op);
-        event.register(RELAY_STRIDER.get(), ground, height, Monster::checkMonsterSpawnRules, op);
+        event.register(RELAY_STRIDER.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
         event.register(BELLOWS_HOG.get(), ground, height, Mob::checkMobSpawnRules, op);
         event.register(FLESH_PRESS.get(), ground, height, Mob::checkMobSpawnRules, op);
+        event.register(SPARK_MITE.get(), ground, height, Mob::checkMobSpawnRules, op);
+        event.register(LAMP_MOTH.get(), SpawnPlacementTypes.NO_RESTRICTIONS, height, Mob::checkMobSpawnRules, op);
+        event.register(SCRAP_JACKAL.get(), ground, height, Mob::checkMobSpawnRules, op);
     }
 }

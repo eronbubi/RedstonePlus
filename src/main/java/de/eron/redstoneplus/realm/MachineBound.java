@@ -42,6 +42,17 @@ public final class MachineBound {
 
     /** Zombie in a leaking uranium cage: poisons on hit and spills toxic puddles when damaged. Never burns. */
     public static class LeakingCell extends Zombie implements RealmAnimated {
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
+        }
+
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 12, 80, s -> s.is(Realm.REDSTONE_VEIN.get()), RealmJobs::sparks, RealmJobs::drink).exposed());
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -165,6 +176,17 @@ public final class MachineBound {
 
     /** Creeper wired to a detonator: when it is about to blow, every Husk within 8 blocks starts its fuse too. */
     public static class DetonatorHusk extends Creeper implements RealmAnimated {
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
+        }
+
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 80, s -> s.is(net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK), RealmJobs::sparks, RealmJobs::drink));
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -255,6 +277,17 @@ public final class MachineBound {
 
     /** Spider with a crystal egg sack: its bite roots you in place. */
     public static class TripwireBrood extends Spider implements RealmAnimated {
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
+        }
+
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 60, s -> s.is(net.minecraft.world.level.block.Blocks.TRIPWIRE) || s.is(Realm.BRIAR_THORNS.get()), RealmJobs::sparks, RealmJobs::web));
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -343,6 +376,17 @@ public final class MachineBound {
 
     /** Skeleton caged in a furnace frame: fire proof, its arrows burn. */
     public static class Kilnbound extends Skeleton implements RealmAnimated {
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
+        }
+
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 16, 50, s -> s.is(Realm.KILN_TURRET.get()) || RealmJobs.fire(s), RealmJobs::sparks, RealmJobs::stoke));
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -501,6 +545,9 @@ public final class MachineBound {
         @Override
         public void aiStep() {
             super.aiStep();
+            if (this.level() instanceof ServerLevel server && this.tickCount % 60 == 0 && this.getTarget() == null) {
+                RealmJobs.arcIntoLamps(server, this, 6);
+            }
             if (this.level().isClientSide() && this.random.nextInt(5) == 0) {
                 double s = this.getSize() * 0.12;
                 RealmFx.emit(this, RealmFx.SPARK.get(), (this.random.nextBoolean() ? 1 : -1) * s, this.getSize() * 0.55, 0,
@@ -511,6 +558,11 @@ public final class MachineBound {
 
     /** Enderman strung with relay cables: hostile on sight, and its hits can relay you a few blocks away. */
     public static class RelayStrider extends EnderMan implements RealmAnimated {
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -563,6 +615,7 @@ public final class MachineBound {
         @Override
         protected void registerGoals() {
             super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 20, 60, s -> s.is(net.minecraft.world.level.block.Blocks.LIGHTNING_ROD), RealmJobs::sparks, RealmJobs::charge).exposed());
             this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
         }
 
@@ -597,6 +650,12 @@ public final class MachineBound {
 
     /** Pig with bellows strapped on: fire proof, and when hurt it blasts hot air that throws attackers back. */
     public static class BellowsHog extends Pig implements RealmAnimated {
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 60, RealmJobs::fire, RealmJobs::sparks, RealmJobs::stoke));
+        }
+
         private int abilityStart = -10000;
 
         @Override
@@ -727,6 +786,12 @@ public final class MachineBound {
 
     /** Iron golem made of a flesh press: guards the realm, its blows crush through armor. */
     public static class FleshPress extends IronGolem implements RealmAnimated {
+        @Override
+        protected void registerGoals() {
+            super.registerGoals();
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 16, 60, s -> s.is(Realm.REALMSTONE.get()), RealmJobs::dust, RealmJobs::repair).where(RealmJobs::rubble));
+        }
+
         private int abilityStart = -10000;
 
         @Override

@@ -32,6 +32,9 @@ public final class RealmSounds {
     public static final Set RELAY_STRIDER = set("relay_strider");
     public static final Set BELLOWS_HOG = set("bellows_hog");
     public static final Set FLESH_PRESS = set("flesh_press");
+    public static final Set SPARK_MITE = set("spark_mite");
+    public static final Set LAMP_MOTH = set("lamp_moth");
+    public static final Set SCRAP_JACKAL = set("scrap_jackal");
 
     public static final RegistryObject<SoundEvent> REALM_TRAVEL = sound("block.realm_gate.travel");
 

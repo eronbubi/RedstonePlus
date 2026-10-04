@@ -26,25 +26,45 @@
     "monster": [
       {
         "type": "redstoneplus:spool_weaver",
-        "weight": 30,
+        "weight": 48,
         "minCount": 1,
-        "maxCount": 2
+        "maxCount": 3
       },
       {
         "type": "redstoneplus:relay_strider",
-        "weight": 25,
+        "weight": 10,
         "minCount": 1,
         "maxCount": 1
       },
       {
         "type": "redstoneplus:bell_stalker",
-        "weight": 15,
+        "weight": 24,
         "minCount": 1,
-        "maxCount": 1
+        "maxCount": 2
       }
     ],
-    "creature": [],
-    "ambient": [],
+    "creature": [
+      {
+        "type": "redstoneplus:spark_mite",
+        "weight": 14,
+        "minCount": 3,
+        "maxCount": 6
+      },
+      {
+        "type": "redstoneplus:scrap_jackal",
+        "weight": 5,
+        "minCount": 2,
+        "maxCount": 3
+      }
+    ],
+    "ambient": [
+      {
+        "type": "redstoneplus:lamp_moth",
+        "weight": 30,
+        "minCount": 3,
+        "maxCount": 6
+      }
+    ],
     "axolotls": [],
     "underground_water_creature": [],
     "water_creature": [],

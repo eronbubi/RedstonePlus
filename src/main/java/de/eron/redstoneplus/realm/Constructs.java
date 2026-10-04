@@ -81,6 +81,16 @@ public final class Constructs {
             this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
             this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Construct.class));
             this.addTargetGoals();
+            this.addJobs();
+        }
+
+        /** The work this construct does on the machines around it when nothing threatens it (see RealmJobs). */
+        protected void addJobs() {
+        }
+
+        @Override
+        public float getWalkTargetValue(net.minecraft.core.BlockPos pos, net.minecraft.world.level.LevelReader level) {
+            return 0.0F; // a machine: daylight or dark is all the same to it, so it spawns and roams in both
         }
 
         protected void addTargetGoals() {
@@ -207,6 +217,11 @@ public final class Constructs {
     /** Piston Karst. Walking stone engine: its punches launch, and it slams the ground when you get close. */
     public static class KarstColossus extends Construct {
         @Override
+        protected void addJobs() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 60, s -> s.is(Realm.CRUSHER.get()), RealmJobs::dust, RealmJobs::cycleTraps));
+        }
+
+        @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.KARST_COLOSSUS;
         }
@@ -279,6 +294,11 @@ public final class Constructs {
     // =====================================================================================================
     /** Switchyard Flats. Rusty rail centipede: twice as fast on rails, and it charges in straight lines. */
     public static class SwitchbackCrawler extends Construct {
+        @Override
+        protected void addJobs() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 20, 30, 8, RealmJobs::rail, RealmJobs::sparks, RealmJobs::screech).standOn());
+        }
+
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.SWITCHBACK_CRAWLER;
@@ -366,6 +386,11 @@ public final class Constructs {
      * (sneak and it cannot find you), tolls to blind and slow everything near it, and follows Decoy Beacons.
      */
     public static class BellStalker extends Construct {
+        @Override
+        protected void addJobs() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 18, 40, s -> s.is(net.minecraft.world.level.block.Blocks.BELL), RealmJobs::sparks, RealmJobs::ring));
+        }
+
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.BELL_STALKER;
@@ -564,6 +589,7 @@ public final class Constructs {
 
         @Override
         protected void registerGoals() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 16, 60, s -> s.is(Realm.FLOODGATE.get()), RealmJobs::sparks, RealmJobs::cycleTraps));
             this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, true));
             this.goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.RandomStrollGoal(this, 0.8));
             this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F));
@@ -622,6 +648,11 @@ public final class Constructs {
     // =====================================================================================================
     /** Kiln Barrens. Walking furnace: burning punches and a volley of fire charges, unless a Signal Jammer is near. */
     public static class KilnBrute extends Construct {
+        @Override
+        protected void addJobs() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 60, RealmJobs::fire, RealmJobs::sparks, RealmJobs::stoke));
+        }
+
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.KILN_BRUTE;
@@ -716,6 +747,11 @@ public final class Constructs {
     // =====================================================================================================
     /** Tripwire Briar. Spider with a wire spool: climbs walls and lashes wire that roots you. Cutters hurt it badly. */
     public static class SpoolWeaver extends Construct {
+        @Override
+        protected void addJobs() {
+            this.goalSelector.addGoal(5, new RealmJobs.TendGoal(this, 14, 60, s -> s.is(de.eron.redstoneplus.registry.ModRegistry.INSTANT_LAMP.get()), RealmJobs::sparks, RealmJobs::web));
+        }
+
         @Override
         protected RealmSounds.Set sounds() {
             return RealmSounds.SPOOL_WEAVER;

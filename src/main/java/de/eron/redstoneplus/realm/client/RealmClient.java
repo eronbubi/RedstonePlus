@@ -38,6 +38,9 @@ public final class RealmClient {
         creature("relay_strider", Realm.RELAY_STRIDER);
         creature("bellows_hog", Realm.BELLOWS_HOG);
         creature("flesh_press", Realm.FLESH_PRESS);
+        creature("spark_mite", Realm.SPARK_MITE);
+        creature("lamp_moth", Realm.LAMP_MOTH);
+        creature("scrap_jackal", Realm.SCRAP_JACKAL);
 
         modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) ->
                 CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name))));

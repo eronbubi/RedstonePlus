@@ -27,7 +27,10 @@ public final class RealmBell {
             return;
         }
         for (ServerPlayer player : level.players()) {
+            // the bong, sent to every player in the realm so nobody misses it
+            player.playNotifySound(TOLL.get(), net.minecraft.sounds.SoundSource.AMBIENT, 1.6F, 1.0F);
             RealmMechanics.pulseTraps(level, player.blockPosition(), 16);
         }
+        RealmRules.toll(level);
     }
 }

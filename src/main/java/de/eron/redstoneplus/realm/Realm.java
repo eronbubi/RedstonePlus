@@ -330,6 +330,7 @@ public final class Realm {
         RealmFx.init(modBus);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(Realm::lightPortal);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmBell::levelTick);
+        RealmRules.init();
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {

@@ -771,6 +771,16 @@ for tex, img in (('great_bell', great_bell()), ('great_bell_halo', halo())):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     img.save(path)
 
+# ================================================================================================ the Concordance (rules)
+for key, e, g in (
+        ('strike_first', 'You struck first. The Concordance remembers.', 'Du hast zuerst zugeschlagen. Die Eintracht vergisst das nicht.'),
+        ('break_built', 'You broke what the Wirewrights built.', 'Du hast zerstört, was die Drahtwerker gebaut haben.'),
+        ('toll_still', 'You moved while the Great Bell tolled.', 'Du hast dich bewegt, als die Große Glocke schlug.'),
+        ('bar.harmony', 'The Concordance · in harmony', 'Die Eintracht · im Einklang'),
+        ('bar.broken', 'The Concordance · rules broken: %s/%s', 'Die Eintracht · gebrochene Regeln: %s/%s'),
+        ('bar.condemned', 'The Concordance · %s/%s · the realm hunts you', 'Die Eintracht · %s/%s · das Reich jagt dich')):
+    name(f'rules.{NS}.{key}', e, g)
+
 # ================================================================================================ etched plates (lore)
 LORE = [
     ('The Concordance', 'Die Eintracht',
@@ -1356,6 +1366,9 @@ BOOK_EN = [
     'THE HISTORY I\n\nThis was the Engine World of the Wirewrights. One Great Bell, the Concordance, hung in a cradle at the heart of their Foundry City; every clock and machine kept time by its toll.',
     'THE HISTORY II\n\nTo wake every engine at once the Council ordered the Overtoll. The cradle cracked, the cities answered, and on the last stroke the Bell tore free and rose into the sky.',
     'THE HISTORY III\n\nIt hangs there still in place of the sun. When it tolls, the machines below lose a little more of their purpose. Etched Plates found in old chests tell the rest.',
+    'THE RULES\n\nThe realm still keeps the Concordance. Its creatures leave you alone until you:\n\n1. strike first,\n2. break what the Wirewrights built (their bricks, tiles, bronze, lamps, bells and traps),\n3. move while the Great Bell tolls.',
+    'THE COUNT\n\nThe bar at the top counts the rules you have broken. At three, every creature of the realm hunts you on sight. Fight back freely when they come for you: defending is no crime. The realm forgets the dead.',
+    'ATONEMENT\n\nRelight a dead lamp with redstone: one rule.\nRing a bell while the Great Bell tolls: two rules.\nLay an Etched Plate on Bell Bronze (the Cradle plazas are full of it): all of them.',
     'FOUNDRY CITIES\n\nThe ruined cities of the Wirewrights spread hundreds of blocks wide, behind broken walls. At the centre of each stands the empty cradle where a bell once hung.',
     'PISTON KARST\nPale limestone towers.\n\nTrigger: pressure plate\nResponse: crushing passage\nCounter: Piston Brace (right click a Crusher)\n\nThe vault at the end opens with two levers and an AND gate.',
     'SWITCHYARD FLATS\nRust, slag and rails.\n\nTrigger: Tripper Rail\nResponse: hazard diversion into a spike pit\nCounter: Pulse Injector (burns out a Hazard Switch, and stuns constructs).',
@@ -1376,6 +1389,9 @@ BOOK_DE = [
     'DIE GESCHICHTE I\n\nDies war die Maschinenwelt der Drahtwerker. Eine Große Glocke, die Eintracht, hing in einer Wiege im Herzen ihrer Gießereistadt; jede Uhr und jede Maschine ging nach ihrem Schlag.',
     'DIE GESCHICHTE II\n\nUm alle Maschinen zugleich zu wecken, befahl der Rat den Überschlag. Die Wiege riss, die Städte antworteten, und beim letzten Schlag riss sich die Glocke los und stieg in den Himmel.',
     'DIE GESCHICHTE III\n\nDort hängt sie noch heute statt der Sonne. Wenn sie schlägt, verlieren die Maschinen unten ein wenig mehr ihres Zwecks. Gravierte Platten in alten Truhen erzählen den Rest.',
+    'DIE REGELN\n\nDas Reich hält noch die Eintracht. Seine Kreaturen lassen dich in Ruhe, bis du:\n\n1. zuerst zuschlägst,\n2. zerstörst, was die Drahtwerker gebaut haben (Ziegel, Fliesen, Bronze, Lampen, Glocken, Fallen),\n3. dich bewegst, während die Große Glocke schlägt.',
+    'DIE ZÄHLUNG\n\nDer Balken oben zählt deine gebrochenen Regeln. Ab drei jagt dich jede Kreatur des Reichs. Wehr dich ruhig, wenn sie kommen: Verteidigung ist kein Vergehen. Das Reich vergisst die Toten.',
+    'SÜHNE\n\nEine tote Lampe mit Redstone neu entzünden: eine Regel.\nEine Glocke läuten, während die Große Glocke schlägt: zwei Regeln.\nEine Gravierte Platte auf Glockenbronze legen (die Wiegen-Plätze sind voll davon): alle.',
     'GIESSEREISTÄDTE\n\nDie zerfallenen Städte der Drahtwerker sind hunderte Blöcke breit, hinter zerbrochenen Mauern. In ihrer Mitte steht die leere Wiege, in der einst eine Glocke hing.',
     'KOLBENKARST\nHelle Kalktürme.\n\nAuslöser: Druckplatte\nReaktion: Quetschgang\nGegenmittel: Kolbenstrebe (Rechtsklick auf Zermalmer)\n\nDer Tresor am Ende öffnet mit zwei Hebeln und einem UND-Gatter.',
     'WEICHENEBENE\nRost, Schlacke und Schienen.\n\nAuslöser: Auslöseschiene\nReaktion: Umleitung in eine Stachelgrube\nGegenmittel: Impulsinjektor (brennt Weichen durch, lähmt Konstrukte).',

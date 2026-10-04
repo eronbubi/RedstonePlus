@@ -152,16 +152,39 @@ public final class RealmSky extends DimensionSpecialEffects {
         BufferUploader.drawWithShader(b.buildOrThrow());
     }
 
-    /** The bong: heard everywhere in the realm, timed by the world clock so every player hears it together. */
+    private static net.minecraft.sounds.Music realmMusic;
+    private static int musicWait = 100;
+    private static boolean wasInRealm;
+
+    /**
+     * The realm's music. Vanilla plays its creative music over biome music in creative mode, so in the realm the mod
+     * runs the music itself: a track soon after arriving, then another every half minute to two minutes after one ends.
+     */
     public static void clientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        if (event.phase != TickEvent.Phase.END || mc.level == null || mc.player == null || mc.isPaused()
-                || !mc.level.dimension().equals(Realm.REALM)) {
+        if (event.phase != TickEvent.Phase.END || mc.isPaused()) {
             return;
         }
-        if (Math.floorMod(mc.level.getGameTime(), RealmBell.INTERVAL) == 0) {
-            mc.level.playLocalSound(mc.player.getX(), mc.player.getY() + 30, mc.player.getZ(), RealmBell.TOLL.get(), SoundSource.AMBIENT,
-                    3.0F, 1.0F, false);
+        boolean inRealm = mc.level != null && mc.player != null && mc.level.dimension().equals(Realm.REALM);
+        if (!inRealm) {
+            wasInRealm = false;
+            return;
+        }
+        if (!wasInRealm) {
+            wasInRealm = true;
+            musicWait = 100;
+        }
+        if (realmMusic == null) {
+            realmMusic = new net.minecraft.sounds.Music(de.eron.redstoneplus.realm.RealmSounds.MUSIC.getHolder().orElseThrow(), 600, 2400, true);
+        }
+        var music = mc.getMusicManager();
+        if (music.isPlayingMusic(realmMusic)) {
+            return;
+        }
+        music.stopPlaying(); // no overworld or creative music in the realm
+        if (--musicWait <= 0) {
+            music.startPlaying(realmMusic);
+            musicWait = 600 + mc.level.getRandom().nextInt(1800);
         }
     }
 }

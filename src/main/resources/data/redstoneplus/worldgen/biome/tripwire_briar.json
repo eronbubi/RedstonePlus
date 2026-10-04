@@ -14,6 +14,12 @@
       "tick_delay": 6000,
       "block_search_extent": 8,
       "offset": 2.0
+    },
+    "music": {
+      "sound": "redstoneplus:music.realm",
+      "min_delay": 1200,
+      "max_delay": 4800,
+      "replace_current_music": true
     }
   },
   "spawners": {
@@ -84,6 +90,7 @@
     [
       "redstoneplus:veins",
       "redstoneplus:roads",
+      "redstoneplus:cities",
       "redstoneplus:scree"
     ],
     [],

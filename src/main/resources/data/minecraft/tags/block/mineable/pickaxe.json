@@ -109,6 +109,10 @@
     "redstoneplus:redstone_cluster",
     "redstoneplus:realm_redstone_ore",
     "redstoneplus:realm_iron_ore",
-    "redstoneplus:realm_copper_ore"
+    "redstoneplus:realm_copper_ore",
+    "redstoneplus:cracked_realmstone_bricks",
+    "redstoneplus:chiseled_realmstone_bricks",
+    "redstoneplus:bell_bronze",
+    "redstoneplus:wirewright_tiles"
   ]
 }

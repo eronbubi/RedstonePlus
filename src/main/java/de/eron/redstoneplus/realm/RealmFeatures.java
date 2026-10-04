@@ -75,7 +75,8 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             SpireConfig cfg = context.config();
             BlockPos origin = context.origin();
-            if (!level.getBlockState(origin.below()).isSolid()) {
+            if (!level.getBlockState(origin.below()).isSolid()
+                    || RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
                 return false;
             }
             int height = cfg.minHeight() + random.nextInt(Math.max(1, cfg.maxHeight() - cfg.minHeight() + 1));
@@ -311,6 +312,9 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             BlockPos origin = context.origin();
             Rotation rotation = Rotation.getRandom(random);
+            if (RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
+                return false; // the cities are built whole; nothing else lands inside them
+            }
             if (this.kind.flat && !flatEnough(level, origin, 6, 4)) {
                 return false;
             }

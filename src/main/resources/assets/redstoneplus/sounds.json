@@ -568,5 +568,30 @@
       "redstoneplus:entity/scrap_jackal/ability1"
     ],
     "subtitle": "subtitles.redstoneplus.entity.scrap_jackal.ability"
+  },
+  "music.realm": {
+    "sounds": [
+      {
+        "name": "redstoneplus:music/realm_1",
+        "stream": true
+      },
+      {
+        "name": "redstoneplus:music/realm_2",
+        "stream": true
+      },
+      {
+        "name": "redstoneplus:music/realm_3",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.great_bell": {
+    "sounds": [
+      {
+        "name": "redstoneplus:ambient/great_bell",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.redstoneplus.ambient.great_bell"
   }
 }

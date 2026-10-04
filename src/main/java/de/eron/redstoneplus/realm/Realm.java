@@ -90,6 +90,12 @@ public final class Realm {
     public static final RegistryObject<Block> SALT_CRUST = block("salt_crust", Block::new,
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).strength(0.8F).sound(SoundType.CALCITE).requiresCorrectToolForDrops());
     public static final RegistryObject<Block> RUST_PLATING = block("rust_plating", Block::new, () -> rock(MapColor.TERRACOTTA_ORANGE).sound(SoundType.METAL));
+    // the old world's building materials (Foundry Cities)
+    public static final RegistryObject<Block> CRACKED_REALMSTONE_BRICKS = block("cracked_realmstone_bricks", Block::new, () -> rock(MapColor.TERRACOTTA_RED));
+    public static final RegistryObject<Block> CHISELED_REALMSTONE_BRICKS = block("chiseled_realmstone_bricks", Block::new,
+            () -> rock(MapColor.TERRACOTTA_RED).lightLevel(s -> 5).emissiveRendering((s, l, p) -> true));
+    public static final RegistryObject<Block> BELL_BRONZE = block("bell_bronze", Block::new, () -> rock(MapColor.GOLD).sound(SoundType.METAL).strength(5.0F, 9.0F));
+    public static final RegistryObject<Block> WIREWRIGHT_TILES = block("wirewright_tiles", Block::new, () -> rock(MapColor.COLOR_BLACK));
     public static final RegistryObject<Block> SHELL_PLATING = block("shell_plating", Block::new, () -> rock(MapColor.METAL).sound(SoundType.METAL));
 
     // ---------- the realm's own ground ----------
@@ -163,6 +169,12 @@ public final class Realm {
 
     // ---------- counters ----------
     public static final RegistryObject<Item> REALM_COG = item("realm_cog", ModItems.DescribedItem::new, Item.Properties::new);
+    // the history of the realm, one fragment per plate (found in chests)
+    static {
+        for (int i = 1; i <= 6; i++) {
+            item("etched_plate_" + i, ModItems.DescribedItem::new, () -> new Item.Properties().stacksTo(1));
+        }
+    }
     public static final RegistryObject<Item> PISTON_BRACE = item("piston_brace", RealmItems.PistonBrace::new, () -> new Item.Properties().stacksTo(16));
     public static final RegistryObject<Item> PULSE_INJECTOR = item("pulse_injector", RealmItems.PulseInjector::new,
             () -> new Item.Properties().durability(64).rarity(Rarity.UNCOMMON));
@@ -317,6 +329,7 @@ public final class Realm {
         RealmSounds.init(modBus);
         RealmFx.init(modBus);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(Realm::lightPortal);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmBell::levelTick);
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {

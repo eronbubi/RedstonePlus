@@ -46,6 +46,8 @@ public final class RealmClient {
                 CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name))));
         modBus.addListener(RealmClient::renderers);
         modBus.addListener(RealmParticles::register);
+        modBus.addListener(RealmSky::register);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmSky::clientTick);
     }
 
     private static ModelLayerLocation layer(String name) {

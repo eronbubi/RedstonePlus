@@ -37,6 +37,10 @@ public final class RealmSounds {
     public static final Set SCRAP_JACKAL = set("scrap_jackal");
 
     public static final RegistryObject<SoundEvent> REALM_TRAVEL = sound("block.realm_gate.travel");
+    /** The toll of the Great Bell in the sky. */
+    public static final RegistryObject<SoundEvent> GREAT_BELL = sound("ambient.great_bell");
+    /** The realm's music (three tracks, one picked at random). */
+    public static final RegistryObject<SoundEvent> MUSIC = sound("music.realm");
 
     private RealmSounds() {
     }

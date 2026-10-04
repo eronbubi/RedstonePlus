@@ -20,6 +20,12 @@
       "options": {
         "type": "minecraft:electric_spark"
       }
+    },
+    "music": {
+      "sound": "redstoneplus:music.realm",
+      "min_delay": 1200,
+      "max_delay": 4800,
+      "replace_current_music": true
     }
   },
   "spawners": {
@@ -84,6 +90,7 @@
     [
       "redstoneplus:veins",
       "redstoneplus:roads",
+      "redstoneplus:cities",
       "redstoneplus:tempest_pillar",
       "redstoneplus:scree"
     ],

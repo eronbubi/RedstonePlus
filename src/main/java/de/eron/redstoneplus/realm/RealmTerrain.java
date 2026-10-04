@@ -37,7 +37,9 @@ public final class RealmTerrain {
         DUNES("arsenal_dunes"), MESAS("hematite_scarps"), PONDS("red_clay_fen", "vein_mire"), CREVASSES("frostwork_wastes"),
         LAVA_CHANNELS("kiln_barrens"), TERRACE_POOLS("rubedo_gardens"), TRACKS("switchyard_flats"),
         // everywhere: glowing veins in the ground, and the broken roads of the old world
-        VEINS(), ROADS();
+        VEINS(), ROADS(),
+        // the ruined Foundry Cities, hundreds of blocks wide (see RealmCities)
+        CITIES();
 
         final String[] biomes;
 
@@ -92,6 +94,7 @@ public final class RealmTerrain {
                         case TRACKS -> track(level, a, x, z, top, sea);
                         case VEINS -> vein(level, a, b, x, z, top);
                         case ROADS -> road(level, a, b, x, z, top, sea);
+                        case CITIES -> RealmCities.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                     };
                 }
             }

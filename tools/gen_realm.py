@@ -293,6 +293,18 @@ TERRAIN = {
                   'Dark soil of the Vein Mire, threaded with glowing roots.', 'Dunkle Erde des Adermoors mit leuchtenden Wurzeln.'),
     'grove_moss': (tint(vanilla('block/moss_block'), '#2e6a6a', gain=1.3), 'shovel', 'Grove Moss', 'Hainmoos', 'Deep teal moss of the Lamplit Grove.',
                    'Tiefgrünes Moos des Lampenhains.'),
+    # the old world's building materials, found in the Foundry Cities
+    'cracked_realmstone_bricks': (tint(vanilla('block/cracked_stone_bricks'), '#b0564a', gain=1.3), 'pickaxe', 'Cracked Realmstone Bricks',
+                                  'Rissige Reichssteinziegel', 'Bricks split by the Last Toll.', 'Vom Letzten Schlag gesprungene Ziegel.'),
+    'chiseled_realmstone_bricks': (traces(tint(vanilla('block/chiseled_stone_bricks'), '#b0564a', gain=1.3), '#ff4a30', 5), 'pickaxe',
+                                   'Chiseled Realmstone Bricks', 'Gemeißelte Reichssteinziegel',
+                                   'Carved with the circuit sigils of the Wirewrights. The lines still glow.',
+                                   'Mit den Schaltkreis-Siegeln der Drahtwerker verziert. Die Linien glühen noch.'),
+    'bell_bronze': (specks(tint(vanilla('block/gold_block'), '#b8803c', gain=1.05), '#5a3418', 0.07), 'pickaxe', 'Bell Bronze', 'Glockenbronze',
+                    'Metal of the Great Bell. Shards of it rained down across the realm when it tore free.',
+                    'Metall der Großen Glocke. Splitter davon regneten über das Reich, als sie sich losriss.'),
+    'wirewright_tiles': (specks(tint(vanilla('block/polished_blackstone_bricks'), '#4a3034', gain=1.5), '#ff3a2a', 0.02), 'pickaxe', 'Wirewright Tiles',
+                         'Drahtwerker-Fliesen', 'Floor tiles of the Wirewrights\' halls.', 'Bodenfliesen aus den Hallen der Drahtwerker.'),
 }
 for bid, (img, tool, e, g, de_, dg) in TERRAIN.items():
     save(img, 'block', bid)
@@ -665,6 +677,9 @@ COUNTERS = {'realm_piston_karst': f'{NS}:piston_brace', 'realm_switchyard_flats'
             'realm_kiln_barrens': f'{NS}:signal_jammer', 'realm_tripwire_briar': f'{NS}:insulated_cutters'}
 
 
+LORE_IDS = range(6)
+
+
 def chest(name_, pools):
     write(os.path.join(DATA, 'loot_table', 'chests', name_ + '.json'), {'type': 'minecraft:chest', 'pools': pools,
                                                                         'random_sequence': f'{NS}:chests/{name_}'})
@@ -675,7 +690,132 @@ for chest_name, counter in COUNTERS.items():
     chest(chest_name, [
         {'rolls': {'type': 'minecraft:uniform', 'min': 4, 'max': 7}, 'bonus_rolls': 0, 'entries': COMMON},
         {'rolls': 1, 'bonus_rolls': 0, 'conditions': [{'condition': 'minecraft:random_chance', 'chance': 0.75}],
-         'entries': [entry(counter, count[0], count[1])]}])
+         'entries': [entry(counter, count[0], count[1])]},
+        {'rolls': 1, 'bonus_rolls': 0, 'conditions': [{'condition': 'minecraft:random_chance', 'chance': 0.35}],
+         'entries': [entry(f'{NS}:etched_plate_{i}') for i in range(1, len(LORE_IDS) + 1)]}])
+chest('realm_relic', [
+    {'rolls': {'type': 'minecraft:uniform', 'min': 5, 'max': 8}, 'bonus_rolls': 0, 'entries': COMMON + [entry(f'{NS}:bell_bronze', 1, 4, 10)]},
+    {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry(f'{NS}:etched_plate_{i}') for i in range(1, len(LORE_IDS) + 1)]}])
+# ================================================================================================ the Great Bell (sky)
+def great_bell():
+    """The Concordance as it hangs in the sky: a cracked bronze bell, its crack and sigils still glowing."""
+    import math as _m
+    size = 128
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
+    cx = size / 2
+
+    def half_width(y):
+        if y < 18:
+            return 0
+        if y < 30:  # crown dome
+            return 18 * _m.sqrt(max(0.0, 1 - ((30 - y) / 12.0) ** 2))
+        if y < 92:  # waist widening to the shoulder of the lip
+            return 18 + (y - 30) * 0.42
+        if y < 104:  # flared lip
+            return 44 + (y - 92) * 0.9
+        return 0
+
+    for y in range(size):
+        w = half_width(y)
+        for x in range(size):
+            dx = x + 0.5 - cx
+            if w and abs(dx) <= w:
+                u = dx / w
+                shade = 0.45 + 0.55 * _m.cos(u * _m.pi / 2) ** 0.7 + (0.25 if -0.55 < u < -0.3 else 0)
+                r, g, b = 186 * shade, 128 * shade, 62 * shade
+                if y in (40, 41, 86, 87, 100):  # cast rings
+                    r, g, b = r * 0.6, g * 0.6, b * 0.6
+                if 74 <= y <= 80 and int((u + 1) * 14) % 3 == 0:  # glowing sigil band
+                    r, g, b = 255, 80, 50
+                px[x, y] = (int(min(255, r)), int(min(255, g)), int(min(255, b)), 255)
+    # crown loop
+    for a in range(0, 360, 2):
+        for rr in (8, 9, 10):
+            x = int(cx + rr * _m.cos(_m.radians(a)))
+            y = int(14 + rr * 0.8 * _m.sin(_m.radians(a)))
+            if y < 20 and 0 <= x < size:
+                px[x, y] = (120, 80, 40, 255)
+    # the crack that freed it, still burning
+    _crack = random.Random(17)
+    x = cx + 6
+    for y in range(26, 100):
+        x += _crack.choice((-2, -1, -1, 0, 1, 1, 2)) * 0.6 + (0.25 if y > 70 else -0.15)
+        for d in (0, 1):
+            xi = int(x) + d
+            if px[xi, y][3]:
+                px[xi, y] = (255, 70 + 40 * d, 40, 255)
+    # clapper hanging below the lip
+    for y in range(104, 116):
+        for x in range(size):
+            if (x + 0.5 - cx) ** 2 + ((y - 110) * 1.2) ** 2 < 30:
+                px[x, y] = (90, 60, 34, 255)
+    return img
+
+
+def halo():
+    import math as _m
+    size = 64
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(size):
+        for x in range(size):
+            d = _m.hypot(x + 0.5 - size / 2, y + 0.5 - size / 2) / (size / 2)
+            a = max(0.0, 1 - d) ** 2.2
+            px[x, y] = (255, 255, 255, int(255 * a))
+    return img
+
+
+for tex, img in (('great_bell', great_bell()), ('great_bell_halo', halo())):
+    path = os.path.join(ASSETS, 'textures', 'environment', tex + '.png')
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    img.save(path)
+
+# ================================================================================================ etched plates (lore)
+LORE = [
+    ('The Concordance', 'Die Eintracht',
+     'We hung the Great Bell in its cradle at the heart of the Foundry City. Every clock in the realm kept time by its toll, and every machine moved as one.',
+     'Wir hängten die Große Glocke in ihre Wiege im Herzen der Gießereistadt. Jede Uhr des Reichs ging nach ihrem Schlag, und jede Maschine bewegte sich im Gleichtakt.'),
+    ('The Grid', 'Das Netz',
+     'Power ran beneath every road and every wall. Where the veins glow in the ground, the old grid is still bleeding.',
+     'Strom floss unter jeder Straße und jeder Mauer. Wo die Adern im Boden glühen, blutet das alte Netz noch immer.'),
+    ('The Walkers', 'Die Wanderer',
+     'We built the constructs to tend the machines while we slept. Nobody ever told them to stop.',
+     'Wir bauten die Konstrukte, damit sie die Maschinen pflegen, während wir schliefen. Niemand hat ihnen je gesagt, dass sie aufhören sollen.'),
+    ('The Overtoll', 'Der Überschlag',
+     'The Council ordered one great toll to wake every engine at once. The cradle cracked on the first stroke. On the second the cities answered.',
+     'Der Rat befahl einen einzigen großen Schlag, um alle Maschinen zugleich zu wecken. Beim ersten Schlag riss die Wiege. Beim zweiten antworteten die Städte.'),
+    ('The Ascent', 'Der Aufstieg',
+     'On the last stroke the Bell tore free and rose into the sky. It hangs there still in place of the sun, and every time it tolls the machines forget a little more.',
+     'Beim letzten Schlag riss sich die Glocke los und stieg in den Himmel. Dort hängt sie noch heute statt der Sonne, und mit jedem Schlag vergessen die Maschinen ein wenig mehr.'),
+    ('The Fused', 'Die Verschmolzenen',
+     'Those who stayed too close to the leaking engines became part of them. We call them Machine-Bound now. Do not call them by their old names.',
+     'Wer den leckenden Maschinen zu nahe blieb, wurde ein Teil von ihnen. Wir nennen sie jetzt Maschinengebundene. Nenn sie nicht bei ihren alten Namen.'),
+]
+
+
+def plate_image(seed):
+    from PIL import ImageDraw
+    import random as _r
+    rnd = _r.Random(seed)
+    img = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rectangle((2, 3, 13, 12), fill=(176, 122, 58, 255), outline=(92, 54, 24, 255))
+    d.line((3, 4, 12, 4), fill=(226, 172, 98, 255))
+    for row in range(5, 12, 2):
+        x = 4
+        while x < 12:
+            w = rnd.randint(1, 3)
+            d.line((x, row, min(11, x + w - 1), row), fill=(110, 60, 28, 255) if rnd.random() < 0.8 else (255, 70, 40, 255))
+            x += w + 1
+    return img
+
+
+for i, (e, g, te, tg) in enumerate(LORE, 1):
+    pid = f'etched_plate_{i}'
+    save(plate_image(i * 31), 'item', pid)
+    item_model(pid)
+    name(f'item.{NS}.{pid}', f'Etched Plate: {e}', f'Gravierte Platte: {g}', '"' + te + '"', '„' + tg + '“')
 # ================================================================================================ recipes
 shaped('piston_brace', ['I I', 'ICI', 'I I'], {'I': 'minecraft:iron_ingot', 'C': f'{NS}:realm_cog'}, f'{NS}:piston_brace', 3)
 shaped('pulse_injector', ['  R', ' C ', 'I  '], {'R': 'minecraft:redstone_block', 'C': f'{NS}:realm_cog', 'I': 'minecraft:iron_ingot'}, f'{NS}:pulse_injector')
@@ -817,7 +957,7 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads'):
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities'):
     placed(shape, none_feature(shape), [])
 
 # trap sites, scenery and machines: rare and spread out
@@ -840,7 +980,7 @@ STEPS = [
     [],
     ['minecraft:lake_lava_surface'],
     ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
-     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree'],
     ['redstoneplus:resonance_gatehouse'],
@@ -860,7 +1000,7 @@ STEPS = [
      'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
     ['minecraft:freeze_top_layer'],
 ]
-EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
+EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
               'redstoneplus:scree', 'minecraft:freeze_top_layer'}
 
 
@@ -952,6 +1092,7 @@ for biome_name, (e, g, temp, rain, cols, particle, feats, monsters, creatures, c
                'mood_sound': {'sound': 'minecraft:ambient.cave', 'tick_delay': 6000, 'block_search_extent': 8, 'offset': 2.0}}
     if particle:
         effects['particle'] = particle
+    effects['music'] = {'sound': f'{NS}:music.realm', 'min_delay': 1200, 'max_delay': 4800, 'replace_current_music': True}
     if biome_name not in UNDERGROUND:
         creatures = creatures + WILDLIFE
         ambient = [spawn('lamp_moth', 30, 3, 6)]
@@ -1081,7 +1222,7 @@ write(os.path.join(DATA, 'dimension_type', 'redstone_realm.json'), {
     'ultrawarm': False, 'natural': True, 'coordinate_scale': 1.0, 'has_skylight': True, 'has_ceiling': False, 'ambient_light': 0.0,
     'monster_spawn_light_level': {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 7}, 'monster_spawn_block_light_limit': 0,
     'piglin_safe': False, 'bed_works': True, 'respawn_anchor_works': False, 'has_raids': False,
-    'logical_height': 384, 'min_y': -64, 'height': 384, 'infiniburn': '#minecraft:infiniburn_overworld', 'effects': 'minecraft:overworld'})
+    'logical_height': 384, 'min_y': -64, 'height': 384, 'infiniburn': '#minecraft:infiniburn_overworld', 'effects': f'{NS}:redstone_realm'})
 
 
 # ---- biome layout: seas and coasts, mountains by heat, and a temperature x humidity grid on the flatter land
@@ -1212,6 +1353,10 @@ for key, (e, g) in MESSAGES.items():
 BOOK_EN = [
     'REDSTONE REALM\nField Guide\n\nA world that runs on redstone. Every land has its own machines, creatures and traps. Nothing explains itself: watch the machines to see how they work.',
     'GETTING THERE\n\nBuild a frame of redstone blocks like a Nether portal (inside at least 2 wide, 3 high) and light it with flint and steel. Step in. A portal waits on the other side to bring you back.',
+    'THE HISTORY I\n\nThis was the Engine World of the Wirewrights. One Great Bell, the Concordance, hung in a cradle at the heart of their Foundry City; every clock and machine kept time by its toll.',
+    'THE HISTORY II\n\nTo wake every engine at once the Council ordered the Overtoll. The cradle cracked, the cities answered, and on the last stroke the Bell tore free and rose into the sky.',
+    'THE HISTORY III\n\nIt hangs there still in place of the sun. When it tolls, the machines below lose a little more of their purpose. Etched Plates found in old chests tell the rest.',
+    'FOUNDRY CITIES\n\nThe ruined cities of the Wirewrights spread hundreds of blocks wide, behind broken walls. At the centre of each stands the empty cradle where a bell once hung.',
     'PISTON KARST\nPale limestone towers.\n\nTrigger: pressure plate\nResponse: crushing passage\nCounter: Piston Brace (right click a Crusher)\n\nThe vault at the end opens with two levers and an AND gate.',
     'SWITCHYARD FLATS\nRust, slag and rails.\n\nTrigger: Tripper Rail\nResponse: hazard diversion into a spike pit\nCounter: Pulse Injector (burns out a Hazard Switch, and stuns constructs).',
     'RESONANCE HOLLOWS\nCrystal caves deep below.\n\nTrigger: footstep vibration (sculk sensor)\nResponse: gate lockdown\nCounter: Decoy Beacon\n\nSneak: the Bell Stalker hunts by sound.',
@@ -1228,6 +1373,10 @@ BOOK_EN = [
 BOOK_DE = [
     'REDSTONE-REICH\nFeldführer\n\nEine Welt, die mit Redstone läuft. Jedes Land hat eigene Maschinen, Kreaturen und Fallen. Nichts erklärt sich selbst: beobachte die Maschinen, dann siehst du, wie sie funktionieren.',
     'DER WEG HIN\n\nBaue einen Rahmen aus Redstone-Blöcken wie ein Netherportal (innen mindestens 2 breit, 3 hoch) und entzünde ihn mit Feuerzeug. Tritt hinein. Drüben wartet ein Portal für den Rückweg.',
+    'DIE GESCHICHTE I\n\nDies war die Maschinenwelt der Drahtwerker. Eine Große Glocke, die Eintracht, hing in einer Wiege im Herzen ihrer Gießereistadt; jede Uhr und jede Maschine ging nach ihrem Schlag.',
+    'DIE GESCHICHTE II\n\nUm alle Maschinen zugleich zu wecken, befahl der Rat den Überschlag. Die Wiege riss, die Städte antworteten, und beim letzten Schlag riss sich die Glocke los und stieg in den Himmel.',
+    'DIE GESCHICHTE III\n\nDort hängt sie noch heute statt der Sonne. Wenn sie schlägt, verlieren die Maschinen unten ein wenig mehr ihres Zwecks. Gravierte Platten in alten Truhen erzählen den Rest.',
+    'GIESSEREISTÄDTE\n\nDie zerfallenen Städte der Drahtwerker sind hunderte Blöcke breit, hinter zerbrochenen Mauern. In ihrer Mitte steht die leere Wiege, in der einst eine Glocke hing.',
     'KOLBENKARST\nHelle Kalktürme.\n\nAuslöser: Druckplatte\nReaktion: Quetschgang\nGegenmittel: Kolbenstrebe (Rechtsklick auf Zermalmer)\n\nDer Tresor am Ende öffnet mit zwei Hebeln und einem UND-Gatter.',
     'WEICHENEBENE\nRost, Schlacke und Schienen.\n\nAuslöser: Auslöseschiene\nReaktion: Umleitung in eine Stachelgrube\nGegenmittel: Impulsinjektor (brennt Weichen durch, lähmt Konstrukte).',
     'RESONANZHÖHLEN\nKristallhöhlen tief unten.\n\nAuslöser: Schrittvibration (Sculk-Sensor)\nReaktion: Abriegelung\nGegenmittel: Köderleuchtfeuer\n\nSchleichen: der Glockenpirscher jagt nach Gehör.',

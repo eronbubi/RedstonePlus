@@ -26,6 +26,12 @@
         ],
         "scale": 1.0
       }
+    },
+    "music": {
+      "sound": "redstoneplus:music.realm",
+      "min_delay": 1200,
+      "max_delay": 4800,
+      "replace_current_music": true
     }
   },
   "spawners": {
@@ -92,6 +98,7 @@
       "redstoneplus:terrace_pools",
       "redstoneplus:veins",
       "redstoneplus:roads",
+      "redstoneplus:cities",
       "redstoneplus:rubedo_spire",
       "redstoneplus:scree"
     ],

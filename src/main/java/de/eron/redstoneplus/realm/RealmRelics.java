@@ -171,7 +171,7 @@ final class RealmRelics {
             b.set(x, h - 1, -4, litLamp());
         }
         if (b.decay <= 0) {
-            b.chest(w - 2, 0, -d + 2, Direction.WEST, "realm_switchyard_flats");
+            b.chest(w - 2, 0, -d + 2, Direction.WEST, "realm_relic");
         }
         rubble(b, p, 18, 40);
     }
@@ -320,7 +320,7 @@ final class RealmRelics {
         b.set(0, 4, 1, lamp());
         b.set(0, 4, -1, lamp());
         if (b.decay <= 0) {
-            b.chest(0, 0, -3, Direction.SOUTH, "realm_resonance_hollows");
+            b.chest(0, 0, -3, Direction.SOUTH, "realm_relic");
         }
         rubble(b, p, 17, 44);
     }

@@ -20,6 +20,12 @@
       "options": {
         "type": "minecraft:white_ash"
       }
+    },
+    "music": {
+      "sound": "redstoneplus:music.realm",
+      "min_delay": 1200,
+      "max_delay": 4800,
+      "replace_current_music": true
     }
   },
   "spawners": {
@@ -99,6 +105,7 @@
       "redstoneplus:lava_channels",
       "redstoneplus:veins",
       "redstoneplus:roads",
+      "redstoneplus:cities",
       "redstoneplus:kiln_spire",
       "redstoneplus:sulfur_rock",
       "redstoneplus:scree"

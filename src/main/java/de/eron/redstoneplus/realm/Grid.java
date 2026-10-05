@@ -256,7 +256,7 @@ public final class Grid {
             return node(level, gen, random, x, z, dx, dz, nodeBase(level, gen, random, i, j), nodeType(seed, i, j), seed, i, j, top);
         }
         BlockPos at = new BlockPos(x, top - 1, z);
-        if (sealed(level, at) || RealmCities.covers(level, gen, random, x, z)) {
+        if (sealed(level, at) || RealmCities.covers(level, gen, random, x, z) || Sanctums.covers(level, gen, random, x, z)) {
             return false;
         }
         boolean built = false;

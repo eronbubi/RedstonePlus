@@ -99,7 +99,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "redstoneplus:molten_redstone_lake"
+    ],
     [
       "redstoneplus:terrace_pools",
       "redstoneplus:veins",
@@ -107,6 +109,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:rubedo_spire",
       "redstoneplus:scree"
     ],
@@ -117,7 +120,8 @@
       "redstoneplus:pump_station",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [

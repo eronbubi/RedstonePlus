@@ -1,7 +1,7 @@
 """
 Builds tools/blender/NAME.blend for every realm creature from tools/blender/specs/NAME.json and renders previews.
 
-    blender -b --factory-startup -P tools/blender/build_mobs.py -- [--rebuild] [--previews-only] [NAME ...]
+    blender -b --factory-startup -P tools/blender/build_mobs.py -- [--rebuild] [--previews-only] [--healed] [NAME ...]
 
 Existing .blend files are kept (they are the source once made) unless --rebuild is given.
 In each .blend:
@@ -277,7 +277,18 @@ def setup_lighting(scene):
     nt.links.new(glare.outputs['Image'], comp.inputs['Image'])
 
 
-def previews(name):
+def use_healed(name):
+    """Swaps the creature's texture for its look in the freed realm (textures/entity/realm/healed/NAME.png)."""
+    healed = bpy.data.images.load(os.path.join(TEX, 'healed', name + '.png'))
+    for mat in bpy.data.materials:
+        if not mat.use_nodes:
+            continue
+        for node in mat.node_tree.nodes:
+            if node.type == 'TEX_IMAGE' and node.image is not None and not node.image.name.endswith('_glow.png'):
+                node.image = healed
+
+
+def previews(name, suffix=''):
     """Renders one pose from each clip to tools/blender/previews/NAME_CLIP.png."""
     scene = bpy.context.scene
     clips = json.loads(scene['mc_clips'])
@@ -328,7 +339,7 @@ def previews(name):
         size = max(hi[k] - lo[k] for k in range(3))
         target.location = center
         cam.location = center + mathutils.Vector((-0.9, -1.55, 0.55)) * size * 1.08
-        scene.render.filepath = os.path.join(PREVIEWS, f'{name}_{clip_name}.png')
+        scene.render.filepath = os.path.join(PREVIEWS, f'{name}{suffix}_{clip_name}.png')
         bpy.ops.render.render(write_still=True)
 
 
@@ -383,6 +394,11 @@ def main():
                 build(json.load(f), path)
             print('BUILT', name)
         bpy.ops.wm.open_mainfile(filepath=path)
+        if '--healed' in argv:
+            use_healed(name)
+            previews(name, '_healed')
+            print('PREVIEWED HEALED', name)
+            continue
         previews(name)
         print('PREVIEWED', name)
         if '--gifs' in argv:

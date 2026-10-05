@@ -41,7 +41,9 @@ public final class RealmTerrain {
         // the ruined Foundry Cities, hundreds of blocks wide (see RealmCities)
         CITIES(),
         // the Grid: lattice lightlines and the structures at their nodes (see Grid); the walls of the Sealed Reach (see SealedReach)
-        GRID(), SEALED_WALL();
+        GRID(), SEALED_WALL(),
+        // the sanctums of the five Echoes, and the giant chains rising from them (see Sanctums)
+        SANCTUMS();
 
         final String[] biomes;
 
@@ -99,6 +101,7 @@ public final class RealmTerrain {
                         case CITIES -> RealmCities.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case GRID -> Grid.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case SEALED_WALL -> SealedReach.column(level, x, z, top);
+                        case SANCTUMS -> Sanctums.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                     };
                 }
             }

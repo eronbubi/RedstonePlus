@@ -1,6 +1,8 @@
 package de.eron.redstoneplus.realm.client;
 
 import de.eron.redstoneplus.realm.Realm;
+import de.eron.redstoneplus.realm.RealmLiquids;
+import de.eron.redstoneplus.realm.RealmStory;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -44,6 +46,12 @@ public final class RealmClient {
         creature("trackwright", Realm.TRACKWRIGHT);
         creature("wirewraith", Realm.WIREWRAITH);
         creature("maw_engine", Realm.MAW_ENGINE);
+        creature("echo_force", Realm.ECHO_FORCE);
+        creature("echo_signal", Realm.ECHO_SIGNAL);
+        creature("echo_resonance", Realm.ECHO_RESONANCE);
+        creature("echo_heat", Realm.ECHO_HEAT);
+        creature("echo_flow", Realm.ECHO_FLOW);
+        creature("the_overtoll", Realm.OVERTOLL);
 
         modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) -> {
             CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name)));
@@ -54,6 +62,18 @@ public final class RealmClient {
         modBus.addListener(RealmSky::register);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmSky::clientTick);
         CycleClient.init(modBus);
+        // the clear liquids are drawn see-through
+        modBus.addListener((net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) -> event.enqueueWork(() -> {
+            for (RealmLiquids.Kind kind : RealmLiquids.Kind.values()) {
+                if (kind.seeThrough) {
+                    net.minecraft.client.renderer.ItemBlockRenderTypes.setRenderLayer(kind.liquid().source().get(), net.minecraft.client.renderer.RenderType.translucent());
+                    net.minecraft.client.renderer.ItemBlockRenderTypes.setRenderLayer(kind.liquid().flowing().get(), net.minecraft.client.renderer.RenderType.translucent());
+                }
+            }
+        }));
+        // a world left behind takes its story with it
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(
+                (net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) -> RealmStory.clientForget());
     }
 
     private static ModelLayerLocation layer(String name) {

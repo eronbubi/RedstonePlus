@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "echo=0": {
+      "model": "redstoneplus:block/echo_seal_force"
+    },
+    "echo=1": {
+      "model": "redstoneplus:block/echo_seal_signal"
+    },
+    "echo=2": {
+      "model": "redstoneplus:block/echo_seal_resonance"
+    },
+    "echo=3": {
+      "model": "redstoneplus:block/echo_seal_heat"
+    },
+    "echo=4": {
+      "model": "redstoneplus:block/echo_seal_flow"
+    }
+  }
+}

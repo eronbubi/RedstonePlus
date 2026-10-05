@@ -182,6 +182,17 @@ public final class RealmRules {
         updateBar(player);
     }
 
+    /** The realm is freed: every creature of the realm that was hunting someone lets go. */
+    static void peace(ServerLevel level) {
+        for (Entity e : level.getAllEntities()) {
+            if (e instanceof Mob mob && realmCreature(mob) && !(mob instanceof Echoes.EchoBoss) && mob.getTarget() instanceof Player) {
+                mob.setTarget(null);
+                mob.setLastHurtByMob(null);
+                mob.getNavigation().stop();
+            }
+        }
+    }
+
     /** Realm creatures around the player that were hunting them stop, unless the player is still fighting them. */
     private static void calm(ServerPlayer player) {
         AABB area = player.getBoundingBox().inflate(64.0);
@@ -198,7 +209,18 @@ public final class RealmRules {
     /** Realm creatures only take a player as their target if the player has broken the rules or just provoked them. */
     private static void changeTarget(LivingChangeTargetEvent event) {
         if (!(event.getNewTarget() instanceof Player player) || !inRealm(event.getEntity().level()) || !realmCreature(event.getEntity())
-                || lawless(event.getEntity())) {
+                || event.getEntity() instanceof Echoes.EchoBoss || event.getEntity().getTags().contains(Echoes.CALLED)) {
+            return;
+        }
+        if (!RealmStory.healed(player.level()) && lawless(event.getEntity())) {
+            return;
+        }
+        if (RealmStory.healed(player.level())) {
+            // the freed realm is at peace: its creatures only ever turn on someone who is hurting them right now
+            LivingEntity self = event.getEntity();
+            if (self.getLastHurtByMob() != player || self.tickCount - self.getLastHurtByMobTimestamp() > 100) {
+                event.setCanceled(true);
+            }
             return;
         }
         if (broken(player) >= CONDEMNED || player.getPersistentData().getLong(PROVOKED) > player.level().getGameTime()
@@ -211,7 +233,7 @@ public final class RealmRules {
     /** Rule 1: do not strike first. Striking also sets the creatures around you on you for a while. */
     private static void attack(LivingAttackEvent event) {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player) || !playing(player) || !inRealm(player.level())
-                || !realmCreature(event.getEntity()) || lawless(event.getEntity())) {
+                || !realmCreature(event.getEntity()) || lawless(event.getEntity()) || RealmStory.healed(player.level())) {
             return;
         }
         boolean defending = event.getEntity() instanceof Mob mob && mob.getTarget() == player;
@@ -234,7 +256,8 @@ public final class RealmRules {
 
     /** Rule 2: do not break what the Wirewrights built. */
     private static void breakBlock(BlockEvent.BreakEvent event) {
-        if (!(event.getPlayer() instanceof ServerPlayer player) || !playing(player) || !(event.getLevel() instanceof Level level) || !inRealm(level)) {
+        if (!(event.getPlayer() instanceof ServerPlayer player) || !playing(player) || !(event.getLevel() instanceof Level level) || !inRealm(level)
+                || RealmStory.healed(level)) {
             return;
         }
         if (built(event.getState())) {
@@ -361,6 +384,14 @@ public final class RealmRules {
                 id -> new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_6));
         if (!inRealm(player.level()) || player.isSpectator()) {
             bar.removePlayer(player);
+            return;
+        }
+        if (RealmStory.healed(player.level())) {
+            // the Concordance rests: no rules, no tolls, nobody hunted
+            bar.setName(Component.translatable("story.redstoneplus.bar.healed"));
+            bar.setColor(BossEvent.BossBarColor.YELLOW);
+            bar.setProgress(1.0F);
+            bar.addPlayer(player);
             return;
         }
         int n = broken(player);

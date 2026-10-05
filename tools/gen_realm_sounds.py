@@ -317,6 +317,83 @@ RECIPES.update({
     },
 })
 
+
+
+def drone(freq, dur, voices=(1.0, 1.5, 2.0, 3.0), beat=0.6):
+    """A deep, beating chord of pure tones: the hum of a being made of energy."""
+    x = t(dur)
+    out = np.zeros_like(x)
+    for i, r in enumerate(voices):
+        f = freq * r
+        out += np.sin(2 * np.pi * f * x + 0.8 * np.sin(2 * np.pi * beat * (i + 1) * x)) / (i + 1)
+    return out * env(dur, attack=min(0.3, dur / 4), curve=1.5)
+
+
+def choir(freq, dur, voices=5):
+    """Many slightly detuned voices on one vowel: the Choir's song."""
+    x = t(dur)
+    out = np.zeros_like(x)
+    for k in range(voices):
+        f = freq * (1 + np.random.uniform(-0.012, 0.012)) * (1, 1.5, 2, 1.25, 3)[k % 5]
+        vib = 1 + 0.006 * np.sin(2 * np.pi * (5 + np.random.uniform(-0.5, 0.5)) * x)
+        out += np.sin(2 * np.pi * f * vib * x) + 0.3 * np.sin(4 * np.pi * f * vib * x)
+    return band(out, 200, 3200) * env(dur, attack=dur / 3, curve=1.2)
+
+
+def plasma(dur, freq=90):
+    """A hot, crackling roar: low tone, broadband fizz and sparks."""
+    return mix(growl(freq, dur, 0.9) * 0.6, band(noise(dur), 300, 5000) * env(dur, 0.05, curve=2) * 0.5, crackle(dur, 70) * 0.4)
+
+
+# the five Echoes and the Overtoll: bigger, slower, and each with its own voice
+RECIPES.update({
+    'echo_force': {
+        'ambient': v(lambda: mix(drone(41, 3.0) * 0.7, at(piston(0.5, 0.45), 1.2) * 0.6, at(thud(38, 0.8), 1.3) * 0.5)),
+        'hurt': v(lambda: mix(metal(160, 0.7) * 0.7, thud(55, 0.5) * 0.8, drone(82, 0.6) * 0.4)),
+        'death': [lambda: mix(drone(41, 5.0) * 0.6, at(piston(1.2, 0.3), 0.4), at(thud(30, 2.5, 0.8), 1.4), at(chain(2.5, 14, 700), 1.0) * 0.6,
+                              at(whoosh(3.0, 60, 2000), 2.0) * 0.6)],
+        'step': v(lambda: mix(thud(38, 0.6, 0.4), metal(220, 0.3) * 0.2)),
+        'ability': [lambda: mix(piston(0.8, 0.35), at(thud(28, 1.6, 0.8) * 1.4, 0.9), at(hiss(1.6, 300, 3000, 0.01, 2), 0.9) * 0.6,
+                                drone(55, 2.4) * 0.4)],
+    },
+    'echo_signal': {
+        'ambient': v(lambda: mix(drone(110, 2.4, (1.0, 2.0, 4.0), beat=3.0) * 0.4, crackle(2.4, 60) * 0.4, at(zap(0.4), 1.1) * 0.5)),
+        'hurt': v(lambda: mix(zap(0.4), sparks(0.5, 20) * 0.6, servo(1800, 600, 0.3) * 0.4)),
+        'death': [lambda: mix(servo(2400, 40, 3.0, 0.3) * 0.6, crackle(3.0, 200) * 0.6, at(zap(0.8), 0.2), at(zap(0.8), 0.9), at(sparks(2.0, 60), 1.0) * 0.6)],
+        'step': v(lambda: mix(zap(0.12) * 0.3, sparks(0.15, 4) * 0.2)),
+        'ability': [lambda: mix(servo(80, 3000, 0.7, 0.2) * 0.5, at(zap(0.6) * 1.2, 0.6), at(thud(60, 1.0) * 0.8, 0.65), at(crackle(1.2, 220), 0.6) * 0.6)],
+    },
+    'echo_resonance': {
+        'ambient': v(lambda: mix(choir(196, 3.2) * 0.6, at(bell(392, 2.4), 0.8) * 0.3)),
+        'hurt': v(lambda: mix(bell(523, 0.9) * 0.7, choir(262, 0.6) * 0.4)),
+        'death': [lambda: mix(choir(147, 5.0) * 0.7, bell(196, 5.0) * 0.6, at(bell(185, 4.0), 0.4) * 0.5, at(whoosh(3.0, 100, 4000), 1.5) * 0.5)],
+        'step': v(lambda: bell(784, 0.3) * 0.15),
+        'ability': [lambda: mix(choir(220, 2.6, 7) * 0.8, bell(110, 2.6) * 0.6, at(bell(117, 2.4), 0.05) * 0.5, whoosh(2.6, 80, 3000) * 0.4)],
+    },
+    'echo_heat': {
+        'ambient': v(lambda: mix(plasma(2.6, 70) * 0.6, hiss(2.6, 600, 4000, 0.5) * 0.3, drone(55, 2.6) * 0.3)),
+        'hurt': v(lambda: mix(plasma(0.6, 120) * 0.7, hiss(0.5, 1000, 6000, 0.01) * 0.5)),
+        'death': [lambda: mix(plasma(4.5, 50) * 0.7, at(thud(35, 2.0), 0.6) * 0.8, at(hiss(3.5, 200, 5000, 0.2), 1.0) * 0.6, at(crackle(3.0, 120), 1.2) * 0.4)],
+        'step': v(lambda: mix(thud(70, 0.2) * 0.4, crackle(0.2, 50) * 0.3)),
+        'ability': [lambda: mix(whoosh(1.8, 100, 3000) * 0.8, plasma(1.8, 60) * 0.7, at(thud(40, 1.0) * 0.8, 0.3))],
+    },
+    'echo_flow': {
+        'ambient': v(lambda: mix(squelch(1.4, 120, 60) * 0.5, at(squelch(1.0, 90, 50), 1.2) * 0.4, drone(36, 2.8) * 0.5, hiss(2.8, 300, 1500, 0.8) * 0.2)),
+        'hurt': v(lambda: mix(squelch(0.6, 200, 80) * 0.7, metal(240, 0.5) * 0.4)),
+        'death': [lambda: mix(squelch(3.0, 140, 30) * 0.7, drone(30, 5.0) * 0.6, at(whoosh(3.0, 50, 1500), 1.0) * 0.6, at(chain(2.0, 10, 1200), 2.0) * 0.4)],
+        'step': v(lambda: mix(squelch(0.4, 100, 60) * 0.5, thud(45, 0.4) * 0.5)),
+        'ability': [lambda: mix(whoosh(2.4, 60, 1800) * 0.8, squelch(2.4, 160, 40) * 0.6, hiss(2.4, 200, 2500, 0.3) * 0.5, drone(33, 2.4) * 0.5)],
+    },
+    'the_overtoll': {
+        'ambient': v(lambda: mix(bell(55, 4.0) * 0.7, at(bell(58, 4.0), 0.02) * 0.5, chain(3.0, 10, 1400) * 0.25, drone(27.5, 4.0) * 0.5)),
+        'hurt': v(lambda: mix(bell(110, 1.2) * 0.8, chain(0.6, 5, 1800) * 0.5)),
+        'death': [lambda: mix(bell(49, 7.0) * 0.8, at(bell(52, 6.5), 0.1) * 0.6, chain(4.0, 30, 1200) * 0.6, at(thud(25, 3.0), 2.0) * 0.8,
+                              at(choir(196, 4.0, 7), 3.0) * 0.5)],
+        'step': v(lambda: mix(chain(0.4, 3, 1600) * 0.4, thud(40, 0.4) * 0.4)),
+        'ability': [lambda: mix(bell(41, 5.0) * 1.0, at(bell(44, 5.0), 0.01) * 0.7, drone(20.6, 5.0) * 0.6, at(whoosh(3.0, 40, 1200), 0.2) * 0.5)],
+    },
+})
+
 SPECIAL = {
     'block.realm_gate.travel': [lambda: mix(servo(80, 600, 1.5, 0.2) * 0.6, whoosh(1.6, 100, 3000), at(bell(196, 2.0), 0.9) * 0.5,
                                             at(sparks(1.0, 25), 0.4) * 0.3)],
@@ -327,6 +404,12 @@ SPECIAL = {
                                            at(bell(523, 1.2), 0.75) * 0.3)],
     'entity.light_cycle.derez': [lambda: mix(servo(1600, 100, 0.9, 0.1) * 0.6, crackle(0.9, 160) * 0.5, whoosh(0.9, 200, 4000) * 0.4)],
     'block.lightline.lay': [lambda: mix(thud(110, 0.2) * 0.6, zap(0.25) * 0.5, sparks(0.4, 10) * 0.4)],
+    # the story: an Echo wakes, a giant chain breaks, the realm is freed
+    'event.echo_awaken': [lambda: mix(drone(41, 4.0) * 0.7, at(bell(82, 3.5), 0.3) * 0.6, whoosh(4.0, 40, 3000) * 0.5, at(crackle(2.0, 80), 1.5) * 0.4)],
+    'event.chain_break': [lambda: mix(metal(180, 1.5) * 0.7, at(chain(3.5, 28, 1500), 0.1) * 0.7, at(thud(32, 2.0), 0.05) * 0.8,
+                                      at(bell(98, 3.0), 0.2) * 0.4)],
+    'event.realm_freed': [lambda: mix(choir(262, 8.0, 7) * 0.6, at(choir(330, 7.0, 5), 1.0) * 0.5, at(choir(392, 6.0, 5), 2.0) * 0.5,
+                                      at(bell(523, 5.0), 3.0) * 0.3, drone(65.4, 8.0, (1.0, 1.5, 2.0)) * 0.3)],
 }
 SPECIAL_SUBTITLES = {
     'block.realm_gate.travel': ('Realm Gate hums', 'Reichstor summt'),
@@ -334,6 +417,9 @@ SPECIAL_SUBTITLES = {
     'entity.light_cycle.rez': ('Light cycle materialises', 'Lichtrad materialisiert'),
     'entity.light_cycle.derez': ('Light cycle dissolves', 'Lichtrad zerfällt'),
     'block.lightline.lay': ('Lightline laid', 'Lichtbahn verlegt'),
+    'event.echo_awaken': ('An Echo awakens', 'Ein Echo erwacht'),
+    'event.chain_break': ('A giant chain breaks', 'Eine Riesenkette bricht'),
+    'event.realm_freed': ('The realm is free', 'Das Reich ist frei'),
 }
 
 SUBTITLES = {
@@ -350,6 +436,9 @@ NAMES = {
     'bellows_hog': ('Bellows Hog', 'Blasebalg-Keiler'), 'flesh_press': ('Flesh Press', 'Fleischpresse'),
     'spark_mite': ('Spark Mite', 'Funkenmilbe'), 'lamp_moth': ('Lamp Moth', 'Lampenmotte'), 'scrap_jackal': ('Scrap Jackal', 'Schrottschakal'),
     'trackwright': ('Trackwright', 'Bahnwerker'), 'wirewraith': ('Wirewraith', 'Drahtgespenst'), 'maw_engine': ('Maw Engine', 'Schlundmaschine'),
+    'echo_force': ('The Pistonarch', 'Der Kolbenfürst'), 'echo_signal': ('The Current', 'Der Strom'),
+    'echo_resonance': ('The Choir', 'Der Chor'), 'echo_heat': ('The Kilnheart', 'Das Ofenherz'),
+    'echo_flow': ('The Sluicemother', 'Die Schleusenmutter'), 'the_overtoll': ('The Overtoll', 'Der Übergeläut'),
 }
 
 

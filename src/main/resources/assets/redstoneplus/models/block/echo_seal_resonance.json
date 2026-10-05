@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "redstoneplus:block/echo_seal_resonance",
+    "side": "redstoneplus:block/echo_seal_side",
+    "bottom": "redstoneplus:block/echo_seal_side"
+  }
+}

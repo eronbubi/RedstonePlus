@@ -110,7 +110,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "redstoneplus:ember_oil_lake"
+    ],
     [
       "redstoneplus:tracks",
       "redstoneplus:veins",
@@ -118,6 +120,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:slag_heap",
       "redstoneplus:scree"
     ],
@@ -129,7 +132,8 @@
       "redstoneplus:minecart_loop",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [

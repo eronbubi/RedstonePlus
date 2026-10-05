@@ -93,7 +93,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "redstoneplus:blight_sap_lake"
+    ],
     [
       "redstoneplus:ponds",
       "redstoneplus:veins",
@@ -101,6 +103,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:scree"
     ],
     [],
@@ -109,7 +112,8 @@
       "redstoneplus:kiln_hut",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [

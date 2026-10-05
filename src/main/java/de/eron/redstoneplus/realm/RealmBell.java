@@ -23,8 +23,8 @@ public final class RealmBell {
         if (event.phase != TickEvent.Phase.END || !(event.level instanceof ServerLevel level) || !level.dimension().equals(Realm.REALM)) {
             return;
         }
-        if (Math.floorMod(level.getGameTime(), INTERVAL) != 0) {
-            return;
+        if (Math.floorMod(level.getGameTime(), INTERVAL) != 0 || RealmStory.healed(level)) {
+            return; // once the realm is freed, the Bell is gone and a red sun hangs in its place
         }
         for (ServerPlayer player : level.players()) {
             // the bong, sent to every player in the realm so nobody misses it

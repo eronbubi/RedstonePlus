@@ -187,8 +187,8 @@ public class LightCycle extends Entity {
 
     /** True while the cycle holds still for the Great Bell. */
     public boolean holdingForBell() {
-        if (!RealmRules.inRealm(this.level())) {
-            return false;
+        if (!RealmRules.inRealm(this.level()) || RealmStory.healed(this.level())) {
+            return false; // no Bell tolls over the freed realm
         }
         long time = this.level().getGameTime();
         return RealmRules.ticksToToll(time) <= BELL_BRAKE || RealmRules.ticksSinceToll(time) <= RealmRules.TOLL_STILL + 5;

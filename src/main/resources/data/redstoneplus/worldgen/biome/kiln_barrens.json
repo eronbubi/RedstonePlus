@@ -105,7 +105,8 @@
   "features": [
     [],
     [
-      "minecraft:lake_lava_surface"
+      "minecraft:lake_lava_surface",
+      "redstoneplus:molten_redstone_lake"
     ],
     [
       "redstoneplus:lava_channels",
@@ -114,6 +115,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:kiln_spire",
       "redstoneplus:sulfur_rock",
       "redstoneplus:scree"
@@ -124,7 +126,8 @@
       "redstoneplus:lamp_pylon",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [
@@ -135,7 +138,9 @@
     [
       "redstoneplus:cave_clusters_floor"
     ],
-    [],
+    [
+      "redstoneplus:ember_oil_spring"
+    ],
     [
       "redstoneplus:cinder_bloom_patch"
     ],

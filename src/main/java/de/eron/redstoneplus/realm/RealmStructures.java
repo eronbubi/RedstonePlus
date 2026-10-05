@@ -142,6 +142,63 @@ final class RealmStructures {
         }
     }
 
+    /**
+     * A chain anchor: one of the great chains that bind the trapped realm to the Bell, bolted into a bronze anchor block
+     * on a stepped plinth, rising straight up out of sight. When the realm is freed they fall (see RealmStory).
+     */
+    static void chainAnchor(RealmFeatures.Build b) {
+        BlockState bricks = Realm.REALMSTONE_BRICKS.get().defaultBlockState();
+        BlockState chiselled = Realm.CHISELED_REALMSTONE_BRICKS.get().defaultBlockState();
+        BlockState cracked = Realm.CRACKED_REALMSTONE_BRICKS.get().defaultBlockState();
+        BlockState vein = Realm.REDSTONE_VEIN.get().defaultBlockState();
+        BlockState bronze = Realm.BELL_BRONZE.get().defaultBlockState();
+        BlockState rust = Realm.RUST_PLATING.get().defaultBlockState();
+        BlockState link = Realm.CHAIN_LINK.get().defaultBlockState();
+        // the plinth: three steps, with glowing cracks where the chain pulls on it
+        for (int x = -6; x <= 6; x++) {
+            for (int z = -6; z <= 6; z++) {
+                int m = Math.max(Math.abs(x), Math.abs(z));
+                if (m == 6 && Math.abs(x) == Math.abs(z)) {
+                    continue;
+                }
+                int h = m >= 5 ? 0 : m >= 3 ? 1 : 2;
+                for (int y = -4; y <= h; y++) {
+                    boolean crack = y == h && (x == z || x == -z) && m >= 2 && b.random.nextInt(3) > 0;
+                    b.set(x, y, z, crack ? vein : y == h && m == 2 ? chiselled : b.random.nextInt(6) == 0 ? cracked : bricks);
+                }
+            }
+        }
+        // the anchor block of bronze and its shackle
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int y = 3; y <= 4; y++) {
+                    b.set(x, y, z, (x == 0 || z == 0) ? bronze : rust);
+                }
+            }
+        }
+        for (int y = 5; y <= 6; y++) {
+            b.set(-1, y, 0, bronze);
+            b.set(1, y, 0, bronze);
+        }
+        b.set(0, 7, 0, bronze);
+        // four bolts at the corners, pinned with chains of their own
+        for (int[] c : new int[][]{{4, 4}, {-4, 4}, {4, -4}, {-4, -4}}) {
+            b.set(c[0], 2, c[1], rust);
+            b.set(c[0], 3, c[1], net.minecraft.world.level.block.Blocks.CHAIN.defaultBlockState());
+        }
+        // the giant chain, straight up into the sky
+        int top = Sanctums.chainTop(b.level) - b.origin.getY();
+        for (int y = 8; y <= top; y++) {
+            for (int x = -2; x <= 2; x++) {
+                for (int z = -2; z <= 2; z++) {
+                    if (Sanctums.isLink(x, z, y - 8)) {
+                        b.set(x, y, z, link);
+                    }
+                }
+            }
+        }
+    }
+
     /** A giant pale-root tree with veins of light and lamps hanging from its branches on chains. */
     static void giantTree(RealmFeatures.Build b) {
         BlockState log = Realm.PALE_ROOT_LOG.get().defaultBlockState();

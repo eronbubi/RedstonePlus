@@ -76,7 +76,8 @@ public final class RealmFeatures {
             SpireConfig cfg = context.config();
             BlockPos origin = context.origin();
             if (!level.getBlockState(origin.below()).isSolid()
-                    || RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
+                    || RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())
+                    || Sanctums.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
                 return false;
             }
             int height = cfg.minHeight() + random.nextInt(Math.max(1, cfg.maxHeight() - cfg.minHeight() + 1));
@@ -285,7 +286,9 @@ public final class RealmFeatures {
         LAMP_PYLON(false), CRUSHER_MILL(true), PUMP_STATION(true), MINECART_LOOP(true), STORM_SPIRE(false), BELL_TOWER(true), BEAST_CAGE(true),
         LASER_POST(true),
         // the great buildings of the old world, standing or in ruins
-        GENERATOR_HALL(false), RELAY_SPIRE(false), CIRCUIT_TEMPLE(false);
+        GENERATOR_HALL(false), RELAY_SPIRE(false), CIRCUIT_TEMPLE(false),
+        // the great chains that bind the trapped realm to the Bell
+        CHAIN_ANCHOR(true);
 
         /** Needs fairly flat, dry ground. */
         final boolean flat;
@@ -313,11 +316,15 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             BlockPos origin = context.origin();
             Rotation rotation = Rotation.getRandom(random);
-            if (RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
-                return false; // the cities are built whole; nothing else lands inside them
+            if (RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())
+                    || Sanctums.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
+                return false; // the cities and the sanctums are built whole; nothing else lands inside them
             }
             if (this.kind.flat && !flatEnough(level, origin, 6, 4)) {
                 return false;
+            }
+            if (this.kind == Kind.CHAIN_ANCHOR && level.getServer() != null && RealmStory.healedForWorldgen(level.getServer())) {
+                return false; // the chains fell when the realm was freed
             }
             boolean relic = this.kind == Kind.GENERATOR_HALL || this.kind == Kind.RELAY_SPIRE || this.kind == Kind.CIRCUIT_TEMPLE;
             if (relic && !flatEnough(level, origin, 12, 7)) {
@@ -362,6 +369,7 @@ public final class RealmFeatures {
                 case GENERATOR_HALL -> RealmRelics.generatorHall(b);
                 case RELAY_SPIRE -> RealmRelics.relaySpire(b);
                 case CIRCUIT_TEMPLE -> RealmRelics.circuitTemple(b);
+                case CHAIN_ANCHOR -> RealmStructures.chainAnchor(b);
             }
             return true;
         }

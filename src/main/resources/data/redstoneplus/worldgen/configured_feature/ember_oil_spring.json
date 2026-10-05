@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:spring_feature",
+  "config": {
+    "state": {
+      "Name": "redstoneplus:ember_oil",
+      "Properties": {
+        "falling": "true"
+      }
+    },
+    "requires_block_below": true,
+    "rock_count": 4,
+    "hole_count": 1,
+    "valid_blocks": [
+      "redstoneplus:realmstone",
+      "redstoneplus:deep_realmstone",
+      "redstoneplus:hematite",
+      "redstoneplus:dark_hematite",
+      "redstoneplus:cinder_rock",
+      "redstoneplus:karst_limestone",
+      "redstoneplus:salt_crust",
+      "redstoneplus:fossil_circuit"
+    ]
+  }
+}

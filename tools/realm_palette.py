@@ -38,7 +38,8 @@ ENVIRONMENT = sorted(set(REHUE) | {
     'realmstone', 'deep_realmstone', 'realmstone_bricks', 'hematite', 'dark_hematite', 'cinder_rock', 'fossil_circuit', 'redstone_vein',
     'salt_crust', 'rust_plating', 'rust_sand', 'red_clay', 'fen_mud', 'briar_soil', 'heather_turf', 'root_soil', 'crimson_heather', 'fen_reed',
     'red_coral_shrub', 'pale_stalk', 'salt_brush', 'copper_reed', 'lichen_tuft', 'cinder_bloom', 'redstone_cluster', 'lightline', 'grid_beacon',
-    'blight_crust', 'quarantine_plating'})
+    'blight_crust', 'quarantine_plating', 'chain_link', 'dawn_lily', 'echo_seal_side'} | {f'echo_seal_{e}' for e in ('force', 'signal', 'resonance', 'heat', 'flow')}
+    | {f'{l}_{p}' for l in ('molten_redstone', 'ember_oil', 'rust_brine', 'resonant_ichor', 'blight_sap', 'dawn_nectar') for p in ('still', 'flow')})
 
 
 def hue_ok(h_deg):

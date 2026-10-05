@@ -76,6 +76,14 @@ MATERIALS = {
     'wire_dark': ('#2e1614', '#8a2020', 'cable', False),
     'bell_dark': ('#3e2618', '#6e3e22', 'metal', False),
     'blade': ('#8e8278', '#dccab2', 'metal', False),
+    # the Echoes and the Overtoll: bodies of pure redstone energy
+    'energy_dark': ('#3a0a08', '#8a1a10', 'cable', False),
+    'core_red': ('#ff2a12', '#ffd2a0', 'plasma', True),
+    'core_amber': ('#ff9a1a', '#fff0b0', 'plasma', True),
+    'molten': ('#ff3410', '#ffa040', 'liquid', True),
+    'piston_head': ('#c8a86a', '#8a6a3a', 'planks', False),
+    'great_bronze': ('#b8742a', '#ffc070', 'metal', False),
+    'cinder_glow': ('#ff6a1a', '#ffd070', 'glow', True),
 }
 
 
@@ -172,7 +180,14 @@ class Painter:
                 elif pattern == 'glow':
                     if r.random() < 0.25:
                         c = list(s)
-                if pattern not in ('glow', 'cage'):
+                elif pattern == 'plasma':
+                    # bands of hotter light that seem to move across the surface
+                    band = (math.sin((dx * 0.9 + dy * 1.7) + self.rnd.random() * 0.6) + 1) / 2
+                    c = [b_ * (1 - band * 0.45) + s_ * band * 0.45 for b_, s_ in zip(b, s)]
+                elif pattern == 'liquid':
+                    wave = (math.sin(dx * 0.8 + math.sin(dy * 0.5) * 2) + 1) / 2
+                    c = [b_ * (1 - wave * 0.5) + s_ * wave * 0.5 for b_, s_ in zip(b, s)]
+                if pattern not in ('glow', 'cage', 'plasma', 'liquid'):
                     c = [v * light for v in c]
                     # bevel: light catches the top/left edge, the bottom/right edge falls into shadow
                     if dy == 0 or dx == 0:
@@ -341,6 +356,35 @@ class Painter:
             for xx in range(mx, mx + mw, 2):
                 self.put(xx, my, (230, 222, 200))
                 self.put(xx, my + mh - 1, (230, 222, 200))
+        elif deco == 'rune':
+            # glowing sigils of the Concordance: a ring and a cross-bar, and a few strokes
+            for dy in range(h):
+                for dx in range(w):
+                    ddx, ddy = dx - (w - 1) / 2.0, dy - (h - 1) / 2.0
+                    d = math.hypot(ddx, ddy)
+                    rr = min(w, h) / 2.0 - 1.5
+                    if abs(d - rr) < 0.55 or (abs(ddy) < 0.6 and abs(ddx) < rr) or (abs(ddx) < 0.6 and ddy < 0 and d < rr):
+                        self.put(x0 + dx, y0 + dy, (255, 70, 30) if (dx + dy) % 3 else (255, 200, 140), glow=True)
+        elif deco == 'eye_core':
+            # one great eye of light
+            for dy in range(h):
+                for dx in range(w):
+                    d = math.hypot((dx - (w - 1) / 2.0) / max(1, w / 2.0), (dy - (h - 1) / 2.0) / max(1, h / 2.0))
+                    if d < 0.35:
+                        self.put(x0 + dx, y0 + dy, (255, 250, 230), glow=True)
+                    elif d < 0.7:
+                        self.put(x0 + dx, y0 + dy, (255, 150, 60), glow=True)
+                    elif d < 1.0:
+                        self.put(x0 + dx, y0 + dy, (200, 30, 15), glow=True)
+        elif deco == 'crack':
+            # a glowing crack running down the face
+            xx = x0 + w // 2
+            for yy in range(y0, y0 + h):
+                self.put(xx, yy, (255, 120, 40), glow=True)
+                self.put(xx + 1, yy, (255, 220, 160), glow=True)
+                if r.random() < 0.35:
+                    xx = min(x0 + w - 2, max(x0 + 1, xx + r.choice((-1, 1))))
+                    self.put(xx, yy, (255, 70, 20), glow=True)
         elif deco == 'bubbles':
             for _ in range(3):
                 xx, yy = x0 + 1 + r.randrange(max(1, w - 3)), y0 + 1 + r.randrange(max(1, h - 3))

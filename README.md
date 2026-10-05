@@ -169,6 +169,57 @@ der Balken zählt die Sekunden bis zum Glockenschlag herunter, und Lichtbahnen u
 **Blender ohne Oberfläche:** `pip install bpy` (Python 3.11) genügt; dann laufen `python tools/blender/build_mobs.py -- NAME`
 und `python tools/blender/export_mobs.py -- NAME` wie mit `blender -b -P`. Für die Vorschaubilder braucht Linux `libegl1`.
 
+## Flüssigkeiten, die Echos und das befreite Reich (neu)
+
+**Sechs Flüssigkeiten** (eigene animierte Texturen, Eimer, Nebelfarbe unter der Oberfläche):
+
+| Flüssigkeit | Wirkung | Welt | Fundort |
+|---|---|---|---|
+| Geschmolzenes Redstone | leuchtet, brennt, Tempo + Eile | gibt ein Redstone-Signal (15 an der Quelle, schwächer beim Fließen); Kristalle wachsen am Ufer | Seen in Brennofen-Öde und Rubedo-Gärten, Becken in den Fossilbetten, Quellen in Karst und Klippen |
+| Glutöl | langsam, aber danach feuerfest | brennbar; Feuer, Lava, Magma oder ein Lagerfeuer daneben zünden es | Seen in Weichenebene, Dünen, Salzebene; Quellen in der Brennofen-Öde |
+| Rostlake | schwächt, Hunger, Ausrüstung korrodiert | lässt Eisenblöcke rosten, zerfrisst Gitter, Ketten, Schienen; füllt sich nach | Seen in Moor, Salzebene, Frostwerk-Öde |
+| Resonanz-Ichor | weiche Stürze, Auftrieb, Sprungkraft | klingt und weckt Sculk-Sensoren (und damit verdrahtete Fallen) | Becken und Quellen in den Resonanzhöhlen |
+| Fäulnissaft | Verdorren, Schwäche, Dunkelheit (heilt die Kreaturen der Weite) | macht den Boden ringsum zu Fäulniskruste | Seen in der Versiegelten Weite und im Adermoor |
+| Morgennektar | Heilung, Nahrung, löscht Feuer | lässt Pflanzen wachsen, heilt Fäulniskruste | selten im Lampenhain; nach der Befreiung wird jeder Fäulnissaft zu Nektar |
+
+Wo sie sich treffen, entsteht etwas Neues: Redstone + Wasser = Redstone-Ader, + Lava = Reichs-Redstone-Erz; Glutöl + Feuer,
+Lava oder geschmolzenes Redstone = Flammen; Rostlake + Lava = Hämatit; Ichor + Lava = Resonanzkristall; Fäulnissaft +
+Morgennektar = Heideboden; Morgennektar + Lava = Glockenbronze.
+
+**Die fünf Echos** (Blender-Modelle, leuchtend, voll hell auch im Dunkeln): Als die Große Glocke sich losriss, brachen ihre fünf
+Stimmen ab. Jede hält eine **Riesenkette**, die die Glocke am Himmel hält. Jedes Echo hat ein eigenes **Heiligtum** (je Region von
+1536 Blöcken alle fünf, ein paar hundert Blöcke voneinander), aus dessen Mitte die Kette bis in den Himmel steigt:
+
+| Echo | Heiligtum | Angriffe | Ruft bei halber Kraft |
+|---|---|---|---|
+| Der Kolbenfürst (Kraft) | Pressenthron: Karsthof, acht Riesenkolben, Thron in der Mitte | Rammen, Stampfer (löst alle Fallen aus) | Zünderhüllen |
+| Der Strom (Signal) | Schaltwarte: Schaltungsboden mit Leuchtbahnen, zwölf Signalmasten | Durchstoß, Blitzschläge | Funkenmilben, Relais-Schreiter |
+| Der Chor (Resonanz) | Glockenmulde: Kristallschale, sechs Glockentürme | Schallschlag durch Rüstung, Choral (Schweben + Dunkelheit) | Glockenpirscher |
+| Das Ofenherz (Hitze) | Ofenkrone: Plattform im Lavagraben, vier brennende Schlote | Feuersalven, Flammenring | Ofengebundene |
+| Die Schleusenmutter (Fluss) | Schleusenbecken: Ring aus geschmolzenem Redstone, Flutschleusentürme | Sog, Sturmflut aus geschmolzenem Redstone | Kettenkiefer |
+
+Das **Echo-Siegel** im Heiligtum weckt das Echo (Bossbalken, es bleibt in seinem Heiligtum). Fällt es, **bricht seine Kette**:
+Glied um Glied stürzt sie herab, am Himmel hängt sie gebrochen, alle im Reich hören es, und es lässt seinen **Kern** fallen. Die
+**Stimmgabel** (Glockenbronze, Redstone, Zahnrad) zeigt Richtung und Entfernung zum nächsten Heiligtum, dessen Echo noch steht.
+
+**Der letzte Kampf:** Die fünf Kerne und ein Block Glockenbronze ergeben das **Herz der Fünf**. Auf die Glockenbronze im Krater
+der leeren Wiege einer Gießereistadt gelegt, reißt sich die Glocke vom Himmel: **der Übergeläut** (1200 Leben). Seine Ketten
+peitschen und ziehen; wenn er schlägt, trifft es jeden, der sich bewegt; er ruft Drahtgespenster und Glockenpirscher, und gegen
+Ende regnet Feuer.
+
+**Das befreite Reich:** Fällt der Übergeläut, geht dort, wo die Glocke hing, eine **rote Sonne** auf (mit einem Ring aus
+Bronzelicht, wo einst ihr Rand war). Licht, Nebel und Himmel werden warm und hell, der Nebel über der Weite hebt sich, die Glocke
+schlägt nicht mehr, und die Eintracht ruht: keine Regeln, kein Balken mehr, und **alle Kreaturen** des Reichs (auch die der Weite)
+lassen dich in Frieden. Sie sehen anders aus: heller, wärmer, überwachsen von karminrotem Efeu und Blüten. Um jeden Spieler heilt
+das Land: die Ketten fallen, Fäulnis wird Heide, Schlacke wird Ton, Risse schließen sich, tote Lampen leuchten, die Tore der Weite
+öffnen sich, und **Morgenlilien** wachsen. Es bleibt rot.
+
+**Vorher:** Bis dahin binden mehr Ketten das gefangene Reich: überall stehen **Kettenanker** (Sockel mit Bronzeanker), aus denen
+eine Riesenkette in den Himmel steigt, und am Himmel laufen fünf Ketten vom Horizont zur Glocke.
+
+Neue Werkzeuge: `python tools/gen_realm_healed.py` (Texturen der geheilten Kreaturen), `build_mobs.py -- --previews-only --healed NAME`
+(Vorschau damit).
+
 ## Handbuch im Spiel
 
 Das **RedstonePlus-Handbuch** (Kreativ-Tab, oder Buch + Redstone craften; jeder Spieler bekommt es beim ersten Betreten)

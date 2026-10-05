@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import de.eron.redstoneplus.realm.Realm;
 import de.eron.redstoneplus.realm.RealmBell;
+import de.eron.redstoneplus.realm.RealmStory;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,15 +25,24 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.event.TickEvent;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * The realm's sky: where the sun should be hangs the Great Bell, the Concordance, torn from its cradle. It sways,
  * throws slow beams of red light, and every {@link RealmBell#INTERVAL} ticks it tolls: the beams flare, the halo
- * swells, and a deep bong rolls over the land.
+ * swells, and a deep bong rolls over the land. Five giant chains run from the horizon up to it, one for each Echo
+ * (see {@link RealmStory}); the chain of a fallen Echo hangs broken.
+ * <p>
+ * Once the realm is freed the Bell and its chains are gone: a red sun rises in their place, ringed with the bronze light
+ * of the Bell's lip, and the light, the fog and the sky grow warm and bright.
  */
 public final class RealmSky extends DimensionSpecialEffects {
     private static final ResourceLocation BELL = Realm.id("textures/environment/great_bell.png");
     private static final ResourceLocation HALO = Realm.id("textures/environment/great_bell_halo.png");
+    private static final ResourceLocation CHAIN = Realm.id("textures/environment/sky_chain.png");
+    private static final ResourceLocation SUN = Realm.id("textures/environment/red_sun.png");
+    /** The warm light of the freed realm, that fog and sky are drawn towards. */
+    private static final Vec3 DAWN = new Vec3(1.0, 0.62, 0.42);
 
     public RealmSky() {
         super(192.0F, true, SkyType.NORMAL, false, false);
@@ -44,14 +54,28 @@ public final class RealmSky extends DimensionSpecialEffects {
 
     @Override
     public Vec3 getBrightnessDependentFogColor(Vec3 color, float brightness) {
-        return color.multiply(brightness * 0.94F + 0.06F, brightness * 0.94F + 0.06F, brightness * 0.91F + 0.09F);
+        Vec3 fog = color.multiply(brightness * 0.94F + 0.06F, brightness * 0.94F + 0.06F, brightness * 0.91F + 0.09F);
+        if (RealmStory.clientHealed()) {
+            fog = fog.lerp(DAWN.scale(brightness * 0.85 + 0.15), 0.4);
+        }
+        return fog;
+    }
+
+    /** The freed realm's light: warmer and a little brighter everywhere, never quite black. */
+    @Override
+    public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float blockLightRedFlicker, float skyLight, int pixelX,
+                                     int pixelY, Vector3f colors) {
+        if (RealmStory.clientHealed()) {
+            colors.set(Math.min(1.0F, colors.x * 1.08F + 0.06F), Math.min(1.0F, colors.y * 1.06F + 0.04F), Math.min(1.0F, colors.z * 1.02F + 0.025F));
+        }
     }
 
     /** The Sealed Reach lies under a fog that never lifts; the rest of the realm is clear. */
     @Override
     public boolean isFoggyAt(int x, int z) {
         var level = Minecraft.getInstance().level;
-        return level != null && level.getBiome(new net.minecraft.core.BlockPos(x, level.getSeaLevel(), z)).is(de.eron.redstoneplus.realm.SealedReach.BIOME);
+        return level != null && !RealmStory.clientHealed()
+                && level.getBiome(new net.minecraft.core.BlockPos(x, level.getSeaLevel(), z)).is(de.eron.redstoneplus.realm.SealedReach.BIOME);
     }
 
     /** 1 right at a toll, fading to 0 over four seconds. */
@@ -68,7 +92,11 @@ public final class RealmSky extends DimensionSpecialEffects {
         }
         PoseStack pose = new PoseStack();
         pose.mulPose(modelView);
+        boolean healed = RealmStory.clientHealed();
         Vec3 sky = level.getSkyColor(camera.getPosition(), partialTick);
+        if (healed) {
+            sky = sky.lerp(DAWN.scale(0.4 + 0.6 * level.getSkyDarken(partialTick)), 0.35);
+        }
         FogRenderer.levelFogColor();
         RenderSystem.depthMask(false);
         RenderSystem.setShaderColor((float) sky.x, (float) sky.y, (float) sky.z, 1.0F);
@@ -77,15 +105,31 @@ public final class RealmSky extends DimensionSpecialEffects {
         RenderSystem.enableBlend();
 
         float clear = 1.0F - level.getRainLevel(partialTick);
-        float pulse = toll(level, partialTick);
+        float pulse = healed ? 0.0F : toll(level, partialTick);
         float time = ticks + partialTick;
+        float angle = level.getTimeOfDay(partialTick) * 360.0F;
+        if (!healed) {
+            // the chains, drawn first so the Bell hangs in front of where they meet it
+            Vector3f bell = new Matrix4f().rotate(Axis.YP.rotationDegrees(-90.0F)).rotate(Axis.XP.rotationDegrees(angle))
+                    .transformPosition(new Vector3f(0.0F, 100.0F, 0.0F));
+            RenderSystem.defaultBlendFunc();
+            chains(pose.last().pose(), bell, time, pulse, clear);
+        }
         pose.pushPose();
         pose.mulPose(Axis.YP.rotationDegrees(-90.0F));
-        float angle = level.getTimeOfDay(partialTick) * 360.0F;
         pose.mulPose(Axis.XP.rotationDegrees(angle));
         if (Mth.sin(angle * Mth.DEG_TO_RAD) < 0.0F) {
             // keep the crown pointing to the top of the sky while it rises, as it does while it sets
             pose.mulPose(Axis.YP.rotationDegrees(180.0F));
+        }
+        if (healed) {
+            sun(pose.last().pose(), time, clear);
+            pose.popPose();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.depthMask(true);
+            return true;
         }
         // the bell swings gently, and hard when it tolls
         float swing = 5.0F * Mth.sin(time * 0.03F) + 22.0F * pulse * Mth.sin(time * 0.25F);
@@ -115,6 +159,69 @@ public final class RealmSky extends DimensionSpecialEffects {
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(true);
         return true;
+    }
+
+    /** The red sun of the freed realm: a corona of warm light, slow soft rays, and the disc with its ring of bronze. */
+    private static void sun(Matrix4f m, float time, float clear) {
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, HALO);
+        float breathe = 0.5F + 0.5F * Mth.sin(time * 0.01F);
+        RenderSystem.setShaderColor(1.0F, 0.42F, 0.2F, clear * (0.6F + 0.15F * breathe));
+        quad(m, 100.0F, 70.0F + 6.0F * breathe);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        beams(m, time, 0.0F, clear * 0.45F);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, SUN);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, clear);
+        quad(m, 99.0F, 34.0F);
+    }
+
+    /**
+     * The five chains, from anchors spread round the horizon up to the Bell. A broken chain is a stub hanging from the Bell
+     * and a length rising from the horizon that ends in the air. They shake when the Bell tolls.
+     */
+    private static void chains(Matrix4f m, Vector3f bell, float time, float pulse, float clear) {
+        int conquered = RealmStory.clientConquered();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, CHAIN);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, clear);
+        BufferBuilder b = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        for (int i = 0; i < RealmStory.Echo.values().length; i++) {
+            double a = i * Mth.TWO_PI / 5.0 + 0.4;
+            Vector3f anchor = new Vector3f((float) Math.cos(a) * 320.0F, -30.0F, (float) Math.sin(a) * 320.0F);
+            float shake = pulse * 4.0F * Mth.sin(time * 0.7F + i * 1.3F);
+            Vector3f top = new Vector3f(bell).add(shake, 0.0F, -shake);
+            if ((conquered & (1 << i)) == 0) {
+                strip(b, m, anchor, top, 3.5F);
+            } else {
+                Vector3f stub = new Vector3f(top).lerp(anchor, 0.1F).add(0.0F, -6.0F, 0.0F);
+                strip(b, m, top, stub, 3.5F);
+                strip(b, m, anchor, new Vector3f(anchor).lerp(top, 0.42F + 0.06F * (i % 3)), 3.5F);
+            }
+        }
+        BufferUploader.drawWithShader(b.buildOrThrow());
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    /** A flat band of chain from {@code a} to {@code b}, turned to face the camera (at the origin). */
+    private static void strip(BufferBuilder buf, Matrix4f m, Vector3f a, Vector3f b, float halfWidth) {
+        Vector3f along = new Vector3f(b).sub(a);
+        float length = along.length();
+        Vector3f mid = new Vector3f(a).add(b).mul(0.5F);
+        Vector3f side = new Vector3f(along).cross(mid);
+        if (side.lengthSquared() < 1.0E-6F) {
+            return;
+        }
+        side.normalize(halfWidth);
+        // the texture holds four links, each as long as the band is wide
+        float v = length / (halfWidth * 2.0F * 4.0F);
+        buf.addVertex(m, a.x - side.x, a.y - side.y, a.z - side.z).setUv(0.0F, 0.0F);
+        buf.addVertex(m, a.x + side.x, a.y + side.y, a.z + side.z).setUv(1.0F, 0.0F);
+        buf.addVertex(m, b.x + side.x, b.y + side.y, b.z + side.z).setUv(1.0F, v);
+        buf.addVertex(m, b.x - side.x, b.y - side.y, b.z - side.z).setUv(0.0F, v);
     }
 
     private static void disc(Matrix4f m, float y) {

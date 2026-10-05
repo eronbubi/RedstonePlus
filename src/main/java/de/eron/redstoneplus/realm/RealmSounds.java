@@ -38,6 +38,12 @@ public final class RealmSounds {
     public static final Set TRACKWRIGHT = set("trackwright");
     public static final Set WIREWRAITH = set("wirewraith");
     public static final Set MAW_ENGINE = set("maw_engine");
+    public static final Set ECHO_FORCE = set("echo_force");
+    public static final Set ECHO_SIGNAL = set("echo_signal");
+    public static final Set ECHO_RESONANCE = set("echo_resonance");
+    public static final Set ECHO_HEAT = set("echo_heat");
+    public static final Set ECHO_FLOW = set("echo_flow");
+    public static final Set OVERTOLL = set("the_overtoll");
 
     public static final RegistryObject<SoundEvent> REALM_TRAVEL = sound("block.realm_gate.travel");
     /** The toll of the Great Bell in the sky. */
@@ -48,6 +54,12 @@ public final class RealmSounds {
     public static final RegistryObject<SoundEvent> CYCLE_DEREZ = sound("entity.light_cycle.derez");
     /** A Trackwright pressing a lightline tile into the ground. */
     public static final RegistryObject<SoundEvent> LIGHTLINE_LAY = sound("block.lightline.lay");
+    /** An Echo wakes from its seal. */
+    public static final RegistryObject<SoundEvent> ECHO_AWAKEN = sound("event.echo_awaken");
+    /** One of the giant chains breaks. */
+    public static final RegistryObject<SoundEvent> CHAIN_BREAK = sound("event.chain_break");
+    /** The Overtoll has fallen and the realm is free. */
+    public static final RegistryObject<SoundEvent> REALM_FREED = sound("event.realm_freed");
     /** The realm's music (three tracks, one picked at random). */
     public static final RegistryObject<SoundEvent> MUSIC = sound("music.realm");
 

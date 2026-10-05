@@ -259,6 +259,48 @@ public final class Realm {
             () -> EntityType.Builder.<SealedReach.MawEngine>of(SealedReach.MawEngine::new, MobCategory.MONSTER).fireImmune().sized(1.8F, 1.9F)
                     .eyeHeight(1.2F).clientTrackingRange(10));
 
+    // ---------- the story: the Echoes, their seats and their chains, the Overtoll, and what grows when the realm is free ----------
+    /** A link of the giant chains that hold the Great Bell in the sky. Nothing breaks it but the fall of its Echo. */
+    public static final RegistryObject<Block> CHAIN_LINK = block("chain_link", Block::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(-1.0F, 3600000.0F).sound(SoundType.CHAIN).noLootTable()
+                    .lightLevel(s -> 3).isValidSpawn((s, l, p, t) -> false));
+    /** The seal at the heart of a sanctum: use it to wake its Echo. */
+    public static final RegistryObject<Block> ECHO_SEAL = block("echo_seal", Sanctums.EchoSeal::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).strength(-1.0F, 3600000.0F).sound(SoundType.LODESTONE).noLootTable()
+                    .lightLevel(s -> 13).emissiveRendering((s, l, p) -> true).isValidSpawn((s, l, p, t) -> false));
+    /** Grows on the healed realm. */
+    public static final RegistryObject<Block> DAWN_LILY = plant("dawn_lily", 9);
+
+    public static final RegistryObject<Item> CORE_FORCE = core(RealmStory.Echo.FORCE);
+    public static final RegistryObject<Item> CORE_SIGNAL = core(RealmStory.Echo.SIGNAL);
+    public static final RegistryObject<Item> CORE_RESONANCE = core(RealmStory.Echo.RESONANCE);
+    public static final RegistryObject<Item> CORE_HEAT = core(RealmStory.Echo.HEAT);
+    public static final RegistryObject<Item> CORE_FLOW = core(RealmStory.Echo.FLOW);
+    public static final RegistryObject<Item> HEART_OF_THE_FIVE = item("heart_of_the_five", Echoes.HeartOfTheFive::new,
+            () -> new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant());
+    public static final RegistryObject<Item> TUNING_FORK = item("tuning_fork", Echoes.TuningFork::new,
+            () -> new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+
+    // the five Echoes of the Great Bell, and the Bell itself come down
+    public static final RegistryObject<EntityType<Echoes.Force>> ECHO_FORCE = mob("echo_force",
+            () -> EntityType.Builder.<Echoes.Force>of(Echoes.Force::new, MobCategory.MONSTER).fireImmune().sized(3.5F, 7.5F).eyeHeight(6.2F)
+                    .clientTrackingRange(16));
+    public static final RegistryObject<EntityType<Echoes.Signal>> ECHO_SIGNAL = mob("echo_signal",
+            () -> EntityType.Builder.<Echoes.Signal>of(Echoes.Signal::new, MobCategory.MONSTER).fireImmune().sized(2.4F, 3.2F).eyeHeight(2.4F)
+                    .clientTrackingRange(16));
+    public static final RegistryObject<EntityType<Echoes.Resonance>> ECHO_RESONANCE = mob("echo_resonance",
+            () -> EntityType.Builder.<Echoes.Resonance>of(Echoes.Resonance::new, MobCategory.MONSTER).fireImmune().sized(3.0F, 6.4F).eyeHeight(5.4F)
+                    .clientTrackingRange(16));
+    public static final RegistryObject<EntityType<Echoes.Heat>> ECHO_HEAT = mob("echo_heat",
+            () -> EntityType.Builder.<Echoes.Heat>of(Echoes.Heat::new, MobCategory.MONSTER).fireImmune().sized(3.4F, 6.4F).eyeHeight(4.8F)
+                    .clientTrackingRange(16));
+    public static final RegistryObject<EntityType<Echoes.Flow>> ECHO_FLOW = mob("echo_flow",
+            () -> EntityType.Builder.<Echoes.Flow>of(Echoes.Flow::new, MobCategory.MONSTER).fireImmune().sized(3.2F, 7.6F).eyeHeight(6.4F)
+                    .clientTrackingRange(16));
+    public static final RegistryObject<EntityType<Echoes.Overtoll>> OVERTOLL = mob("the_overtoll",
+            () -> EntityType.Builder.<Echoes.Overtoll>of(Echoes.Overtoll::new, MobCategory.MONSTER).fireImmune().sized(7.0F, 13.0F).eyeHeight(9.0F)
+                    .clientTrackingRange(20));
+
     // ---------- world generation ----------
     public static final RegistryObject<Feature<RealmFeatures.SpireConfig>> SPIRE = FEATURES.register("spire", RealmFeatures.Spire::new);
 
@@ -301,6 +343,12 @@ public final class Realm {
         egg("trackwright", TRACKWRIGHT, 0xa8582a, 0xff3020);
         egg("wirewraith", WIREWRAITH, 0x2e1614, 0xff2a10);
         egg("maw_engine", MAW_ENGINE, 0x5a5450, 0xffb030);
+        egg("echo_force", ECHO_FORCE, 0x3a0a06, 0xff3a1a);
+        egg("echo_signal", ECHO_SIGNAL, 0x3a0806, 0xff1a10);
+        egg("echo_resonance", ECHO_RESONANCE, 0x8a5a20, 0xffb040);
+        egg("echo_heat", ECHO_HEAT, 0x2a0a04, 0xff7a10);
+        egg("echo_flow", ECHO_FLOW, 0x5a1408, 0xff4a20);
+        egg("the_overtoll", OVERTOLL, 0x8a5a20, 0xff2a10);
     }
 
     private Realm() {
@@ -336,7 +384,7 @@ public final class Realm {
         return block;
     }
 
-    private static RegistryObject<Item> item(String name, Function<Item.Properties, ? extends Item> factory, Supplier<Item.Properties> properties) {
+    static RegistryObject<Item> item(String name, Function<Item.Properties, ? extends Item> factory, Supplier<Item.Properties> properties) {
         RegistryObject<Item> item = ITEMS.register(name, () -> factory.apply(properties.get()));
         TAB_ORDER.add(item);
         return item;
@@ -346,12 +394,17 @@ public final class Realm {
         return ENTITIES.register(name, () -> builder.get().build(name));
     }
 
+    private static RegistryObject<Item> core(RealmStory.Echo echo) {
+        return item("core_" + echo.id(), p -> new Echoes.EchoCore(p, echo), () -> new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).fireResistant());
+    }
+
     private static void egg(String name, Supplier<? extends EntityType<? extends Mob>> type, int background, int highlight) {
         item(name + "_spawn_egg", p -> new ForgeSpawnEggItem(type, background, highlight, p), Item.Properties::new);
     }
 
     /** Called once from the mod constructor. */
     public static void init(IEventBus modBus) {
+        RealmLiquids.init(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
@@ -365,6 +418,8 @@ public final class Realm {
         RealmRules.init();
         CycleBond.init();
         SealedReach.init();
+        RealmStory.init();
+        Sanctums.init();
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -422,6 +477,12 @@ public final class Realm {
         event.put(TRACKWRIGHT.get(), Trackwright.attributes().build());
         event.put(WIREWRAITH.get(), SealedReach.Wirewraith.attributes().build());
         event.put(MAW_ENGINE.get(), SealedReach.MawEngine.attributes().build());
+        event.put(ECHO_FORCE.get(), Echoes.Force.attributes().build());
+        event.put(ECHO_SIGNAL.get(), Echoes.Signal.attributes().build());
+        event.put(ECHO_RESONANCE.get(), Echoes.Resonance.attributes().build());
+        event.put(ECHO_HEAT.get(), Echoes.Heat.attributes().build());
+        event.put(ECHO_FLOW.get(), Echoes.Flow.attributes().build());
+        event.put(OVERTOLL.get(), Echoes.Overtoll.attributes().build());
     }
 
     private static void spawnPlacements(SpawnPlacementRegisterEvent event) {

@@ -105,6 +105,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:tempest_pillar",
       "redstoneplus:scree"
     ],
@@ -113,7 +114,8 @@
       "redstoneplus:storm_spire",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [

@@ -2,6 +2,8 @@ package de.eron.redstoneplus.realm.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import de.eron.redstoneplus.RedstonePlus;
+import de.eron.redstoneplus.realm.Echoes;
+import de.eron.redstoneplus.realm.RealmStory;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -18,18 +20,30 @@ import net.minecraft.world.entity.monster.Slime;
  */
 public class RealmRenderer<T extends Mob> extends MobRenderer<T, RealmModel<T>> {
     private final ResourceLocation texture;
+    /** How the creature looks once the realm is freed: bright, warm and grown over with crimson leaves and blossom. */
+    private final ResourceLocation healedTexture;
     private final float scale;
 
     public RealmRenderer(EntityRendererProvider.Context context, String name, ModelLayerLocation layer) {
         super(context, new RealmModel<>(context.bakeLayer(layer), name), RealmModel.spec(name).shadow());
         this.texture = ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/" + name + ".png");
+        this.healedTexture = ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/healed/" + name + ".png");
         this.scale = RealmModel.spec(name).scale();
         this.addLayer(new GlowLayer<>(this, ResourceLocation.fromNamespaceAndPath(RedstonePlus.MODID, "textures/entity/realm/" + name + "_glow.png")));
     }
 
     @Override
     public ResourceLocation getTextureLocation(T entity) {
+        if (RealmStory.clientHealed() && entity.level().dimension().equals(de.eron.redstoneplus.realm.Realm.REALM)) {
+            return this.healedTexture;
+        }
         return this.texture;
+    }
+
+    /** The Echoes and the Overtoll are made of light: they are never in shadow. */
+    @Override
+    protected int getBlockLightLevel(T entity, net.minecraft.core.BlockPos pos) {
+        return entity instanceof Echoes.EchoBoss ? 15 : super.getBlockLightLevel(entity, pos);
     }
 
     @Override

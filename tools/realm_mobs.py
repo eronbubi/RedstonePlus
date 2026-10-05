@@ -1458,3 +1458,313 @@ add_clip('wirewraith', 'ability', {'jaw': R(lambda u: (30 * min(1, u * 4) * min(
 add_clip('wirewraith', 'attack', {'jaw': rot(keys3((0, (0, 0, 0)), (0.2, (25, 0, 0)), (0.45, (0, 0, 0)), (0.7, (0, 0, 0))))})
 add_cubes('maw_engine', 'body', cube((-1, -7, -2), (2, 4, 2), 'bone'), cube((-1, -8, 4), (2, 5, 2), 'bone'), cube((-1, -6, 10), (2, 3, 2), 'bone'),
           cube((-9.5, 1, -5), (1, 3, 1), 'bone'), cube((8.5, 1, -5), (1, 3, 1), 'bone'))
+
+
+# ================================================================================================ the Echoes and the Overtoll
+# When the Great Bell tore free, its five voices broke away from it: godlike beings of pure redstone energy, each holding one
+# power of the realm and one of the chains that keep the Bell tolling. The Overtoll is the Bell itself, come down to fight.
+def ring_points(n, radius, phase=0.0):
+    return [(math.cos(TAU * k / n + phase) * radius, math.sin(TAU * k / n + phase) * radius) for k in range(n)]
+
+
+def hover(length, amp=1.2):
+    return P(lambda u: (0, amp * s(u), 0), length)
+
+
+# ---- Echo of Force, the Pistonarch: a floating titan of energy with four piston arms and a crown of rams
+_pa_arms = []
+for _n, _y, _side in (('arm_ul', -16, 1), ('arm_ur', -16, -1), ('arm_ll', -5, 1), ('arm_lr', -5, -1)):
+    _x = 10 * _side
+    _pa_arms.append(part(_n, (_x, _y, 0), [cube((_x if _side > 0 else _x - 6, _y - 3, -3), (6, 6, 6), 'iron', {'front': 'rivets'})],
+                         parent='body', rot=(0, 0, 12 * _side if _y < -10 else -14 * _side)))
+    _px = _x + 6 * _side
+    _pa_arms.append(part(_n + '_ram', (_px, _y, 0), [
+        cube((_px if _side > 0 else _px - 12, _y - 1, -1), (12, 2, 2), 'core_amber'),
+        cube((_px + 12 if _side > 0 else _px - 18, _y - 4, -4), (6, 8, 8), 'piston_head', {'front': 'rivets', 'back': 'rivets'}),
+    ], parent=_n))
+mob('echo_force', [
+    part('body', (0, 0, 0), [
+        cube((-10, -20, -6), (20, 22, 12), 'energy_dark', {'front': 'rune', 'back': 'rune', 'top': 'redtrace'}),
+        cube((-4, -14, -8), (8, 8, 3), 'core_red', {'front': 'eye_core'}),
+        cube((-6, 2, -4), (12, 8, 8), 'energy_dark', {'front': 'redtrace'}),
+        cube((-3, 10, -2), (6, 9, 4), 'core_red'),
+    ]),
+    part('head', (0, -20, 0), [cube((-5, -28, -5), (10, 8, 10), 'rust', {'front': 'eyes3'}),
+                               cube((-6, -29, -6), (12, 2, 12), 'iron', {'top': 'rivets'})], parent='body'),
+    part('crown', (0, -29, 0), [cube((x - 1.5, -37, z - 1.5), (3, 8, 3), 'piston_head') for x, z in ring_points(5, 5.5)]
+         + [cube((-1.5, -40, -1.5), (3, 11, 3), 'core_red')], parent='head'),
+    *_pa_arms,
+    part('shard_a', (0, -10, 0), [cube((13, -26, 6), (4, 4, 4), 'core_amber'), cube((-17, -2, -9), (3, 3, 3), 'core_red')], parent='body'),
+    part('shard_b', (0, -10, 0), [cube((-15, -24, 8), (3, 5, 3), 'core_red'), cube((14, 0, -10), (4, 3, 4), 'core_amber')], parent='body'),
+], {}, look=('head',), shadow=1.4, scale=2.2, texture_width=256)
+L = 3.0
+replace_clip('echo_force', 'idle', L, True, {
+    'body': merge(hover(L, 1.5), R(lambda u: (2 * s(u), 0, 1.5 * s(u, 1, 0.25)), L)),
+    'crown': R(lambda u: (0, 120 * u, 0), L),
+    'shard_a': R(lambda u: (0, 360 * u, 0), L), 'shard_b': R(lambda u: (0, -360 * u, 0), L),
+    'arm_ul_ram': P(lambda u: (2 * max(0, s(u, 2)), 0, 0), L), 'arm_ur_ram': P(lambda u: (-2 * max(0, s(u, 2, 0.5)), 0, 0), L),
+    'arm_ll_ram': P(lambda u: (2 * max(0, s(u, 2, 0.25)), 0, 0), L), 'arm_lr_ram': P(lambda u: (-2 * max(0, s(u, 2, 0.75)), 0, 0), L),
+})
+L = 1.6
+replace_clip('echo_force', 'walk', L, True, {
+    'body': merge(hover(L, 1.0), R(lambda u: (8, 0, 3 * s(u)), L)),
+    'arm_ul': R(lambda u: (20 * s(u), 0, 0), L), 'arm_ur': R(lambda u: (-20 * s(u), 0, 0), L),
+    'arm_ll': R(lambda u: (-15 * s(u), 0, 0), L), 'arm_lr': R(lambda u: (15 * s(u), 0, 0), L),
+    'crown': R(lambda u: (0, 180 * u, 0), L), 'shard_a': R(lambda u: (0, 360 * u, 0), L), 'shard_b': R(lambda u: (0, -360 * u, 0), L),
+})
+L = 0.8
+replace_clip('echo_force', 'attack', L, False, {
+    # all four rams fire forward at once
+    'arm_ul': rot(keys3((0, (0, 0, 0)), (0.2, (0, 60, 0)), (0.6, (0, 60, 0)), (0.8, (0, 0, 0)))),
+    'arm_ur': rot(keys3((0, (0, 0, 0)), (0.2, (0, -60, 0)), (0.6, (0, -60, 0)), (0.8, (0, 0, 0)))),
+    'arm_ul_ram': pos(keys3((0, (0, 0, 0)), (0.25, (0, 0, 0)), (0.32, (8, 0, 0)), (0.6, (0, 0, 0)))),
+    'arm_ur_ram': pos(keys3((0, (0, 0, 0)), (0.25, (0, 0, 0)), (0.32, (-8, 0, 0)), (0.6, (0, 0, 0)))),
+    'body': rot(keys3((0, (0, 0, 0)), (0.25, (-8, 0, 0)), (0.35, (12, 0, 0)), (0.8, (0, 0, 0)))),
+})
+L = 1.8
+replace_clip('echo_force', 'ability', L, False, {
+    # the Slam: it rises, every ram points down, and it hammers the ground
+    'body': merge(pos(keys3((0, (0, 0, 0)), (0.7, (0, -10, 0)), (0.95, (0, 6, 0)), (1.4, (0, 6, 0)), (1.8, (0, 0, 0)))),
+                  rot(keys3((0, (0, 0, 0)), (0.7, (-12, 0, 0)), (0.95, (18, 0, 0)), (1.8, (0, 0, 0))))),
+    'arm_ul': rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, -70)), (1.4, (0, 0, -70)), (1.8, (0, 0, 0)))),
+    'arm_ur': rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, 70)), (1.4, (0, 0, 70)), (1.8, (0, 0, 0)))),
+    'arm_ll': rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, -80)), (1.4, (0, 0, -80)), (1.8, (0, 0, 0)))),
+    'arm_lr': rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, 80)), (1.4, (0, 0, 80)), (1.8, (0, 0, 0)))),
+    'arm_ul_ram': pos(keys3((0, (0, 0, 0)), (0.9, (0, 0, 0)), (0.97, (9, 0, 0)), (1.5, (0, 0, 0)))),
+    'arm_ur_ram': pos(keys3((0, (0, 0, 0)), (0.9, (0, 0, 0)), (0.97, (-9, 0, 0)), (1.5, (0, 0, 0)))),
+    'arm_ll_ram': pos(keys3((0, (0, 0, 0)), (0.9, (0, 0, 0)), (0.97, (9, 0, 0)), (1.5, (0, 0, 0)))),
+    'arm_lr_ram': pos(keys3((0, (0, 0, 0)), (0.9, (0, 0, 0)), (0.97, (-9, 0, 0)), (1.5, (0, 0, 0)))),
+    'crown': R(lambda u: (0, 720 * u, 0), L, 32),
+})
+add_clip('echo_force', 'hurt', hurt('body', 'head', 6), 0.45, False)
+
+# ---- Echo of Signal, the Current: a serpent of living signal, segment after glowing segment, a repeater for a head
+_cur = [part('head', (0, 8, -24), [
+    cube((-5, 3, -33), (10, 9, 9), 'energy_dark', {'front': 'eyes2', 'top': 'redtrace'}),
+    cube((-4, 11, -34), (8, 2, 6), 'iron', {'top': 'teeth'}),
+    cube((-5.5, 6.5, -30), (11, 2, 2), 'core_red'),
+]), part('ant_l', (3, 3, -28), [cube((2.5, -5, -28.5), (1, 8, 1), 'core_amber'), cube((2, -7, -29), (2, 2, 2), 'core_red')], parent='head', rot=(-20, 0, 15)),
+    part('ant_r', (-3, 3, -28), [cube((-3.5, -5, -28.5), (1, 8, 1), 'core_amber'), cube((-4, -7, -29), (2, 2, 2), 'core_red')], parent='head',
+         rot=(-20, 0, -15))]
+_prev = 'head'
+for _i in range(8):
+    _z = -24 + _i * 7
+    _w = 8 - _i * 0.6
+    _cur.append(part(f'seg{_i}', (0, 8, _z), [
+        cube((-_w / 2, 8 - _w / 2 + 1, _z), (_w, _w * 0.75, 6.5), 'energy_dark', {'top': 'redtrace', 'right': 'redtrace', 'left': 'redtrace'}),
+        cube((-_w / 2 - 0.5, 8, _z + 2), (_w + 1, 2, 2), 'core_red'),
+        cube((-1, 8 - _w / 2 - 3, _z + 2), (2, 4, 2), 'core_amber'),
+    ], parent=_prev))
+    _prev = f'seg{_i}'
+_cur.append(part('tail', (0, 8, 32), [cube((-1.5, 6.5, 32), (3, 3, 8), 'core_red'), cube((-0.5, 7.5, 39), (1, 1, 5), 'core_amber')], parent=_prev))
+mob('echo_signal', _cur, {}, look=('head',), shadow=1.0, scale=2.0, texture_width=256)
+L = 1.4
+replace_clip('echo_signal', 'walk', L, True, merge(
+    {f'seg{i}': R(lambda u, i=i: (4 * s(u, 1, i * 0.12), 16 * s(u, 1, i * 0.12 + 0.25), 0), L) for i in range(8)},
+    {'head': merge(R(lambda u: (0, -12 * s(u, 1, 0.25), 0), L), P(lambda u: (0, 1.5 * s(u, 2), 0), L)),
+     'tail': R(lambda u: (0, 25 * s(u, 1, 1.0), 0), L),
+     'ant_l': R(lambda u: (15 * s(u, 2), 0, 0), L), 'ant_r': R(lambda u: (15 * s(u, 2, 0.3), 0, 0), L)}))
+L = 3.2
+replace_clip('echo_signal', 'idle', L, True, merge(
+    {f'seg{i}': R(lambda u, i=i: (6 * s(u, 1, i * 0.1), 9 * s(u, 1, i * 0.1 + 0.25), 0), L) for i in range(8)},
+    {'head': merge(R(lambda u: (5 * s(u, 2), -8 * s(u, 1, 0.25), 0), L), P(lambda u: (0, 2 * s(u), 0), L)),
+     'ant_l': R(lambda u: (20 * s(u, 3), 0, 0), L), 'ant_r': R(lambda u: (20 * s(u, 3, 0.4), 0, 0), L)}))
+L = 0.6
+replace_clip('echo_signal', 'attack', L, False, {
+    'head': rot(keys3((0, (0, 0, 0)), (0.15, (-25, 0, 0)), (0.28, (20, 0, 0)), (0.6, (0, 0, 0)))),
+    'seg0': rot(keys3((0, (0, 0, 0)), (0.15, (15, 0, 0)), (0.28, (-10, 0, 0)), (0.6, (0, 0, 0)))),
+})
+L = 1.2
+replace_clip('echo_signal', 'ability', L, False, merge(
+    # the Surge: it coils, then every segment flashes in turn as the signal runs down its body
+    {f'seg{i}': merge(R(lambda u, i=i: (0, 40 * s(u, 1) * min(1, (1 - u) * 4), 0), L, 24),
+                      S(lambda u, i=i: tuple([1 + 0.35 * max(0, s(u * 2 - i * 0.12, 1))] * 3), L, 24)) for i in range(8)},
+    {'head': rot(keys3((0, (0, 0, 0)), (0.3, (-35, 0, 0)), (0.9, (-35, 0, 0)), (1.2, (0, 0, 0))))}))
+add_clip('echo_signal', 'hurt', merge(hurt('head', None, 15), {'seg2': rot(wave(0.45, 20, 'y', cycles=2))}), 0.45, False)
+
+# ---- Echo of Resonance, the Choir: a hollow mask of light in a halo, six bells circling it, a gown of energy below
+_choir = [part('body', (0, 0, 0), [
+    cube((-6, -4, -4), (12, 18, 8), 'core_red'),
+    cube((-8, 12, -5), (16, 6, 10), 'energy_dark', {'front': 'rune'}),
+]), part('mask', (0, -6, 0), [cube((-7, -24, -3), (14, 18, 4), 'great_bronze', {'front': 'crack', 'back': 'rune'}),
+                             cube((-5, -19, -3.6), (3, 3, 1), 'core_red', {'front': 'eye_core'}),
+                             cube((2, -19, -3.6), (3, 3, 1), 'core_red', {'front': 'eye_core'}),
+                             cube((-3, -11, -3.6), (6, 1.5, 1), 'core_amber'),
+                             cube((-8, -26, -2), (16, 3, 3), 'great_bronze', {'top': 'rivets'}),
+                             cube((-1.5, -30, -1.5), (3, 4, 3), 'core_amber')], parent='body'),
+    part('halo', (0, -15, 2), [cube((-12, -27, 2), (24, 2, 2), 'core_amber'), cube((-12, -5, 2), (24, 2, 2), 'core_amber'),
+                              cube((-12, -25, 2), (2, 20, 2), 'core_amber'), cube((10, -25, 2), (2, 20, 2), 'core_amber')], parent='body'),
+    part('ring', (0, -6, 0), [], parent='body')]
+for _k, (_bx, _bz) in enumerate(ring_points(6, 17)):
+    _choir.append(part(f'bell{_k}', (_bx, -6, _bz), [cube((_bx - 3, -10, _bz - 3), (6, 7, 6), 'great_bronze', {'front': 'crack'}),
+                                                    cube((_bx - 3.5, -3.5, _bz - 3.5), (7, 1.5, 7), 'great_bronze'),
+                                                    cube((_bx - 1, -2.5, _bz - 1), (2, 3, 2), 'core_red')], parent='ring'))
+mob('echo_resonance', _choir, {}, look=('mask',), shadow=1.2, scale=2.0, texture_width=256)
+L = 4.0
+replace_clip('echo_resonance', 'idle', L, True, merge(
+    {'ring': R(lambda u: (0, 360 * u, 0), L, 24), 'body': hover(L, 2.0),
+     'halo': R(lambda u: (0, 0, 8 * s(u)), L), 'mask': R(lambda u: (4 * s(u, 2), 10 * s(u), 0), L)},
+    {f'bell{k}': R(lambda u, k=k: (12 * s(u, 2, k / 6), 0, 12 * s(u, 2, k / 6 + 0.25)), L) for k in range(6)}))
+L = 2.0
+replace_clip('echo_resonance', 'walk', L, True, merge(
+    {'ring': R(lambda u: (0, 360 * u, 0), L, 24), 'body': merge(hover(L, 1.5), R(lambda u: (10, 0, 0), L))},
+    {f'bell{k}': R(lambda u, k=k: (20 * s(u, 2, k / 6), 0, 0), L) for k in range(6)}))
+L = 0.7
+replace_clip('echo_resonance', 'attack', L, False, {
+    'mask': rot(keys3((0, (0, 0, 0)), (0.15, (-25, 0, 0)), (0.3, (15, 0, 0)), (0.7, (0, 0, 0)))),
+    'halo': scl(keys3((0, (1, 1, 1)), (0.2, (1.25, 1.25, 1.25)), (0.7, (1, 1, 1)))),
+})
+L = 2.0
+replace_clip('echo_resonance', 'ability', L, False, merge(
+    # the Chorus: the ring spins up, every bell swings and the mask screams
+    {'ring': R(lambda u: (0, 1080 * u * u, 0), L, 48),
+     'mask': R(lambda u: (-30 * min(1, u * 5) * min(1, (1 - u) * 5), 0, 10 * s(u, 10)), L, 48),
+     'halo': S(lambda u: tuple([1 + 0.4 * max(0, s(u, 4))] * 3), L, 32)},
+    {f'bell{k}': R(lambda u, k=k: (45 * s(u, 4, k / 6), 0, 45 * s(u, 4, k / 6 + 0.25)), L, 32) for k in range(6)}))
+add_clip('echo_resonance', 'hurt', hurt('body', 'mask', 10), 0.45, False)
+
+# ---- Echo of Heat, the Kilnheart: a burning heart in a cage of kiln plates that open like petals, cinders circling
+_kh = [part('body', (0, 0, 0), [
+    cube((-6, -18, -6), (12, 12, 12), 'core_red', {'front': 'eye_core'}),
+    cube((-4, -20, -4), (8, 16, 8), 'core_amber'),
+    cube((-3, -6, -3), (6, 10, 6), 'energy_dark', {'front': 'grill_small'}),
+    cube((-1.5, 4, -1.5), (3, 10, 3), 'core_red'),
+])]
+for _n, (_dx, _dz, _rx, _rz) in (('petal_n', (0, -8, -1, 0)), ('petal_s', (0, 8, 1, 0)), ('petal_e', (8, 0, 0, 1)), ('petal_w', (-8, 0, 0, -1))):
+    _w, _d = (14, 2) if _dx == 0 else (2, 14)
+    _kh.append(part(_n, (_dx, -4, _dz), [cube((_dx - _w / 2, -24, _dz - _d / 2), (_w, 20, _d), 'energy_dark', {'front': 'grill', 'back': 'grill',
+                                                                                                                'right': 'grill', 'left': 'grill'}),
+                                         cube((_dx - _w / 2 - 0.25, -25, _dz - _d / 2 - 0.25), (_w + 0.5, 1.5, _d + 0.5), 'core_amber')],
+                    parent='body', rot=(_rx * 18, 0, -_rz * 18)))
+_kh.append(part('cinders', (0, -12, 0), [cube((x - 1.5, -14 + (k % 3) * 3, z - 1.5), (3, 3, 3), 'ember' if k % 2 else 'cinder_glow')
+                                         for k, (x, z) in enumerate(ring_points(7, 15))], parent='body'))
+mob('echo_heat', _kh, {}, look=(), shadow=1.2, scale=2.2, texture_width=256)
+L = 3.0
+replace_clip('echo_heat', 'idle', L, True, {
+    'body': merge(hover(L, 1.5), S(lambda u: (1 + 0.04 * s(u, 3), 1 + 0.04 * s(u, 3), 1 + 0.04 * s(u, 3)), L)),
+    'cinders': R(lambda u: (0, 360 * u, 0), L, 24),
+    'petal_n': R(lambda u: (-6 - 6 * max(0, s(u)), 0, 0), L), 'petal_s': R(lambda u: (6 + 6 * max(0, s(u)), 0, 0), L),
+    'petal_e': R(lambda u: (0, 0, -6 - 6 * max(0, s(u))), L), 'petal_w': R(lambda u: (0, 0, 6 + 6 * max(0, s(u))), L),
+})
+L = 2.0
+replace_clip('echo_heat', 'walk', L, True, {'body': merge(hover(L, 1.0), R(lambda u: (10, 0, 0), L)), 'cinders': R(lambda u: (0, 540 * u, 0), L, 24)})
+L = 0.8
+replace_clip('echo_heat', 'attack', L, False, {
+    'petal_n': rot(keys3((0, (0, 0, 0)), (0.2, (-45, 0, 0)), (0.5, (-45, 0, 0)), (0.8, (0, 0, 0)))),
+    'body': scl(keys3((0, (1, 1, 1)), (0.25, (1.15, 1.15, 1.15)), (0.8, (1, 1, 1)))),
+})
+L = 2.0
+replace_clip('echo_heat', 'ability', L, False, {
+    # the Bloom of Fire: every petal opens flat and the heart flares
+    'petal_n': rot(keys3((0, (0, 0, 0)), (0.4, (-80, 0, 0)), (1.6, (-80, 0, 0)), (2.0, (0, 0, 0)))),
+    'petal_s': rot(keys3((0, (0, 0, 0)), (0.4, (80, 0, 0)), (1.6, (80, 0, 0)), (2.0, (0, 0, 0)))),
+    'petal_e': rot(keys3((0, (0, 0, 0)), (0.4, (0, 0, -80)), (1.6, (0, 0, -80)), (2.0, (0, 0, 0)))),
+    'petal_w': rot(keys3((0, (0, 0, 0)), (0.4, (0, 0, 80)), (1.6, (0, 0, 80)), (2.0, (0, 0, 0)))),
+    'body': S(lambda u: tuple([1 + 0.3 * min(1, u * 3) * min(1, (1 - u) * 3) + 0.05 * s(u, 8)] * 3), L, 32),
+    'cinders': R(lambda u: (0, 1440 * u, 0), L, 48),
+})
+add_clip('echo_heat', 'hurt', hurt('body', None, 8), 0.45, False)
+
+# ---- Echo of Flow, the Sluicemother: a towering figure of molten redstone with floodgate wings and a crown of gates
+mob('echo_flow', [
+    part('body', (0, 0, 0), [
+        cube((-7, -22, -5), (14, 22, 10), 'molten', {'front': 'rune'}),
+        cube((-5, 0, -4), (10, 10, 8), 'molten'),
+        cube((-3, 10, -3), (6, 10, 6), 'molten'),
+        cube((-8, -23, -6), (16, 3, 12), 'copper', {'top': 'rivets'}),
+    ]),
+    part('head', (0, -23, 0), [cube((-4.5, -32, -4.5), (9, 9, 9), 'molten', {'front': 'eye_core'}),
+                               cube((-6, -36, -1), (12, 4, 2), 'copper', {'front': 'grill_small'}),
+                               cube((-1, -40, -1), (2, 4, 2), 'core_amber')], parent='body'),
+    part('wing_l', (8, -20, 2), [cube((8, -30, 1), (14, 22, 2), 'copper', {'front': 'grill', 'back': 'grill'}),
+                                 cube((8, -8, 1.5), (14, 1, 1), 'core_red')], parent='body', rot=(0, -25, -12)),
+    part('wing_r', (-8, -20, 2), [cube((-22, -30, 1), (14, 22, 2), 'copper', {'front': 'grill', 'back': 'grill'}),
+                                  cube((-22, -8, 1.5), (14, 1, 1), 'core_red')], parent='body', rot=(0, 25, 12)),
+    part('arm_l', (8, -18, 0), [cube((8, -18, -2), (4, 18, 4), 'molten'), cube((7.5, 0, -2.5), (5, 5, 5), 'core_red')], parent='body', rot=(0, 0, -10)),
+    part('arm_r', (-8, -18, 0), [cube((-12, -18, -2), (4, 18, 4), 'molten'), cube((-12.5, 0, -2.5), (5, 5, 5), 'core_red')], parent='body', rot=(0, 0, 10)),
+    part('drip', (0, 20, 0), [cube((-4, 20, -4), (8, 4, 8), 'molten'), cube((-6, 23, -6), (12, 1, 12), 'core_red')], parent='body'),
+], {}, look=('head',), shadow=1.3, scale=2.1, texture_width=256)
+L = 3.0
+replace_clip('echo_flow', 'idle', L, True, {
+    'body': merge(S(lambda u: (1 + 0.03 * s(u, 2), 1 - 0.02 * s(u, 2), 1 + 0.03 * s(u, 2)), L), R(lambda u: (0, 6 * s(u), 2 * s(u, 2)), L)),
+    'wing_l': R(lambda u: (0, -6 * s(u), -5 * s(u, 1, 0.25)), L), 'wing_r': R(lambda u: (0, 6 * s(u), 5 * s(u, 1, 0.25)), L),
+    'arm_l': R(lambda u: (5 * s(u, 2), 0, -4 * s(u)), L), 'arm_r': R(lambda u: (5 * s(u, 2, 0.5), 0, 4 * s(u)), L),
+    'drip': S(lambda u: (1 + 0.15 * s(u, 2), 1, 1 + 0.15 * s(u, 2)), L),
+    'head': R(lambda u: (0, 15 * s(u, 0.5), 4 * s(u, 2)), L),
+})
+L = 2.4
+replace_clip('echo_flow', 'walk', L, True, {
+    'body': merge(R(lambda u: (8, 0, 5 * s(u)), L), P(lambda u: (0, 0.6 * s(u, 2), 0), L)),
+    'wing_l': R(lambda u: (0, -12 * s(u), -10 * s(u)), L), 'wing_r': R(lambda u: (0, 12 * s(u), 10 * s(u)), L),
+    'drip': S(lambda u: (1 + 0.2 * s(u, 2), 1, 1 + 0.2 * s(u, 2)), L),
+})
+L = 0.8
+replace_clip('echo_flow', 'attack', L, False, {
+    'arm_r': rot(keys3((0, (0, 0, 0)), (0.25, (-140, 0, 20)), (0.45, (-10, 0, -10)), (0.8, (0, 0, 0)))),
+    'arm_l': rot(keys3((0, (0, 0, 0)), (0.3, (-140, 0, -20)), (0.5, (-10, 0, 10)), (0.8, (0, 0, 0)))),
+})
+L = 2.2
+replace_clip('echo_flow', 'ability', L, False, {
+    # the Floodtide: the gates of its wings swing wide and molten redstone pours out of it
+    'wing_l': rot(keys3((0, (0, 0, 0)), (0.5, (0, 30, -45)), (1.8, (0, 30, -45)), (2.2, (0, 0, 0)))),
+    'wing_r': rot(keys3((0, (0, 0, 0)), (0.5, (0, -30, 45)), (1.8, (0, -30, 45)), (2.2, (0, 0, 0)))),
+    'arm_l': rot(keys3((0, (0, 0, 0)), (0.5, (0, 0, -100)), (1.8, (0, 0, -100)), (2.2, (0, 0, 0)))),
+    'arm_r': rot(keys3((0, (0, 0, 0)), (0.5, (0, 0, 100)), (1.8, (0, 0, 100)), (2.2, (0, 0, 0)))),
+    'drip': S(lambda u: (1 + 1.2 * min(1, u * 3) * min(1, (1 - u) * 3), 1, 1 + 1.2 * min(1, u * 3) * min(1, (1 - u) * 3)), L, 24),
+    'head': rot(keys3((0, (0, 0, 0)), (0.5, (-25, 0, 0)), (1.8, (-25, 0, 0)), (2.2, (0, 0, 0)))),
+})
+add_clip('echo_flow', 'hurt', hurt('body', 'head', 8), 0.45, False)
+
+# ---- The Overtoll: the Great Bell come down from the sky, cracked, chained, with arms of light and a heart for a clapper
+_ot = [part('body', (0, 0, 0), [
+    cube((-16, -6, -16), (32, 6, 3), 'great_bronze', {'front': 'rune'}), cube((-16, -6, 13), (32, 6, 3), 'great_bronze', {'front': 'rune'}),
+    cube((-16, -6, -13), (3, 6, 26), 'great_bronze', {'left': 'rune', 'right': 'rune'}),
+    cube((13, -6, -13), (3, 6, 26), 'great_bronze', {'left': 'rune', 'right': 'rune'}),
+    cube((-13, -26, -13), (26, 20, 26), 'great_bronze', {'front': 'crack', 'back': 'crack', 'left': 'rivets', 'right': 'rivets'}),
+    cube((-10, -36, -10), (20, 10, 20), 'great_bronze', {'front': 'eye_core'}),
+    cube((-5, -42, -5), (10, 6, 10), 'great_bronze', {'top': 'rivets'}),
+    cube((-13.5, -27, -13.5), (27, 1.5, 27), 'core_red'),
+])]
+_ot.append(part('clapper', (0, -26, 0), [cube((-1, -26, -1), (2, 20, 2), 'chain'), cube((-5, -6, -5), (10, 10, 10), 'core_red', {'front': 'eye_core'})],
+                parent='body'))
+_ot.append(part('crown', (0, -42, 0), [cube((x - 2, -50, z - 2), (4, 8, 4), 'great_bronze') for x, z in ring_points(4, 5)]
+                + [cube((-2, -54, -2), (4, 12, 4), 'core_amber')], parent='body'))
+for _n, _side in (('arm_l', 1), ('arm_r', -1)):
+    _x = 13 * _side
+    _ot.append(part(_n, (_x, -20, 0), [cube((_x if _side > 0 else _x - 14, -22, -2.5), (14, 5, 5), 'core_red'),
+                                       cube((_x + 13 if _side > 0 else _x - 20, -24, -4), (7, 9, 8), 'great_bronze', {'front': 'rivets'})],
+                    parent='body', rot=(0, 0, 25 * _side)))
+    _ot.append(part(_n + '_fore', (_x + 20 * _side, -20, 0), [cube((_x + 20 if _side > 0 else _x - 36, -22, -2), (16, 4, 4), 'core_amber'),
+                                                            cube((_x + 34 if _side > 0 else _x - 42, -25, -4), (8, 10, 8), 'great_bronze', {'front': 'grill'})],
+                    parent=_n, rot=(0, 0, -30 * _side)))
+for _k, (_cx, _cz) in enumerate(ring_points(4, 15, TAU / 8)):
+    _ot.append(part(f'chain{_k}', (_cx, -30, _cz), [cube((_cx - 1, -30, _cz - 1), (2, 22, 2), 'chain'), cube((_cx - 2, -9, _cz - 2), (4, 4, 4), 'iron')],
+                    parent='body', rot=(18 if _cz > 0 else -18, 0, -18 if _cx > 0 else 18)))
+mob('the_overtoll', _ot, {}, look=(), shadow=2.0, scale=3.0, texture_width=256)
+L = 5.0
+replace_clip('the_overtoll', 'idle', L, True, merge(
+    {'body': merge(hover(L, 2.5), R(lambda u: (3 * s(u), 0, 4 * s(u, 1, 0.25)), L)),
+     'clapper': R(lambda u: (10 * s(u, 1, 0.5), 0, 12 * s(u)), L),
+     'crown': R(lambda u: (0, 72 * u, 0), L),
+     'arm_l': R(lambda u: (6 * s(u, 2), 0, 8 * s(u)), L), 'arm_r': R(lambda u: (6 * s(u, 2, 0.5), 0, -8 * s(u)), L),
+     'arm_l_fore': R(lambda u: (0, 0, -10 * s(u, 1, 0.3)), L), 'arm_r_fore': R(lambda u: (0, 0, 10 * s(u, 1, 0.3)), L)},
+    {f'chain{k}': R(lambda u, k=k: (14 * s(u, 1, k / 4), 0, 14 * s(u, 1, k / 4 + 0.25)), L) for k in range(4)}))
+L = 3.0
+replace_clip('the_overtoll', 'walk', L, True, merge(
+    {'body': merge(hover(L, 2.0), R(lambda u: (10, 0, 5 * s(u)), L)), 'clapper': R(lambda u: (25 * s(u), 0, 0), L)},
+    {f'chain{k}': R(lambda u, k=k: (25 * s(u, 1, k / 4), 0, 10 * s(u, 2, k / 4)), L) for k in range(4)}))
+L = 1.0
+replace_clip('the_overtoll', 'attack', L, False, {
+    'arm_l': rot(keys3((0, (0, 0, 0)), (0.3, (-60, 40, 30)), (0.5, (30, -20, -20)), (1.0, (0, 0, 0)))),
+    'arm_l_fore': rot(keys3((0, (0, 0, 0)), (0.3, (0, 0, -50)), (0.5, (0, 0, 20)), (1.0, (0, 0, 0)))),
+    'arm_r': rot(keys3((0, (0, 0, 0)), (0.4, (-60, -40, -30)), (0.6, (30, 20, 20)), (1.0, (0, 0, 0)))),
+    'arm_r_fore': rot(keys3((0, (0, 0, 0)), (0.4, (0, 0, 50)), (0.6, (0, 0, -20)), (1.0, (0, 0, 0)))),
+})
+L = 2.5
+replace_clip('the_overtoll', 'ability', L, False, merge(
+    # the Overtoll: the whole Bell swings and strikes itself, the heart flares, the chains lash out
+    {'body': rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, -30)), (0.9, (0, 0, 28)), (1.3, (0, 0, -18)), (1.7, (0, 0, 10)), (2.1, (0, 0, -4)), (2.5, (0, 0, 0)))),
+     'clapper': merge(rot(keys3((0, (0, 0, 0)), (0.6, (0, 0, 50)), (0.85, (0, 0, -45)), (1.3, (0, 0, 35)), (1.7, (0, 0, -20)), (2.5, (0, 0, 0)))),
+                      S(lambda u: tuple([1 + 0.35 * max(0, s(u, 4))] * 3), L, 32))},
+    {f'chain{k}': R(lambda u, k=k: (60 * s(u, 3, k / 4), 0, 60 * s(u, 3, k / 4 + 0.25)), L, 32) for k in range(4)}))
+add_clip('the_overtoll', 'hurt', merge(hurt('body', None, 5), {'clapper': rot(wave(0.45, 30, 'z', cycles=2))}), 0.45, False)

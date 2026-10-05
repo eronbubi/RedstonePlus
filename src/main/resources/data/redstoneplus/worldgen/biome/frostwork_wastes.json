@@ -98,7 +98,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "redstoneplus:rust_brine_lake"
+    ],
     [
       "redstoneplus:crevasses",
       "redstoneplus:veins",
@@ -106,6 +108,7 @@
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:frost_spire",
       "redstoneplus:scree"
     ],
@@ -115,7 +118,8 @@
       "redstoneplus:ice_rails",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [

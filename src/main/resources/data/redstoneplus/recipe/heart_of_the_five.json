@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "redstoneplus:core_force"
+    },
+    {
+      "item": "redstoneplus:core_signal"
+    },
+    {
+      "item": "redstoneplus:core_resonance"
+    },
+    {
+      "item": "redstoneplus:core_heat"
+    },
+    {
+      "item": "redstoneplus:core_flow"
+    },
+    {
+      "item": "redstoneplus:bell_bronze"
+    }
+  ],
+  "result": {
+    "id": "redstoneplus:heart_of_the_five",
+    "count": 1
+  }
+}

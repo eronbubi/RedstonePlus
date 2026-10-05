@@ -78,13 +78,16 @@
   },
   "features": [
     [],
-    [],
+    [
+      "redstoneplus:resonant_ichor_pool"
+    ],
     [
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
+      "redstoneplus:sanctums",
       "redstoneplus:scree"
     ],
     [
@@ -93,7 +96,8 @@
     [
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
-      "redstoneplus:circuit_temple"
+      "redstoneplus:circuit_temple",
+      "redstoneplus:chain_anchor"
     ],
     [],
     [
@@ -106,7 +110,9 @@
       "redstoneplus:cave_clusters_floor",
       "redstoneplus:cave_clusters_ceiling"
     ],
-    [],
+    [
+      "redstoneplus:resonant_ichor_spring"
+    ],
     [],
     []
   ]

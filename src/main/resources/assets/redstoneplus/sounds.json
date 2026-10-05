@@ -717,5 +717,221 @@
       "redstoneplus:block/lightline/lay"
     ],
     "subtitle": "subtitles.redstoneplus.block.lightline.lay"
+  },
+  "entity.echo_force.ambient": {
+    "sounds": [
+      "redstoneplus:entity/echo_force/ambient1",
+      "redstoneplus:entity/echo_force/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_force.ambient"
+  },
+  "entity.echo_force.hurt": {
+    "sounds": [
+      "redstoneplus:entity/echo_force/hurt1",
+      "redstoneplus:entity/echo_force/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_force.hurt"
+  },
+  "entity.echo_force.death": {
+    "sounds": [
+      "redstoneplus:entity/echo_force/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_force.death"
+  },
+  "entity.echo_force.step": {
+    "sounds": [
+      "redstoneplus:entity/echo_force/step1",
+      "redstoneplus:entity/echo_force/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_force.step"
+  },
+  "entity.echo_force.ability": {
+    "sounds": [
+      "redstoneplus:entity/echo_force/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_force.ability"
+  },
+  "entity.echo_signal.ambient": {
+    "sounds": [
+      "redstoneplus:entity/echo_signal/ambient1",
+      "redstoneplus:entity/echo_signal/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_signal.ambient"
+  },
+  "entity.echo_signal.hurt": {
+    "sounds": [
+      "redstoneplus:entity/echo_signal/hurt1",
+      "redstoneplus:entity/echo_signal/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_signal.hurt"
+  },
+  "entity.echo_signal.death": {
+    "sounds": [
+      "redstoneplus:entity/echo_signal/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_signal.death"
+  },
+  "entity.echo_signal.step": {
+    "sounds": [
+      "redstoneplus:entity/echo_signal/step1",
+      "redstoneplus:entity/echo_signal/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_signal.step"
+  },
+  "entity.echo_signal.ability": {
+    "sounds": [
+      "redstoneplus:entity/echo_signal/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_signal.ability"
+  },
+  "entity.echo_resonance.ambient": {
+    "sounds": [
+      "redstoneplus:entity/echo_resonance/ambient1",
+      "redstoneplus:entity/echo_resonance/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_resonance.ambient"
+  },
+  "entity.echo_resonance.hurt": {
+    "sounds": [
+      "redstoneplus:entity/echo_resonance/hurt1",
+      "redstoneplus:entity/echo_resonance/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_resonance.hurt"
+  },
+  "entity.echo_resonance.death": {
+    "sounds": [
+      "redstoneplus:entity/echo_resonance/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_resonance.death"
+  },
+  "entity.echo_resonance.step": {
+    "sounds": [
+      "redstoneplus:entity/echo_resonance/step1",
+      "redstoneplus:entity/echo_resonance/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_resonance.step"
+  },
+  "entity.echo_resonance.ability": {
+    "sounds": [
+      "redstoneplus:entity/echo_resonance/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_resonance.ability"
+  },
+  "entity.echo_heat.ambient": {
+    "sounds": [
+      "redstoneplus:entity/echo_heat/ambient1",
+      "redstoneplus:entity/echo_heat/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_heat.ambient"
+  },
+  "entity.echo_heat.hurt": {
+    "sounds": [
+      "redstoneplus:entity/echo_heat/hurt1",
+      "redstoneplus:entity/echo_heat/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_heat.hurt"
+  },
+  "entity.echo_heat.death": {
+    "sounds": [
+      "redstoneplus:entity/echo_heat/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_heat.death"
+  },
+  "entity.echo_heat.step": {
+    "sounds": [
+      "redstoneplus:entity/echo_heat/step1",
+      "redstoneplus:entity/echo_heat/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_heat.step"
+  },
+  "entity.echo_heat.ability": {
+    "sounds": [
+      "redstoneplus:entity/echo_heat/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_heat.ability"
+  },
+  "entity.echo_flow.ambient": {
+    "sounds": [
+      "redstoneplus:entity/echo_flow/ambient1",
+      "redstoneplus:entity/echo_flow/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_flow.ambient"
+  },
+  "entity.echo_flow.hurt": {
+    "sounds": [
+      "redstoneplus:entity/echo_flow/hurt1",
+      "redstoneplus:entity/echo_flow/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_flow.hurt"
+  },
+  "entity.echo_flow.death": {
+    "sounds": [
+      "redstoneplus:entity/echo_flow/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_flow.death"
+  },
+  "entity.echo_flow.step": {
+    "sounds": [
+      "redstoneplus:entity/echo_flow/step1",
+      "redstoneplus:entity/echo_flow/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_flow.step"
+  },
+  "entity.echo_flow.ability": {
+    "sounds": [
+      "redstoneplus:entity/echo_flow/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.echo_flow.ability"
+  },
+  "entity.the_overtoll.ambient": {
+    "sounds": [
+      "redstoneplus:entity/the_overtoll/ambient1",
+      "redstoneplus:entity/the_overtoll/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.the_overtoll.ambient"
+  },
+  "entity.the_overtoll.hurt": {
+    "sounds": [
+      "redstoneplus:entity/the_overtoll/hurt1",
+      "redstoneplus:entity/the_overtoll/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.the_overtoll.hurt"
+  },
+  "entity.the_overtoll.death": {
+    "sounds": [
+      "redstoneplus:entity/the_overtoll/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.the_overtoll.death"
+  },
+  "entity.the_overtoll.step": {
+    "sounds": [
+      "redstoneplus:entity/the_overtoll/step1",
+      "redstoneplus:entity/the_overtoll/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.the_overtoll.step"
+  },
+  "entity.the_overtoll.ability": {
+    "sounds": [
+      "redstoneplus:entity/the_overtoll/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.the_overtoll.ability"
+  },
+  "event.echo_awaken": {
+    "sounds": [
+      "redstoneplus:event/echo_awaken"
+    ],
+    "subtitle": "subtitles.redstoneplus.event.echo_awaken"
+  },
+  "event.chain_break": {
+    "sounds": [
+      "redstoneplus:event/chain_break"
+    ],
+    "subtitle": "subtitles.redstoneplus.event.chain_break"
+  },
+  "event.realm_freed": {
+    "sounds": [
+      "redstoneplus:event/realm_freed"
+    ],
+    "subtitle": "subtitles.redstoneplus.event.realm_freed"
   }
 }

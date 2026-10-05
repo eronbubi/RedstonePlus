@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "B B",
+    "BRB",
+    " C "
+  ],
+  "key": {
+    "B": {
+      "item": "redstoneplus:bell_bronze"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "redstoneplus:realm_cog"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:tuning_fork",
+    "count": 1
+  }
+}

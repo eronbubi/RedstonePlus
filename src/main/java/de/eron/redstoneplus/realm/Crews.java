@@ -283,19 +283,39 @@ public final class Crews {
             CREWS.clear();
             BY_MEMBER.clear();
             WORK.clear();
+            FREE.clear();
         });
     }
+
+    /** Creatures that lost their crew (it fell apart, or they strayed): every few seconds they look for a new one. */
+    private static final java.util.Set<PathfinderMob> FREE = java.util.Collections.newSetFromMap(new java.util.WeakHashMap<>());
 
     private static void join(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof PathfinderMob mob) || !event.getLevel().dimension().equals(Realm.REALM)) {
             return;
         }
         Kind kind = kindOf(mob);
-        if (kind == null || BY_MEMBER.containsKey(mob.getUUID())) {
+        if (kind == null) {
             return;
         }
+        // every new body (a fresh spawn, or one loaded back with its chunk) gets the crew's hold on it
         mob.goalSelector.addGoal(0, new CrewGoal(mob));
-        // join the nearest crew of the kind with room in it; otherwise found one
+        Crew old = BY_MEMBER.get(mob.getUUID());
+        if (old != null) {
+            // the same creature loaded back before its crew noticed it was gone: it takes its old place
+            if (old.node.getUUID().equals(mob.getUUID())) {
+                old.node = mob;
+            } else {
+                old.members.removeIf(m -> m.getUUID().equals(mob.getUUID()));
+                old.members.add(mob);
+            }
+            return;
+        }
+        assign(mob, kind);
+    }
+
+    /** Puts a creature into the nearest crew of its kind with room in it, or makes it the node of a new one. */
+    private static void assign(PathfinderMob mob, Kind kind) {
         Crew best = null;
         double bestD = 24 * 24;
         for (Crew crew : CREWS.values()) {
@@ -314,6 +334,7 @@ public final class Crews {
         } else {
             best.members.add(mob);
             best.strength = Math.max(best.strength, best.size());
+            best.order(Order.PING); // the newcomer is greeted down the links
             // the bigger machine leads
             if (mob.getMaxHealth() > best.node.getMaxHealth() * 1.4F) {
                 best.members.remove(mob);
@@ -322,11 +343,15 @@ public final class Crews {
             }
         }
         BY_MEMBER.put(mob.getUUID(), best);
+        FREE.remove(mob);
     }
 
     private static void leave(Crew crew, PathfinderMob mob) {
         crew.members.remove(mob);
         BY_MEMBER.remove(mob.getUUID());
+        if (mob.isAlive() && !mob.isRemoved()) {
+            FREE.add(mob);
+        }
     }
 
     private static void tick(TickEvent.ServerTickEvent event) {
@@ -349,13 +374,18 @@ public final class Crews {
                 }
                 elect(crew);
             }
-            if (crew.members.isEmpty() && crew.level.getGameTime() - crew.stateSince > 600) {
-                // a node alone for half a minute is just a creature again; it can found or join a crew later
-                BY_MEMBER.remove(crew.node.getUUID());
-                it.remove();
-                continue;
-            }
             think(crew);
+        }
+        // strays find a crew again
+        if (net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer().getTickCount() % 100 == 0 && !FREE.isEmpty()) {
+            for (PathfinderMob mob : new ArrayList<>(FREE)) {
+                Kind kind = kindOf(mob);
+                if (!mob.isAlive() || mob.isRemoved() || kind == null || BY_MEMBER.containsKey(mob.getUUID())) {
+                    FREE.remove(mob);
+                } else {
+                    assign(mob, kind);
+                }
+            }
         }
         long now = 0;
         if (net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer().getTickCount() % 1200 == 0) {

@@ -103,8 +103,8 @@ public final class CrewLinks {
         VertexConsumer vc = buffers.getBuffer(RenderType.lightning());
         for (Crews.CrewView c : crews) {
             Entity node = mc.level.getEntity(c.node());
-            if (node == null) {
-                continue;
+            if (node == null || c.members().length == 0) {
+                continue; // a creature alone shows nothing
             }
             boolean engaged = c.state() == Crews.State.ENGAGE.ordinal();
             boolean working = c.state() == Crews.State.WORK.ordinal();

@@ -209,18 +209,16 @@ public final class RealmLiquids {
 
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-            Kind kind = this.kind;
-            ResourceLocation still = Realm.id("block/" + kind.id() + "_still");
-            ResourceLocation flow = Realm.id("block/" + kind.id() + "_flow");
+            // FluidType's constructor calls this before this.kind is set, so kind is only read later, when the game asks
             consumer.accept(new IClientFluidTypeExtensions() {
                 @Override
                 public ResourceLocation getStillTexture() {
-                    return still;
+                    return Realm.id("block/" + kind.id() + "_still");
                 }
 
                 @Override
                 public ResourceLocation getFlowingTexture() {
-                    return flow;
+                    return Realm.id("block/" + kind.id() + "_flow");
                 }
 
                 @Override

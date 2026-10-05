@@ -28,7 +28,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
@@ -98,11 +97,16 @@ public final class Echoes {
 
         /** How high above its target it likes to hover. */
         protected double hoverHeight() {
-            return 3.0;
+            return 7.0;
         }
 
         protected double flySpeed() {
-            return 0.22;
+            return 0.3;
+        }
+
+        /** How far from its seat it may go before it is pulled back, and before it is put back. */
+        protected double leash() {
+            return 52.0;
         }
 
         /** At or below half health: faster, angrier. */
@@ -112,16 +116,14 @@ public final class Echoes {
 
         protected static AttributeSupplier.Builder base(double health, double damage, double armor) {
             return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, health).add(Attributes.ATTACK_DAMAGE, damage)
-                    .add(Attributes.ARMOR, armor).add(Attributes.FOLLOW_RANGE, 48.0).add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
-                    .add(Attributes.MOVEMENT_SPEED, 0.28).add(Attributes.STEP_HEIGHT, 1.5);
+                    .add(Attributes.ARMOR, armor).add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+                    .add(Attributes.MOVEMENT_SPEED, 0.28).add(Attributes.STEP_HEIGHT, 3.0)
+                    .add(Attributes.ENTITY_INTERACTION_RANGE, 8.0).add(Attributes.FOLLOW_RANGE, 72.0);
         }
 
         @Override
         protected void registerGoals() {
             this.goalSelector.addGoal(0, new FloatGoal(this));
-            if (!this.flies()) {
-                this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0, true));
-            }
             this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
             this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
         }
@@ -261,10 +263,12 @@ public final class Echoes {
             this.bar.setProgress(this.getHealth() / this.getMaxHealth());
             if (this.flies()) {
                 this.fly();
+            } else {
+                this.stride();
             }
-            this.leash();
+            this.pullBack();
             // nobody near for half a minute: it settles back into its seat, to be woken again
-            if (level.getNearestPlayer(this, 64.0) == null) {
+            if (level.getNearestPlayer(this, 96.0) == null) {
                 if (++this.alone > 600) {
                     this.discard();
                 }
@@ -310,7 +314,7 @@ public final class Echoes {
                     this.doHurtTarget(target);
                 }
             } else if (this.seat != null) {
-                goal = Vec3.atCenterOf(this.seat).add(0, 8, 0);
+                goal = Vec3.atCenterOf(this.seat).add(0, this.hoverHeight() + 6, 0);
             } else {
                 return;
             }
@@ -327,17 +331,41 @@ public final class Echoes {
             }
         }
 
+        /**
+         * A walker this size cannot follow paths made for creatures a block wide: it strides straight at its target over
+         * whatever is in the way, and strikes what it reaches.
+         */
+        private void stride() {
+            LivingEntity target = this.getTarget();
+            Vec3 goal = target != null && target.isAlive() ? target.position() : this.seat != null ? Vec3.atBottomCenterOf(this.seat) : null;
+            if (goal == null) {
+                return;
+            }
+            double reach = this.getBbWidth() * 0.6 + 3.0;
+            if (this.position().distanceToSqr(goal) > reach * reach) {
+                this.getMoveControl().setWantedPosition(goal.x, goal.y, goal.z, 1.0);
+            }
+            if (target != null && target.isAlive()) {
+                this.getLookControl().setLookAt(target, 20.0F, 20.0F);
+                if (this.distanceToSqr(target) < (reach + 1.5) * (reach + 1.5) && this.tickCount % 30 == 0) {
+                    this.swing(InteractionHand.MAIN_HAND);
+                    this.doHurtTarget(target);
+                }
+            }
+        }
+
         /** It does not leave its sanctum: pulled back if it goes further than 32 blocks from its seat. */
-        private void leash() {
+        private void pullBack() {
             if (this.seat == null) {
                 return;
             }
             double d = this.distanceToSqr(Vec3.atCenterOf(this.seat));
-            if (d > 32 * 32) {
+            double leash = this.leash();
+            if (d > leash * leash) {
                 Vec3 back = Vec3.atCenterOf(this.seat).subtract(this.position()).normalize().scale(0.4);
                 this.setDeltaMovement(this.getDeltaMovement().add(back));
-                if (d > 56 * 56) {
-                    this.teleportTo(this.seat.getX() + 0.5, this.seat.getY() + 6, this.seat.getZ() + 0.5);
+                if (d > leash * leash * 2.4) {
+                    this.teleportTo(this.seat.getX() + 0.5, this.seat.getY() + this.hoverHeight() + 4, this.seat.getZ() + 0.5);
                 }
             }
         }
@@ -417,7 +445,7 @@ public final class Echoes {
             case HEAT -> Realm.ECHO_HEAT.get();
             case FLOW -> Realm.ECHO_FLOW.get();
         };
-        spawnBoss(level, type, seal, echo == RealmStory.Echo.FLOW ? 2 : 7, by);
+        spawnBoss(level, type, seal, echo == RealmStory.Echo.FLOW ? 2 : 14, by);
         for (ServerPlayer p : level.players()) {
             if (p.distanceToSqr(Vec3.atCenterOf(seal)) < 96 * 96) {
                 p.playNotifySound(RealmSounds.ECHO_AWAKEN.get(), SoundSource.HOSTILE, 2.0F, 1.0F);
@@ -459,7 +487,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(360, 12, 14);
+            return base(560, 14, 14);
         }
 
         @Override
@@ -475,11 +503,11 @@ public final class Echoes {
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // the Rams: whoever is in front is struck and hurled away
-            if (this.distanceToSqr(target) < 11 * 11) {
+            if (this.distanceToSqr(target) < 20 * 20) {
                 this.swing(InteractionHand.MAIN_HAND);
-                target.hurt(this.blow(), 7.0F);
+                target.hurt(this.blow(), 9.0F);
                 Vec3 away = target.position().subtract(this.position()).normalize();
-                target.push(away.x * 2.4, 0.6, away.z * 2.4);
+                target.push(away.x * 3.0, 0.8, away.z * 3.0);
                 target.hurtMarked = true;
                 level.sendParticles(ParticleTypes.EXPLOSION, target.getX(), target.getY() + 1, target.getZ(), 1, 0, 0, 0, 0);
             }
@@ -500,13 +528,13 @@ public final class Echoes {
                 // the Slam lands
                 level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, this.getX(), this.getY(), this.getZ(), 1, 0, 0, 0, 0);
                 level.playSound(null, this.blockPosition(), net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 3.0F, 0.6F);
-                for (Player p : this.playersNear(level, 8.0)) {
-                    p.hurt(this.blow(), 10.0F);
+                for (Player p : this.playersNear(level, 14.0)) {
+                    p.hurt(this.blow(), 12.0F);
                     Vec3 away = p.position().subtract(this.position()).normalize();
                     p.push(away.x * 1.5, 1.1, away.z * 1.5);
                     p.hurtMarked = true;
                 }
-                RealmMechanics.pulseTraps(level, this.blockPosition(), 16);
+                RealmMechanics.pulseTraps(level, this.blockPosition(), 28);
             }
         }
 
@@ -527,7 +555,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(300, 9, 8);
+            return base(460, 10, 8);
         }
 
         @Override
@@ -542,19 +570,19 @@ public final class Echoes {
 
         @Override
         protected double flySpeed() {
-            return 0.42;
+            return 0.55;
         }
 
         @Override
         protected double hoverHeight() {
-            return 2.0;
+            return 4.0;
         }
 
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // the Dash
             this.dashDir = target.getEyePosition().subtract(this.position()).normalize();
-            this.dashing = 16;
+            this.dashing = 22;
             this.swing(InteractionHand.MAIN_HAND);
             return this.enraged() ? 45 : 70;
         }
@@ -563,12 +591,12 @@ public final class Echoes {
         protected int moveB(ServerLevel level, LivingEntity target) {
             // the Surge: lightning around the target
             this.playAbility();
-            int bolts = this.enraged() ? 5 : 3;
+            int bolts = this.enraged() ? 7 : 4;
             for (int i = 0; i < bolts; i++) {
                 LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
                 if (bolt != null) {
                     double a = this.random.nextDouble() * Mth.TWO_PI;
-                    double r = i == 0 ? 0 : 3 + this.random.nextDouble() * 3;
+                    double r = i == 0 ? 0 : 4 + this.random.nextDouble() * 6;
                     double x = target.getX() + Math.cos(a) * r;
                     double z = target.getZ() + Math.sin(a) * r;
                     bolt.moveTo(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING, Mth.floor(x), Mth.floor(z)), z);
@@ -583,10 +611,10 @@ public final class Echoes {
             super.aiStep();
             if (this.dashing > 0 && this.level() instanceof ServerLevel level) {
                 this.dashing--;
-                this.setDeltaMovement(this.dashDir.scale(1.1));
+                this.setDeltaMovement(this.dashDir.scale(1.5));
                 level.sendParticles(new DustParticleOptions(new Vector3f(1.0F, 0.1F, 0.05F), 2.0F), this.getX(), this.getY() + 0.5, this.getZ(),
                         4, 0.3, 0.3, 0.3, 0.0);
-                for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.6), e -> e != this && !(e instanceof EchoBoss))) {
+                for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2), e -> e != this && !(e instanceof EchoBoss))) {
                     if (hit.hurt(this.blow(), 9.0F)) {
                         hit.push(this.dashDir.x, 0.4, this.dashDir.z);
                     }
@@ -609,7 +637,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(320, 8, 10);
+            return base(500, 9, 10);
         }
 
         @Override
@@ -624,13 +652,13 @@ public final class Echoes {
 
         @Override
         protected double hoverHeight() {
-            return 5.0;
+            return 10.0;
         }
 
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // a sonic strike: sound goes through armour
-            if (this.distanceToSqr(target) < 24 * 24 && this.hasLineOfSight(target)) {
+            if (this.distanceToSqr(target) < 40 * 40 && this.hasLineOfSight(target)) {
                 this.swing(InteractionHand.MAIN_HAND);
                 level.sendParticles(ParticleTypes.SONIC_BOOM, target.getX(), target.getEyeY(), target.getZ(), 1, 0, 0, 0, 0);
                 target.hurt(this.damageSources().sonicBoom(this), 6.0F);
@@ -643,7 +671,7 @@ public final class Echoes {
         protected int moveB(ServerLevel level, LivingEntity target) {
             // the Chorus
             this.playAbility();
-            for (Player p : this.playersNear(level, 20.0)) {
+            for (Player p : this.playersNear(level, 32.0)) {
                 p.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 30, 1), this);
                 p.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 120, 0), this);
                 p.hurt(this.damageSources().magic(), 5.0F);
@@ -665,7 +693,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(340, 10, 10);
+            return base(520, 11, 10);
         }
 
         @Override
@@ -681,7 +709,7 @@ public final class Echoes {
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // a volley of fire
-            int shots = this.enraged() ? 5 : 3;
+            int shots = this.enraged() ? 7 : 4;
             for (int i = 0; i < shots; i++) {
                 Vec3 to = target.getEyePosition().subtract(this.getEyePosition()).add(this.random.nextGaussian() * 1.5, 0, this.random.nextGaussian() * 1.5);
                 SmallFireball ball = new SmallFireball(level, this, to.normalize());
@@ -697,19 +725,19 @@ public final class Echoes {
             // the Bloom
             this.playAbility();
             BlockPos c = this.blockPosition();
-            for (int i = 0; i < 20; i++) {
-                double a = i * Mth.TWO_PI / 20;
-                double r = 4 + this.random.nextDouble() * 3;
+            for (int i = 0; i < 40; i++) {
+                double a = i * Mth.TWO_PI / 40;
+                double r = 8 + this.random.nextDouble() * 7;
                 int x = Mth.floor(this.getX() + Math.cos(a) * r);
                 int z = Mth.floor(this.getZ() + Math.sin(a) * r);
                 int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
                 BlockPos at = new BlockPos(x, y, z);
-                if (level.getBlockState(at).isAir() && level.getBlockState(at.below()).isSolid() && Math.abs(y - c.getY()) < 12) {
+                if (level.getBlockState(at).isAir() && level.getBlockState(at.below()).isSolid() && Math.abs(y - c.getY()) < 24) {
                     level.setBlock(at, Blocks.FIRE.defaultBlockState(), 3);
                 }
             }
-            for (Player p : this.playersNear(level, 7.0)) {
-                p.hurt(this.damageSources().onFire(), 8.0F);
+            for (Player p : this.playersNear(level, 13.0)) {
+                p.hurt(this.damageSources().onFire(), 9.0F);
                 p.igniteForSeconds(5.0F);
             }
             return this.enraged() ? 140 : 200;
@@ -729,7 +757,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(380, 14, 12).add(Attributes.MOVEMENT_SPEED, 0.24);
+            return base(600, 16, 12).add(Attributes.MOVEMENT_SPEED, 0.3);
         }
 
         @Override
@@ -755,8 +783,8 @@ public final class Echoes {
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // the Tide: everyone near is pulled towards it
-            for (Player p : this.playersNear(level, 16.0)) {
-                Vec3 in = this.position().subtract(p.position()).normalize().scale(0.9);
+            for (Player p : this.playersNear(level, 28.0)) {
+                Vec3 in = this.position().subtract(p.position()).normalize().scale(1.1);
                 p.push(in.x, 0.15, in.z);
                 p.hurtMarked = true;
             }
@@ -768,14 +796,14 @@ public final class Echoes {
             // the Floodtide: molten redstone pours out around it, and runs away again
             this.playAbility();
             var flowing = RealmLiquids.Kind.MOLTEN_REDSTONE.liquid().flowing().get();
-            for (int i = 0; i < (this.enraged() ? 14 : 9); i++) {
+            for (int i = 0; i < (this.enraged() ? 26 : 16); i++) {
                 double a = this.random.nextDouble() * Mth.TWO_PI;
-                double r = 3 + this.random.nextDouble() * 7;
+                double r = 6 + this.random.nextDouble() * 13;
                 int x = Mth.floor(this.getX() + Math.cos(a) * r);
                 int z = Mth.floor(this.getZ() + Math.sin(a) * r);
                 int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
                 BlockPos at = new BlockPos(x, y, z);
-                if (level.getBlockState(at).isAir() && Math.abs(y - this.getBlockY()) < 6) {
+                if (level.getBlockState(at).isAir() && Math.abs(y - this.getBlockY()) < 10) {
                     level.setBlock(at, flowing.getFlowing(6, false).createLegacyBlock(), 3);
                 }
             }
@@ -804,7 +832,7 @@ public final class Echoes {
         }
 
         public static AttributeSupplier.Builder attributes() {
-            return base(1200, 16, 16);
+            return base(2000, 18, 16);
         }
 
         @Override
@@ -819,20 +847,25 @@ public final class Echoes {
 
         @Override
         protected double hoverHeight() {
-            return 7.0;
+            return 16.0;
         }
 
         @Override
         protected double flySpeed() {
-            return 0.16;
+            return 0.22;
+        }
+
+        @Override
+        protected double leash() {
+            return 80.0;
         }
 
         @Override
         protected int moveA(ServerLevel level, LivingEntity target) {
             // the Chains: they lash the target and drag it in
-            if (this.distanceToSqr(target) < 18 * 18) {
+            if (this.distanceToSqr(target) < 32 * 32) {
                 this.swing(InteractionHand.MAIN_HAND);
-                target.hurt(this.blow(), 10.0F);
+                target.hurt(this.blow(), 11.0F);
                 Vec3 in = this.position().subtract(target.position()).normalize().scale(1.1);
                 target.push(in.x, 0.4, in.z);
                 target.hurtMarked = true;
@@ -840,7 +873,7 @@ public final class Echoes {
             }
             if (this.getHealth() < this.getMaxHealth() * 0.25F) {
                 // near its end, fire rains from it
-                for (Player p : this.playersNear(level, 30.0)) {
+                for (Player p : this.playersNear(level, 50.0)) {
                     SmallFireball ball = new SmallFireball(level, this, new Vec3(0, -1, 0));
                     ball.setPos(p.getX() + this.random.nextGaussian() * 2, p.getY() + 14, p.getZ() + this.random.nextGaussian() * 2);
                     level.addFreshEntity(ball);
@@ -852,7 +885,7 @@ public final class Echoes {
         @Override
         protected int moveB(ServerLevel level, LivingEntity target) {
             // the Toll: a warning, then everyone who moves while it rings is struck down
-            for (Player p : this.playersNear(level, 40.0)) {
+            for (Player p : this.playersNear(level, 64.0)) {
                 p.displayClientMessage(Component.translatable("story.redstoneplus.overtoll_warning").withStyle(ChatFormatting.RED), true);
             }
             this.tollIn = 30;
@@ -870,11 +903,11 @@ public final class Echoes {
                 this.playAbility();
                 level.playSound(null, this.blockPosition(), RealmSounds.GREAT_BELL.get(), SoundSource.HOSTILE, 6.0F, 0.7F);
                 this.atToll.clear();
-                for (Player p : this.playersNear(level, 40.0)) {
+                for (Player p : this.playersNear(level, 64.0)) {
                     this.atToll.put(p.getUUID(), p.position());
                 }
             } else if (this.tollIn < 0 && this.tollIn > -40) {
-                for (Player p : this.playersNear(level, 40.0)) {
+                for (Player p : this.playersNear(level, 64.0)) {
                     Vec3 was = this.atToll.get(p.getUUID());
                     if (was != null && p.position().distanceToSqr(was) > 1.0) {
                         this.atToll.remove(p.getUUID());
@@ -924,7 +957,7 @@ public final class Echoes {
         }
     }
 
-    /** The Heart of the Five: laid on the bronze of a Foundry City's Cradle, it calls the Great Bell down. */
+    /** The Heart of the Five: laid on the bronze socket of the Great Cradle, in the Heart of the artery, it calls the Great Bell down. */
     public static class HeartOfTheFive extends Item {
         public HeartOfTheFive(Properties properties) {
             super(properties);
@@ -948,16 +981,16 @@ public final class Echoes {
                 player.displayClientMessage(Component.translatable("story.redstoneplus.heart_done").withStyle(ChatFormatting.GOLD), true);
                 return InteractionResult.FAIL;
             }
-            BlockPos cradle = RealmCities.nearestCradle(level, context.getClickedPos());
-            if (cradle == null || cradle.distSqr(context.getClickedPos().atY(cradle.getY())) > 16 * 16) {
+            BlockPos cradle = Sanctums.heart(level).pos();
+            if (cradle.distSqr(context.getClickedPos().atY(cradle.getY())) > 16 * 16) {
                 player.displayClientMessage(Component.translatable("story.redstoneplus.heart_where").withStyle(ChatFormatting.GOLD), true);
                 return InteractionResult.FAIL;
             }
-            if (!level.getEntitiesOfClass(Overtoll.class, new net.minecraft.world.phys.AABB(cradle).inflate(80)).isEmpty()) {
+            if (!level.getEntitiesOfClass(Overtoll.class, new net.minecraft.world.phys.AABB(cradle).inflate(160)).isEmpty()) {
                 return InteractionResult.FAIL;
             }
             context.getItemInHand().shrink(1);
-            spawnBoss(level, Realm.OVERTOLL.get(), cradle, 26, player);
+            spawnBoss(level, Realm.OVERTOLL.get(), cradle, 40, player);
             for (ServerPlayer p : level.players()) {
                 p.playNotifySound(RealmSounds.GREAT_BELL.get(), SoundSource.HOSTILE, 3.0F, 0.5F);
                 p.sendSystemMessage(Component.translatable("story.redstoneplus.overtoll_descends").withStyle(ChatFormatting.DARK_RED));
@@ -999,7 +1032,7 @@ public final class Echoes {
             BlockPos goal;
             Component what;
             if (RealmStory.conquered(level) == RealmStory.ALL) {
-                goal = RealmCities.nearestCradle(server, player.blockPosition());
+                goal = Sanctums.heart(server).pos();
                 what = Component.translatable("story.redstoneplus.fork_cradle");
             } else {
                 Sanctums.Seat seat = Sanctums.nearest(server, player.blockPosition(), false);

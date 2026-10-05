@@ -1,14 +1,14 @@
 {
-  "has_precipitation": true,
-  "temperature": 0.5,
-  "downfall": 0.9,
+  "has_precipitation": false,
+  "temperature": 1.0,
+  "downfall": 0.0,
   "effects": {
-    "sky_color": 5909034,
-    "fog_color": 3809312,
-    "water_color": 11546650,
-    "water_fog_color": 2754566,
-    "grass_color": 6957594,
-    "foliage_color": 6957594,
+    "sky_color": 1836036,
+    "fog_color": 3803142,
+    "water_color": 5900806,
+    "water_fog_color": 2098180,
+    "grass_color": 3803656,
+    "foliage_color": 3803656,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
@@ -16,15 +16,15 @@
       "offset": 2.0
     },
     "particle": {
-      "probability": 0.004,
+      "probability": 0.006,
       "options": {
         "type": "minecraft:dust",
         "color": [
           1.0,
-          0.55,
-          0.15
+          0.3,
+          0.08
         ],
-        "scale": 0.8
+        "scale": 0.7
       }
     },
     "music": {
@@ -35,60 +35,16 @@
     }
   },
   "spawners": {
-    "monster": [
-      {
-        "type": "redstoneplus:sluice_chainjaw",
-        "weight": 56,
-        "minCount": 1,
-        "maxCount": 3
-      },
-      {
-        "type": "redstoneplus:relay_strider",
-        "weight": 10,
-        "minCount": 1,
-        "maxCount": 1
-      }
-    ],
-    "creature": [
-      {
-        "type": "redstoneplus:spark_mite",
-        "weight": 14,
-        "minCount": 3,
-        "maxCount": 6
-      },
-      {
-        "type": "redstoneplus:scrap_jackal",
-        "weight": 5,
-        "minCount": 2,
-        "maxCount": 3
-      },
-      {
-        "type": "redstoneplus:trackwright",
-        "weight": 3,
-        "minCount": 1,
-        "maxCount": 1
-      }
-    ],
-    "ambient": [
-      {
-        "type": "redstoneplus:lamp_moth",
-        "weight": 30,
-        "minCount": 3,
-        "maxCount": 6
-      }
-    ],
+    "monster": [],
+    "creature": [],
+    "ambient": [],
     "axolotls": [],
     "underground_water_creature": [],
     "water_creature": [],
     "water_ambient": [],
     "misc": []
   },
-  "spawn_costs": {
-    "redstoneplus:sluice_chainjaw": {
-      "energy_budget": 1.0,
-      "charge": 0.4
-    }
-  },
+  "spawn_costs": {},
   "carvers": {
     "air": [
       "minecraft:cave",
@@ -106,7 +62,6 @@
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
       "redstoneplus:sanctums",
-      "redstoneplus:tempest_pillar",
       "redstoneplus:scree",
       "redstoneplus:red_sea",
       "redstoneplus:rim",
@@ -114,7 +69,6 @@
     ],
     [],
     [
-      "redstoneplus:storm_spire",
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
       "redstoneplus:circuit_temple",

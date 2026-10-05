@@ -117,6 +117,7 @@
     "redstoneplus:lightline",
     "redstoneplus:grid_beacon",
     "redstoneplus:blight_crust",
-    "redstoneplus:quarantine_plating"
+    "redstoneplus:quarantine_plating",
+    "redstoneplus:artery_wall"
   ]
 }

@@ -1496,7 +1496,7 @@ mob('echo_force', [
     *_pa_arms,
     part('shard_a', (0, -10, 0), [cube((13, -26, 6), (4, 4, 4), 'core_amber'), cube((-17, -2, -9), (3, 3, 3), 'core_red')], parent='body'),
     part('shard_b', (0, -10, 0), [cube((-15, -24, 8), (3, 5, 3), 'core_red'), cube((14, 0, -10), (4, 3, 4), 'core_amber')], parent='body'),
-], {}, look=('head',), shadow=1.4, scale=2.2, texture_width=256)
+], {}, look=('head',), shadow=2.8, scale=4.4, texture_width=256)
 L = 3.0
 replace_clip('echo_force', 'idle', L, True, {
     'body': merge(hover(L, 1.5), R(lambda u: (2 * s(u), 0, 1.5 * s(u, 1, 0.25)), L)),
@@ -1557,7 +1557,7 @@ for _i in range(8):
     ], parent=_prev))
     _prev = f'seg{_i}'
 _cur.append(part('tail', (0, 8, 32), [cube((-1.5, 6.5, 32), (3, 3, 8), 'core_red'), cube((-0.5, 7.5, 39), (1, 1, 5), 'core_amber')], parent=_prev))
-mob('echo_signal', _cur, {}, look=('head',), shadow=1.0, scale=2.0, texture_width=256)
+mob('echo_signal', _cur, {}, look=('head',), shadow=2.0, scale=4.0, texture_width=256)
 L = 1.4
 replace_clip('echo_signal', 'walk', L, True, merge(
     {f'seg{i}': R(lambda u, i=i: (4 * s(u, 1, i * 0.12), 16 * s(u, 1, i * 0.12 + 0.25), 0), L) for i in range(8)},
@@ -1599,7 +1599,7 @@ for _k, (_bx, _bz) in enumerate(ring_points(6, 17)):
     _choir.append(part(f'bell{_k}', (_bx, -6, _bz), [cube((_bx - 3, -10, _bz - 3), (6, 7, 6), 'great_bronze', {'front': 'crack'}),
                                                     cube((_bx - 3.5, -3.5, _bz - 3.5), (7, 1.5, 7), 'great_bronze'),
                                                     cube((_bx - 1, -2.5, _bz - 1), (2, 3, 2), 'core_red')], parent='ring'))
-mob('echo_resonance', _choir, {}, look=('mask',), shadow=1.2, scale=2.0, texture_width=256)
+mob('echo_resonance', _choir, {}, look=('mask',), shadow=2.4, scale=4.0, texture_width=256)
 L = 4.0
 replace_clip('echo_resonance', 'idle', L, True, merge(
     {'ring': R(lambda u: (0, 360 * u, 0), L, 24), 'body': hover(L, 2.0),
@@ -1638,7 +1638,7 @@ for _n, (_dx, _dz, _rx, _rz) in (('petal_n', (0, -8, -1, 0)), ('petal_s', (0, 8,
                     parent='body', rot=(_rx * 18, 0, -_rz * 18)))
 _kh.append(part('cinders', (0, -12, 0), [cube((x - 1.5, -14 + (k % 3) * 3, z - 1.5), (3, 3, 3), 'ember' if k % 2 else 'cinder_glow')
                                          for k, (x, z) in enumerate(ring_points(7, 15))], parent='body'))
-mob('echo_heat', _kh, {}, look=(), shadow=1.2, scale=2.2, texture_width=256)
+mob('echo_heat', _kh, {}, look=(), shadow=2.4, scale=4.4, texture_width=256)
 L = 3.0
 replace_clip('echo_heat', 'idle', L, True, {
     'body': merge(hover(L, 1.5), S(lambda u: (1 + 0.04 * s(u, 3), 1 + 0.04 * s(u, 3), 1 + 0.04 * s(u, 3)), L)),
@@ -1683,7 +1683,7 @@ mob('echo_flow', [
     part('arm_l', (8, -18, 0), [cube((8, -18, -2), (4, 18, 4), 'molten'), cube((7.5, 0, -2.5), (5, 5, 5), 'core_red')], parent='body', rot=(0, 0, -10)),
     part('arm_r', (-8, -18, 0), [cube((-12, -18, -2), (4, 18, 4), 'molten'), cube((-12.5, 0, -2.5), (5, 5, 5), 'core_red')], parent='body', rot=(0, 0, 10)),
     part('drip', (0, 20, 0), [cube((-4, 20, -4), (8, 4, 8), 'molten'), cube((-6, 23, -6), (12, 1, 12), 'core_red')], parent='body'),
-], {}, look=('head',), shadow=1.3, scale=2.1, texture_width=256)
+], {}, look=('head',), shadow=2.6, scale=4.2, texture_width=256)
 L = 3.0
 replace_clip('echo_flow', 'idle', L, True, {
     'body': merge(S(lambda u: (1 + 0.03 * s(u, 2), 1 - 0.02 * s(u, 2), 1 + 0.03 * s(u, 2)), L), R(lambda u: (0, 6 * s(u), 2 * s(u, 2)), L)),
@@ -1740,7 +1740,7 @@ for _n, _side in (('arm_l', 1), ('arm_r', -1)):
 for _k, (_cx, _cz) in enumerate(ring_points(4, 15, TAU / 8)):
     _ot.append(part(f'chain{_k}', (_cx, -30, _cz), [cube((_cx - 1, -30, _cz - 1), (2, 22, 2), 'chain'), cube((_cx - 2, -9, _cz - 2), (4, 4, 4), 'iron')],
                     parent='body', rot=(18 if _cz > 0 else -18, 0, -18 if _cx > 0 else 18)))
-mob('the_overtoll', _ot, {}, look=(), shadow=2.0, scale=3.0, texture_width=256)
+mob('the_overtoll', _ot, {}, look=(), shadow=4.5, scale=6.5, texture_width=256)
 L = 5.0
 replace_clip('the_overtoll', 'idle', L, True, merge(
     {'body': merge(hover(L, 2.5), R(lambda u: (3 * s(u), 0, 4 * s(u, 1, 0.25)), L)),

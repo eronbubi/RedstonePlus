@@ -38,7 +38,7 @@ ENVIRONMENT = sorted(set(REHUE) | {
     'realmstone', 'deep_realmstone', 'realmstone_bricks', 'hematite', 'dark_hematite', 'cinder_rock', 'fossil_circuit', 'redstone_vein',
     'salt_crust', 'rust_plating', 'rust_sand', 'red_clay', 'fen_mud', 'briar_soil', 'heather_turf', 'root_soil', 'crimson_heather', 'fen_reed',
     'red_coral_shrub', 'pale_stalk', 'salt_brush', 'copper_reed', 'lichen_tuft', 'cinder_bloom', 'redstone_cluster', 'lightline', 'grid_beacon',
-    'blight_crust', 'quarantine_plating', 'chain_link', 'dawn_lily', 'echo_seal_side'} | {f'echo_seal_{e}' for e in ('force', 'signal', 'resonance', 'heat', 'flow')}
+    'blight_crust', 'quarantine_plating', 'artery_wall', 'chain_link', 'dawn_lily', 'echo_seal_side'} | {f'echo_seal_{e}' for e in ('force', 'signal', 'resonance', 'heat', 'flow')}
     | {f'{l}_{p}' for l in ('molten_redstone', 'ember_oil', 'rust_brine', 'resonant_ichor', 'blight_sap', 'dawn_nectar') for p in ('still', 'flow')})
 
 
@@ -59,9 +59,15 @@ def int_rgb(i):
 
 
 def realm_biomes():
-    """The biomes the realm's dimension actually places (the mod's Overworld and End biomes are not the realm's)."""
-    dim = json.load(open(os.path.join(RES, 'data', 'redstoneplus', 'dimension', 'redstone_realm.json'), encoding='utf-8'))
-    return sorted({p['biome'].split(':')[1] for p in dim['generator']['biome_source']['biomes']})
+    """The biomes the realm places (its own biome source lays them along the artery; see Realm.BIOMES)."""
+    import re
+    java = open(os.path.join(HERE, '..', 'src', 'main', 'java', 'de', 'eron', 'redstoneplus', 'realm', 'Realm.java'), encoding='utf-8').read()
+    block = java[java.index('BIOMES = List.of('):]
+    block = block[:block.index(');')]
+    names = re.findall(r'"([a-z_]+)"', block)
+    if 'Artery.VOID' in block:
+        names.append('the_abyss')
+    return sorted(set(names))
 
 
 def check_biomes():

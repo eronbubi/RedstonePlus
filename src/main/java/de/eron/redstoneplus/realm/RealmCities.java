@@ -77,7 +77,9 @@ final class RealmCities {
                 int base = gen.getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, level, random) - 1;
                 var biome = gen.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(base), QuartPos.fromBlock(z), random.sampler());
                 boolean sea = biome.is(ResourceKey.create(Registries.BIOME, Realm.id("tempest_shoals")));
-                if (!sea && base >= level.getSeaLevel() - 1) {
+                // a city stands well inside the artery, and clear of the arenas
+                boolean placed = Artery.s(x, z) > 0.35 && !Sanctums.coversStatic(x, z, r + 30);
+                if (!sea && placed && base >= level.getSeaLevel() - 1) {
                     c = new City(x, z, r, base, h);
                 }
             }
@@ -137,34 +139,6 @@ final class RealmCities {
     static boolean covers(WorldGenLevel level, ChunkGenerator gen, RandomState random, int x, int z) {
         City c = city(level, gen, random, Math.floorDiv(x, CELL), Math.floorDiv(z, CELL));
         return c != null && (x - c.x) * (double) (x - c.x) + (z - c.z) * (double) (z - c.z) <= (c.r + 12) * (double) (c.r + 12);
-    }
-
-    /**
-     * The Cradle (the centre of the plaza, at the plaza's floor) of the nearest Foundry City within two cells, or null.
-     * This is where the Heart of the Five calls the Great Bell down.
-     */
-    @javax.annotation.Nullable
-    static BlockPos nearestCradle(net.minecraft.server.level.ServerLevel level, BlockPos near) {
-        ChunkGenerator gen = level.getChunkSource().getGenerator();
-        RandomState random = level.getChunkSource().randomState();
-        int cellX = Math.floorDiv(near.getX(), CELL);
-        int cellZ = Math.floorDiv(near.getZ(), CELL);
-        BlockPos best = null;
-        double bestD = Double.MAX_VALUE;
-        for (int i = -2; i <= 2; i++) {
-            for (int j = -2; j <= 2; j++) {
-                City c = city(level, gen, random, cellX + i, cellZ + j);
-                if (c == null) {
-                    continue;
-                }
-                double d = (c.x - near.getX()) * (double) (c.x - near.getX()) + (c.z - near.getZ()) * (double) (c.z - near.getZ());
-                if (d < bestD) {
-                    bestD = d;
-                    best = new BlockPos(c.x, c.base, c.z);
-                }
-            }
-        }
-        return best;
     }
 
     /** One column of whatever city covers it. Returns true if it built anything. */

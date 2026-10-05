@@ -1191,6 +1191,33 @@ name(f'block.{NS}.chain_link', 'Giant Chain Link', 'Riesenkettenglied',
      'A link of the giant chains that bind the realm to the Great Bell. Nothing breaks it: only the fall of the Echo that holds its chain brings it down. When the realm is freed, every chain falls.',
      'Ein Glied der Riesenketten, die das Reich an die Große Glocke binden. Nichts zerbricht es: nur der Fall des Echos, das seine Kette hält, bringt es herab. Ist das Reich befreit, fallen alle Ketten.')
 
+def artery_wall_texture():
+    """The wall of the vessel: dark crimson tissue, branching vessels in it, a few of them still glowing."""
+    img = noisy(blank('#5a0e12'), 0.16, STORY_RND)
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            v = 0.5 + 0.5 * _m.sin(x * 0.9 + _m.sin(y * 0.7) * 2.0)
+            if v > 0.92:
+                px[x, y] = (128, 22, 28, 255)
+    for _ in range(3):
+        x, y = STORY_RND.randrange(16), STORY_RND.randrange(16)
+        glow = STORY_RND.random() < 0.6
+        for k in range(12):
+            px[x % 16, y % 16] = (255, 64, 40, 255) if glow and k % 4 else (150, 26, 30, 255)
+            x += STORY_RND.choice((-1, 0, 1))
+            y += STORY_RND.choice((0, 1, 1))
+    return img
+
+
+save(artery_wall_texture(), 'block', 'artery_wall')
+simple_block('artery_wall')
+self_drop('artery_wall')
+pickaxe.append(f'{NS}:artery_wall')
+name(f'block.{NS}.artery_wall', 'Artery Wall', 'Aderwand',
+     'The living wall of the vessel the realm is. It lines the rims, the underside and the veins that hang down into the Blood Below.',
+     'Die lebende Wand des Gefäßes, das das Reich ist. Sie säumt die Ränder, die Unterseite und die Adern, die in das Blut darunter hinabhängen.')
+
 # the dawn lily: what grows on the freed realm
 save(sprite([
     '................', '.....a....a.....', '....aba..aba....', '....abba.abb....', '.....abbabba....', '......abcba.....',
@@ -1233,8 +1260,8 @@ save(sprite([
     {'a': '#6a4a22', 'b': '#ff3a1a', 'c': '#ff7a10', 'd': '#ffb040', 'e': '#ffe08a', 'f': '#fffbe8'}), 'item', 'heart_of_the_five')
 item_model('heart_of_the_five')
 name(f'item.{NS}.heart_of_the_five', 'Heart of the Five', 'Herz der Fünf',
-     'The five cores of the Echoes, forged into one. Use it on the bell bronze in the crater of a Foundry City\'s Cradle to call the Great Bell down to fight.',
-     'Die fünf Kerne der Echos, zu einem geschmiedet. Benutze es auf der Glockenbronze im Krater der Wiege einer Gießereistadt, um die Große Glocke zum Kampf herabzurufen.')
+     'The five cores of the Echoes, forged into one. Use it on the bronze socket of the Great Cradle, in the Heart of the artery, to call the Great Bell down to fight.',
+     'Die fünf Kerne der Echos, zu einem geschmiedet. Benutze es auf dem Bronzesockel der Großen Wiege im Herzen der Ader, um die Große Glocke zum Kampf herabzurufen.')
 save(sprite([
     '................', '...a......a.....', '...ab.....ab....', '...ab.....ab....', '...ab.....ab....', '...ab.....ab....',
     '...ab.....ab....', '...abb...bab....', '....abbbbba.....', '.....aaaaa......', '.......ab.......', '.......ab.......',
@@ -1242,8 +1269,8 @@ save(sprite([
     {'a': '#8a5a22', 'b': '#e0a850', 'c': '#ff3a1a'}), 'item', 'tuning_fork')
 item_model('tuning_fork')
 name(f'item.{NS}.tuning_fork', 'Tuning Fork', 'Stimmgabel',
-     'Strike it (use) and it hums towards the nearest sanctum whose Echo still stands, and how far it is; once all five have fallen, towards the nearest Cradle.',
-     'Anschlagen (benutzen), und sie summt in Richtung des nächsten Heiligtums, dessen Echo noch steht, und sagt wie weit; sind alle fünf gefallen, zur nächsten Wiege.')
+     'Strike it (use) and it hums towards the nearest arena whose Echo still stands, and how far it is; once all five have fallen, towards the Great Cradle.',
+     'Anschlagen (benutzen), und sie summt in Richtung der nächsten Arena, deren Echo noch steht, und sagt wie weit; sind alle fünf gefallen, zur Großen Wiege.')
 shaped('tuning_fork', ['B B', 'BRB', ' C '], {'B': f'{NS}:bell_bronze', 'R': 'minecraft:redstone', 'C': f'{NS}:realm_cog'}, f'{NS}:tuning_fork')
 shapeless('heart_of_the_five', [f'{NS}:core_{e}' for e in ECHOES] + [f'{NS}:bell_bronze'],
           f'{NS}:heart_of_the_five')
@@ -1338,20 +1365,20 @@ for key, e, g in (
         ('chain_broken.title', 'A CHAIN BREAKS', 'EINE KETTE BRICHT'),
         ('chains_left', 'The Great Bell is held by %s chain(s) more. Somewhere, its other Echoes keep them.',
          'Die Große Glocke hängt noch an %s Kette(n). Irgendwo hüten ihre anderen Echos sie.'),
-        ('all_broken', 'All five chains are broken. Forge the five cores into the Heart of the Five and lay it on the bronze of a Cradle: the Bell will come down.',
-         'Alle fünf Ketten sind gebrochen. Schmiede die fünf Kerne zum Herz der Fünf und lege es auf die Bronze einer Wiege: die Glocke wird herabkommen.'),
+        ('all_broken', 'All five chains are broken. Forge the five cores into the Heart of the Five and lay it on the socket of the Great Cradle, in the Heart of the artery: the Bell will come down.',
+         'Alle fünf Ketten sind gebrochen. Schmiede die fünf Kerne zum Herz der Fünf und lege es auf den Sockel der Großen Wiege im Herzen der Ader: die Glocke wird herabkommen.'),
         ('overtoll_warning', 'THE OVERTOLL GATHERS ITS TOLL · BE STILL', 'DER ÜBERGELÄUT HOLT ZUM SCHLAG AUS · HALTE STILL'),
         ('overtoll_descends', 'The Great Bell tears loose from the sky and comes down: the Overtoll!',
          'Die Große Glocke reißt sich vom Himmel los und stürzt herab: der Übergeläut!'),
-        ('heart_where', 'The Heart answers only on the bell bronze in the crater of a Foundry City\'s Cradle, in the realm.',
-         'Das Herz antwortet nur auf der Glockenbronze im Krater der Wiege einer Gießereistadt, im Reich.'),
+        ('heart_where', 'The Heart answers only on the bronze socket of the Great Cradle, in the Heart of the artery.',
+         'Das Herz antwortet nur auf dem Bronzesockel der Großen Wiege im Herzen der Ader.'),
         ('heart_done', 'The realm is free already. The Heart only glows warmly.', 'Das Reich ist schon frei. Das Herz glüht nur warm.'),
         ('freed.title', 'THE REALM IS FREE', 'DAS REICH IST FREI'),
         ('freed.subtitle', 'A red sun rises where the Bell hung', 'Eine rote Sonne geht auf, wo die Glocke hing'),
         ('freed.message', 'The Overtoll has fallen. The chains fall, the land heals around you, and the creatures of the realm bloom and leave you in peace.',
          'Der Übergeläut ist gefallen. Die Ketten fallen, das Land heilt um dich herum, und die Kreaturen des Reichs blühen auf und lassen dich in Frieden.'),
         ('fork_points', '%s: %s %s blocks', '%s: %s %s Blöcke'),
-        ('fork_cradle', 'The Cradle', 'Die Wiege'),
+        ('fork_cradle', 'The Great Cradle', 'Die Große Wiege'),
         ('fork_silent', 'The fork is silent outside the realm.', 'Außerhalb des Reichs schweigt die Gabel.'),
         ('fork_healed', 'The fork rings clear: there is nothing left to find.', 'Die Gabel klingt rein: es gibt nichts mehr zu finden.'),
         ('fork_nothing', 'The fork hums, but finds nothing near.', 'Die Gabel summt, findet aber nichts in der Nähe.'),
@@ -1564,7 +1591,8 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities', 'grid', 'sealed_wall', 'sanctums'):
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities', 'grid', 'sealed_wall', 'sanctums',
+              'red_sea', 'rim', 'abyss'):
     placed(shape, none_feature(shape), [])
 
 # trap sites, scenery and machines: rare and spread out
@@ -1636,7 +1664,7 @@ STEPS = [
      'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid',
      'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
-     'redstoneplus:scree'],
+     'redstoneplus:scree', 'redstoneplus:red_sea', 'redstoneplus:rim', 'redstoneplus:abyss'],
     ['redstoneplus:resonance_gatehouse'],
     ['redstoneplus:crusher_passage', 'redstoneplus:switchyard_junction', 'redstoneplus:sluice_bridge', 'redstoneplus:kiln_bridge',
      'redstoneplus:briar_ambush', 'redstoneplus:rail_line', 'redstoneplus:tower', 'redstoneplus:ruin', 'redstoneplus:monolith',
@@ -1654,7 +1682,8 @@ STEPS = [
      'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
     [],
 ]
-EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:chain_anchor', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
+EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:chain_anchor',
+              'redstoneplus:red_sea', 'redstoneplus:rim', 'redstoneplus:abyss', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
               'redstoneplus:scree'}
 
 
@@ -1739,8 +1768,11 @@ BIOMES = {
                      fx({'type': 'minecraft:dust', 'color': [0.55, 0.05, 0.03], 'scale': 1.2}, 0.03),
                      features('monolith', 'ruin', 'beast_cage', 'briar_patch', 'cinder_bloom_patch', 'blight_sap_lake'),
                      [('wirewraith', 30, 1, 1), ('maw_engine', 20, 1, 1)], [], []),
+    # the void around the artery: no ground, a deep red haze, embers drifting up from the Blood Below
+    'the_abyss': ('The Abyss', 'Der Abgrund', 1.0, 0.0, ('#1c0404', '#3a0806', '#5a0a06', '#200404', '#3a0a08'),
+                  fx({'type': 'minecraft:dust', 'color': [1.0, 0.3, 0.08], 'scale': 0.7}, 0.006), features(), [], [], []),
 }
-UNDERGROUND = {'resonance_hollows', 'circuit_fossil_beds'}
+UNDERGROUND = {'resonance_hollows', 'circuit_fossil_beds', 'the_abyss'}
 # no wildlife and no Trackwrights inside the walls of the Sealed Reach
 WALLED = {'sealed_reach'}
 CONSTRUCTS = {'karst_colossus', 'switchback_crawler', 'bell_stalker', 'sluice_chainjaw', 'kiln_brute', 'spool_weaver'}
@@ -1875,6 +1907,10 @@ settings = vanilla_json('data/minecraft/worldgen/noise_settings/overworld.json')
 settings['default_block'] = state('realmstone')
 settings['ore_veins_enabled'] = False
 settings['surface_rule']['sequence'].insert(1, realm_rules)
+# no sea and no water table: outside the artery there is only the void (its floor, the Blood Below, is laid by a feature)
+settings['default_fluid'] = {'Name': 'minecraft:air'}
+settings['aquifers_enabled'] = False
+settings['noise_router']['final_density'] = {'type': f'{NS}:artery', 'argument': settings['noise_router']['final_density']}
 # biomes a third of the overworld's size, so all of them are within reach: only the biome noises are sampled faster,
 # the terrain shape is untouched
 for climate in ('temperature', 'vegetation'):
@@ -1888,34 +1924,11 @@ write(os.path.join(DATA, 'dimension_type', 'redstone_realm.json'), {
     'logical_height': 384, 'min_y': -64, 'height': 384, 'infiniburn': '#minecraft:infiniburn_overworld', 'effects': f'{NS}:redstone_realm'})
 
 
-# ---- biome layout: seas and coasts, mountains by heat, and a temperature x humidity grid on the flatter land
-def point(biome, t=(-1, 1), h=(-1, 1), cont=(-0.11, 1.2), ero=(-1, 1), weird=(-1, 1), dep=0.0):
-    return {'biome': f'{NS}:{biome}', 'parameters': {'temperature': list(t), 'humidity': list(h), 'continentalness': list(cont),
-                                                     'erosion': list(ero), 'weirdness': list(weird), 'depth': dep, 'offset': 0.0}}
-
-
-T = [(-1.0, -0.45), (-0.45, -0.15), (-0.15, 0.2), (0.2, 0.55), (0.55, 1.0)]
-H = [(-1.0, -0.2), (-0.2, 0.3), (0.3, 1.0)]
-FLAT = [['frostwork_wastes', 'frostwork_wastes', 'frostwork_wastes'],
-        ['oxide_salt_flats', 'landmark_moors', 'lamplit_grove'],
-        ['switchyard_flats', 'tripwire_briar', 'vein_mire'],
-        ['arsenal_dunes', 'rubedo_gardens', 'red_clay_fen'],
-        ['kiln_barrens', 'arsenal_dunes', 'sluice_gardens']]
-PEAKS = ['frostwork_wastes', 'hematite_scarps', 'piston_karst', 'hematite_scarps', 'kiln_barrens']
-points = [point('tempest_shoals', cont=(-1.2, -0.35)),
-          point('sluice_gardens', t=(0.0, 1.0), cont=(-0.35, -0.11)),
-          point('red_clay_fen', t=(-1.0, 0.0), cont=(-0.35, -0.11))]
-SEALED_WEIRDNESS = 0.62
-for ti, tr in enumerate(T):
-    points.append(point(PEAKS[ti], t=tr, ero=(-1.0, -0.375)))
-    for hi, hr in enumerate(H):
-        points.append(point(FLAT[ti][hi], t=tr, h=hr, ero=(-0.375, 1.0), weird=(-1.0, SEALED_WEIRDNESS)))
-points.append(point('sealed_reach', cont=(0.05, 1.2), ero=(-0.375, 1.0), weird=(SEALED_WEIRDNESS, 1.0)))
-points.append(point('circuit_fossil_beds', h=(-1.0, 0.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
-points.append(point('resonance_hollows', h=(0.0, 1.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
+# ---- the map: the realm is one giant artery of land over a void (see Artery.java). The biomes lie along it on purpose,
+# placed by the realm's own biome source; the shape is cut by the realm's own density function around the overworld terrain.
 write(os.path.join(DATA, 'dimension', 'redstone_realm.json'), {
     'type': f'{NS}:redstone_realm',
-    'generator': {'type': 'minecraft:noise', 'settings': f'{NS}:redstone_realm', 'biome_source': {'type': 'minecraft:multi_noise', 'biomes': points}}})
+    'generator': {'type': 'minecraft:noise', 'settings': f'{NS}:redstone_realm', 'biome_source': {'type': f'{NS}:artery'}}})
 
 # ---- tags: the realm's rock is where its ores grow and where caves are carved
 REALM_ROCK = [f'{NS}:{b}' for b in ('realmstone', 'deep_realmstone', 'hematite', 'dark_hematite', 'cinder_rock', 'tempest_basalt', 'frost_realmstone',
@@ -2076,9 +2089,9 @@ BOOK_EN += [
     'THE LIQUIDS II\nResonant Ichor: soft falls, high jumps, it sets off sculk sensors.\nBlight Sap: saps strength, withers, spreads blight.\nDawn Nectar: heals and feeds, grows plants. It only flows once the realm is free.',
     'WHERE THEY MEET\nMolten Redstone + water: Redstone Vein; + lava: realm redstone ore.\nEmber Oil + fire or lava: flames.\nRust Brine + lava: hematite.\nIchor + lava: resonant crystal.\nBlight Sap + Dawn Nectar: heather turf.',
     'THE ECHOES\n\nWhen the Bell tore free, its five voices broke away: the Echoes of Force, Signal, Resonance, Heat and Flow, beings of pure redstone light. Each holds one of the giant chains that keep the Bell tolling over the realm.',
-    'THE SANCTUMS\n\nEach Echo keeps a sanctum, a few hundred blocks from the next: the Press Throne, the Switchboard, the Belfry Hollow, the Furnace Crown and the Sluice Basin. A giant chain rises from each into the sky. The Tuning Fork hums the way.',
+    'THE ARENAS\n\nEach Echo keeps one arena on the artery: the Press Throne (Piston Karst), the Switchboard (Switchyard), the Belfry Hollow (Moors), the Sluice Basin (by the Red Sea) and the Furnace Crown (Kiln Barrens). A giant chain rises from each into the sky. The Tuning Fork hums the way.',
     'WAKING AN ECHO\n\nUse the Echo Seal at the heart of a sanctum. The Echo comes. It hits hard, and at half strength it calls the realm\'s creatures to its side. Fighting it breaks no rule. When it falls, its chain breaks: in the world, and in the sky.',
-    'THE LAST FIGHT\n\nForge the five cores and a block of bell bronze into the Heart of the Five. Lay it on the bronze in the crater of a Foundry City\'s Cradle. The Bell comes down: the Overtoll. When it tolls, stand still.',
+    'THE LAST FIGHT\n\nForge the five cores and a block of bell bronze into the Heart of the Five. Lay it on the socket of the Great Cradle, in the Heart, the widest chamber of the artery. The Bell comes down: the Overtoll. When it tolls, stand still.',
     'THE FREED REALM\n\nWhen the Overtoll falls, a red sun rises where it hung. The light grows warm, the creatures bloom and leave you in peace, and around you the land heals: the chains fall, blight turns to heather, dead lamps light, dawn lilies grow.',
 ]
 BOOK_DE += [
@@ -2086,10 +2099,27 @@ BOOK_DE += [
     'DIE FLÜSSIGKEITEN II\nResonanz-Ichor: weiche Stürze, hohe Sprünge, weckt Sculk-Sensoren.\nFäulnissaft: raubt Kraft, lässt verdorren, verbreitet Fäulnis.\nMorgennektar: heilt, nährt, lässt Pflanzen wachsen. Er fließt erst, wenn das Reich frei ist.',
     'WO SIE SICH TREFFEN\nRedstone + Wasser: Redstone-Ader; + Lava: Reichs-Redstone-Erz.\nGlutöl + Feuer oder Lava: Flammen.\nRostlake + Lava: Hämatit.\nIchor + Lava: Resonanzkristall.\nFäulnissaft + Morgennektar: Heideboden.',
     'DIE ECHOS\n\nAls die Glocke sich losriss, brachen ihre fünf Stimmen ab: die Echos der Kraft, des Signals, der Resonanz, der Hitze und des Flusses, Wesen aus reinem Redstone-Licht. Jedes hält eine der Riesenketten, die die Glocke über dem Reich schlagen lassen.',
-    'DIE HEILIGTÜMER\n\nJedes Echo hütet ein Heiligtum, ein paar hundert Blöcke vom nächsten: Pressenthron, Schaltwarte, Glockenmulde, Ofenkrone und Schleusenbecken. Aus jedem steigt eine Riesenkette in den Himmel. Die Stimmgabel summt den Weg.',
+    'DIE ARENEN\n\nJedes Echo hütet eine Arena auf der Ader: Pressenthron (Kolbenkarst), Schaltwarte (Weichenebene), Glockenmulde (Moore), Schleusenbecken (am Roten Meer) und Ofenkrone (Brennofen-Öde). Aus jeder steigt eine Riesenkette in den Himmel. Die Stimmgabel summt den Weg.',
     'EIN ECHO WECKEN\n\nBenutze das Echo-Siegel im Herzen eines Heiligtums. Das Echo kommt. Es schlägt hart zu, und bei halber Kraft ruft es die Kreaturen des Reichs zu Hilfe. Es zu bekämpfen bricht keine Regel. Fällt es, bricht seine Kette: in der Welt und am Himmel.',
-    'DER LETZTE KAMPF\n\nSchmiede die fünf Kerne und einen Block Glockenbronze zum Herz der Fünf. Lege es auf die Bronze im Krater der Wiege einer Gießereistadt. Die Glocke kommt herab: der Übergeläut. Wenn er schlägt, halte still.',
+    'DER LETZTE KAMPF\n\nSchmiede die fünf Kerne und einen Block Glockenbronze zum Herz der Fünf. Lege es auf den Sockel der Großen Wiege im Herzen, der weitesten Kammer der Ader. Die Glocke kommt herab: der Übergeläut. Wenn er schlägt, halte still.',
     'DAS BEFREITE REICH\n\nFällt der Übergeläut, geht eine rote Sonne auf, wo er hing. Das Licht wird warm, die Kreaturen blühen auf und lassen dich in Frieden, und um dich heilt das Land: die Ketten fallen, Fäulnis wird Heide, tote Lampen leuchten, Morgenlilien wachsen.',
+]
+for key, e, g in (
+        ('blood', 'The Blood Below! The artery will not let you drown in it...', 'Das Blut darunter! Die Ader lässt dich nicht darin versinken...'),
+        ('carried_back', 'A pulse of the artery carries you up out of the Blood Below and throws you onto the land.',
+         'Ein Pulsschlag der Ader trägt dich aus dem Blut darunter herauf und wirft dich an Land.'),
+        ('edge', 'The realm ends here: only the void lies beyond, and it pushes you back.', 'Hier endet das Reich: dahinter liegt nur die Leere, und sie drängt dich zurück.'),
+        ('returned', 'The void will not hold you. The artery pulls you back to its land.', 'Die Leere hält dich nicht. Die Ader zieht dich zurück an ihr Land.')):
+    name(f'artery.{NS}.{key}', e, g)
+BOOK_EN[1:1] = [
+    'THE ARTERY\n\nThe realm does not go on forever. It is one giant artery of the world: a vessel of land eight thousand blocks long, winding over a red void. It swells into chambers and sends side vessels off its flanks.',
+    'THE WAY ALONG IT\nWest Root, Piston Karst (Force), Switchyard (Signal), Moors and Fen (Resonance), the Heart with the Great Cradle, the Red Sea (Flow), the Grove, the Kiln Barrens (Heat), the Salt Flats, East Root. The Sealed Reach is a walled side vessel near the east.',
+    'THE BLOOD BELOW\n\nAt the bottom of the void lies a sea of molten redstone. Veins hang down into it from the rims and the underside, and at both ends the artery dives into it: there the realm joins the world. Fall in, and the artery carries you back up.',
+]
+BOOK_DE[1:1] = [
+    'DIE ADER\n\nDas Reich geht nicht ewig weiter. Es ist eine riesige Ader der Welt: ein Gefäß aus Land, achttausend Blöcke lang, das sich über eine rote Leere windet. Es weitet sich zu Kammern und treibt Seitengefäße aus seinen Flanken.',
+    'DER WEG ENTLANG\nWestwurzel, Kolbenkarst (Kraft), Weichenebene (Signal), Moore und Moor (Resonanz), das Herz mit der Großen Wiege, das Rote Meer (Fluss), der Hain, die Brennofen-Öde (Hitze), die Salzebene, Ostwurzel. Die Versiegelte Weite ist ein ummauertes Seitengefäß im Osten.',
+    'DAS BLUT DARUNTER\n\nAm Grund der Leere liegt ein Meer aus geschmolzenem Redstone. Von den Rändern und der Unterseite hängen Adern hinein, und an beiden Enden taucht die Ader darin ein: dort ist das Reich mit der Welt verbunden. Wer hineinfällt, wird zurückgetragen.',
 ]
 name(f'book.{NS}.realm_guide.title', 'Redstone Realm Field Guide', 'Feldführer Redstone-Reich')
 for i, (e, g) in enumerate(zip(BOOK_EN, BOOK_DE)):

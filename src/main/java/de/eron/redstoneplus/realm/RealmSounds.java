@@ -60,6 +60,8 @@ public final class RealmSounds {
     public static final RegistryObject<SoundEvent> CHAIN_BREAK = sound("event.chain_break");
     /** The Overtoll has fallen and the realm is free. */
     public static final RegistryObject<SoundEvent> REALM_FREED = sound("event.realm_freed");
+    /** The realm's heartbeat: the artery pulses (see RealmSky and ArteryBounds). */
+    public static final RegistryObject<SoundEvent> HEARTBEAT = sound("ambient.heartbeat");
     /** The realm's music (three tracks, one picked at random). */
     public static final RegistryObject<SoundEvent> MUSIC = sound("music.realm");
 

@@ -65,7 +65,8 @@ public final class Realm {
     /** The biomes of the realm (defined in data/redstoneplus/worldgen/biome, written by tools/gen_realm.py). */
     public static final List<String> BIOMES = List.of("piston_karst", "switchyard_flats", "resonance_hollows", "sluice_gardens",
             "kiln_barrens", "tripwire_briar", "arsenal_dunes", "circuit_fossil_beds", "rubedo_gardens", "landmark_moors", "red_clay_fen",
-            "hematite_scarps", "tempest_shoals", "frostwork_wastes", "vein_mire", "oxide_salt_flats", "lamplit_grove", "sealed_reach");
+            "hematite_scarps", "tempest_shoals", "frostwork_wastes", "vein_mire", "oxide_salt_flats", "lamplit_grove", "sealed_reach",
+            Artery.VOID);
 
     // ---------- getting there: a frame of redstone blocks lit with flint and steel ----------
     public static final RegistryObject<Block> REALM_PORTAL = BLOCKS.register("realm_portal", () -> new RealmPortalBlock(
@@ -124,6 +125,10 @@ public final class Realm {
             () -> rock(MapColor.TERRACOTTA_BLACK).strength(1.2F, 6.0F).sound(SoundType.NYLIUM).lightLevel(s -> 3));
     public static final RegistryObject<Block> QUARANTINE_PLATING = block("quarantine_plating", Block::new,
             () -> rock(MapColor.COLOR_YELLOW).strength(8.0F, 1200.0F).sound(SoundType.NETHERITE_BLOCK));
+
+    // ---------- the artery: the wall of the vessel the realm is ----------
+    public static final RegistryObject<Block> ARTERY_WALL = block("artery_wall", Block::new,
+            () -> rock(MapColor.CRIMSON_NYLIUM).strength(2.0F, 8.0F).sound(SoundType.NYLIUM).lightLevel(s -> 4));
 
     // ---------- the realm's own plants and crystals ----------
     public static final RegistryObject<Block> CRIMSON_HEATHER = plant("crimson_heather", 0);
@@ -283,23 +288,23 @@ public final class Realm {
 
     // the five Echoes of the Great Bell, and the Bell itself come down
     public static final RegistryObject<EntityType<Echoes.Force>> ECHO_FORCE = mob("echo_force",
-            () -> EntityType.Builder.<Echoes.Force>of(Echoes.Force::new, MobCategory.MONSTER).fireImmune().sized(3.5F, 7.5F).eyeHeight(6.2F)
-                    .clientTrackingRange(16));
+            () -> EntityType.Builder.<Echoes.Force>of(Echoes.Force::new, MobCategory.MONSTER).fireImmune().sized(7.0F, 15.0F).eyeHeight(12.5F)
+                    .clientTrackingRange(24));
     public static final RegistryObject<EntityType<Echoes.Signal>> ECHO_SIGNAL = mob("echo_signal",
-            () -> EntityType.Builder.<Echoes.Signal>of(Echoes.Signal::new, MobCategory.MONSTER).fireImmune().sized(2.4F, 3.2F).eyeHeight(2.4F)
-                    .clientTrackingRange(16));
+            () -> EntityType.Builder.<Echoes.Signal>of(Echoes.Signal::new, MobCategory.MONSTER).fireImmune().sized(4.8F, 6.4F).eyeHeight(4.8F)
+                    .clientTrackingRange(24));
     public static final RegistryObject<EntityType<Echoes.Resonance>> ECHO_RESONANCE = mob("echo_resonance",
-            () -> EntityType.Builder.<Echoes.Resonance>of(Echoes.Resonance::new, MobCategory.MONSTER).fireImmune().sized(3.0F, 6.4F).eyeHeight(5.4F)
-                    .clientTrackingRange(16));
+            () -> EntityType.Builder.<Echoes.Resonance>of(Echoes.Resonance::new, MobCategory.MONSTER).fireImmune().sized(6.0F, 12.8F).eyeHeight(10.8F)
+                    .clientTrackingRange(24));
     public static final RegistryObject<EntityType<Echoes.Heat>> ECHO_HEAT = mob("echo_heat",
-            () -> EntityType.Builder.<Echoes.Heat>of(Echoes.Heat::new, MobCategory.MONSTER).fireImmune().sized(3.4F, 6.4F).eyeHeight(4.8F)
-                    .clientTrackingRange(16));
+            () -> EntityType.Builder.<Echoes.Heat>of(Echoes.Heat::new, MobCategory.MONSTER).fireImmune().sized(6.8F, 12.8F).eyeHeight(9.6F)
+                    .clientTrackingRange(24));
     public static final RegistryObject<EntityType<Echoes.Flow>> ECHO_FLOW = mob("echo_flow",
-            () -> EntityType.Builder.<Echoes.Flow>of(Echoes.Flow::new, MobCategory.MONSTER).fireImmune().sized(3.2F, 7.6F).eyeHeight(6.4F)
-                    .clientTrackingRange(16));
+            () -> EntityType.Builder.<Echoes.Flow>of(Echoes.Flow::new, MobCategory.MONSTER).fireImmune().sized(6.4F, 15.2F).eyeHeight(12.8F)
+                    .clientTrackingRange(24));
     public static final RegistryObject<EntityType<Echoes.Overtoll>> OVERTOLL = mob("the_overtoll",
-            () -> EntityType.Builder.<Echoes.Overtoll>of(Echoes.Overtoll::new, MobCategory.MONSTER).fireImmune().sized(7.0F, 13.0F).eyeHeight(9.0F)
-                    .clientTrackingRange(20));
+            () -> EntityType.Builder.<Echoes.Overtoll>of(Echoes.Overtoll::new, MobCategory.MONSTER).fireImmune().sized(14.0F, 26.0F).eyeHeight(18.0F)
+                    .clientTrackingRange(32));
 
     // ---------- world generation ----------
     public static final RegistryObject<Feature<RealmFeatures.SpireConfig>> SPIRE = FEATURES.register("spire", RealmFeatures.Spire::new);
@@ -405,6 +410,7 @@ public final class Realm {
     /** Called once from the mod constructor. */
     public static void init(IEventBus modBus) {
         RealmLiquids.init(modBus);
+        ArteryWorldgen.init(modBus);
         BLOCKS.register(modBus);
         ITEMS.register(modBus);
         BLOCK_ENTITIES.register(modBus);
@@ -420,6 +426,7 @@ public final class Realm {
         SealedReach.init();
         RealmStory.init();
         Sanctums.init();
+        ArteryBounds.init();
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {

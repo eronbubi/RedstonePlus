@@ -218,7 +218,7 @@ public final class Grid {
         }
         var biome = gen.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(base), QuartPos.fromBlock(z), random.sampler());
         return !biome.is(SealedReach.BIOME) && !biome.is(ResourceKey.create(Registries.BIOME, Realm.id("tempest_shoals")))
-                && !RealmCities.covers(level, gen, random, x, z);
+                && !RealmCities.covers(level, gen, random, x, z) && !Sanctums.coversStatic(x, z, NODE_R + 30) && Artery.s(x, z) > 0.15;
     }
 
     /**

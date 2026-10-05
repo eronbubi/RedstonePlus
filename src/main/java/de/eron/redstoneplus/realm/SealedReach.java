@@ -356,7 +356,8 @@ public final class SealedReach {
         if (inside) {
             boolean edge = false;
             for (int[] o : NEAR) {
-                if (!sealedAt(level, x + o[0], y, z + o[1])) {
+                // the wall closes the Reach off from the rest of the realm; where it meets the void, the artery's rim is wall enough
+                if (!sealedAt(level, x + o[0], y, z + o[1]) && Artery.s(x + o[0], z + o[1]) > 0.02) {
                     edge = true;
                     break;
                 }

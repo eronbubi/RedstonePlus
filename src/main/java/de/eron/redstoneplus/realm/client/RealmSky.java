@@ -58,6 +58,12 @@ public final class RealmSky extends DimensionSpecialEffects {
         if (RealmStory.clientHealed()) {
             fog = fog.lerp(DAWN.scale(brightness * 0.85 + 0.15), 0.4);
         }
+        // every heartbeat flushes the haze a little redder
+        var level = Minecraft.getInstance().level;
+        if (level != null) {
+            float beat = heartbeat(level, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+            fog = fog.add(0.06 * beat, 0.0, 0.0).multiply(1.0 + 0.05 * beat, 1.0, 1.0);
+        }
         return fog;
     }
 
@@ -68,6 +74,9 @@ public final class RealmSky extends DimensionSpecialEffects {
         if (RealmStory.clientHealed()) {
             colors.set(Math.min(1.0F, colors.x * 1.08F + 0.06F), Math.min(1.0F, colors.y * 1.06F + 0.04F), Math.min(1.0F, colors.z * 1.02F + 0.025F));
         }
+        // the light swells with each heartbeat, warmest in the reds
+        float beat = heartbeat(level, partialTicks);
+        colors.set(Math.min(1.0F, colors.x * (1.0F + 0.07F * beat)), Math.min(1.0F, colors.y * (1.0F + 0.03F * beat)), colors.z);
     }
 
     /** The Sealed Reach lies under a fog that never lifts; the rest of the realm is clear. */
@@ -76,6 +85,17 @@ public final class RealmSky extends DimensionSpecialEffects {
         var level = Minecraft.getInstance().level;
         return level != null && !RealmStory.clientHealed()
                 && level.getBiome(new net.minecraft.core.BlockPos(x, level.getSeaLevel(), z)).is(de.eron.redstoneplus.realm.SealedReach.BIOME);
+    }
+
+    /** The artery's heartbeat: one double beat every {@link #HEART_PERIOD} ticks. */
+    static final int HEART_PERIOD = 100;
+
+    /** How strongly the realm's heart is beating right now: 1 on a beat, falling off fast; a smaller second beat follows. */
+    static float heartbeat(ClientLevel level, float partialTick) {
+        float t = Math.floorMod(level.getGameTime(), HEART_PERIOD) + partialTick;
+        float lub = (float) Math.exp(-t / 3.0);
+        float dub = t >= 8 ? 0.6F * (float) Math.exp(-(t - 8) / 3.0) : 0.0F;
+        return Math.min(1.0F, lub + dub);
     }
 
     /** 1 right at a toll, fading to 0 over four seconds. */
@@ -282,6 +302,15 @@ public final class RealmSky extends DimensionSpecialEffects {
         if (!wasInRealm) {
             wasInRealm = true;
             musicWait = 100;
+        }
+        // the heartbeat: felt more than heard, louder the nearer you are to the Blood Below
+        if (Math.floorMod(mc.level.getGameTime(), HEART_PERIOD) == 0) {
+            float depth = (float) Math.max(0.0, Math.min(1.0, (110.0 - mc.player.getY()) / 160.0));
+            mc.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forAmbientAddition(
+                    de.eron.redstoneplus.realm.RealmSounds.HEARTBEAT.get()));
+            if (depth > 0.5) {
+                mc.player.playSound(de.eron.redstoneplus.realm.RealmSounds.HEARTBEAT.get(), 0.6F * depth, 0.8F);
+            }
         }
         if (realmMusic == null) {
             realmMusic = new net.minecraft.sounds.Music(de.eron.redstoneplus.realm.RealmSounds.MUSIC.getHolder().orElseThrow(), 600, 2400, true);

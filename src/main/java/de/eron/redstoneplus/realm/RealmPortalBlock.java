@@ -100,7 +100,13 @@ public class RealmPortalBlock extends Block implements Portal {
         if (target == null) {
             return null;
         }
-        BlockPos arrival = RealmPortals.findOrBuild(target, entity.blockPosition());
+        BlockPos from = entity.blockPosition();
+        if (!inRealm) {
+            // the realm is one artery, not a whole world: you come out on the land nearest to where you left
+            double[] land = Artery.nearestLand(from.getX(), from.getZ());
+            from = BlockPos.containing(land[0], from.getY(), land[1]);
+        }
+        BlockPos arrival = RealmPortals.findOrBuild(target, from);
         return new DimensionTransition(target, Vec3.atBottomCenterOf(arrival), entity.getDeltaMovement().scale(0.0), entity.getYRot(), entity.getXRot(),
                 DimensionTransition.PLAY_PORTAL_SOUND.then(DimensionTransition.PLACE_PORTAL_TICKET));
     }

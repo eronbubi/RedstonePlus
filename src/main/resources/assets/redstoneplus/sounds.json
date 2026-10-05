@@ -933,5 +933,11 @@
       "redstoneplus:event/realm_freed"
     ],
     "subtitle": "subtitles.redstoneplus.event.realm_freed"
+  },
+  "ambient.heartbeat": {
+    "sounds": [
+      "redstoneplus:ambient/heartbeat"
+    ],
+    "subtitle": "subtitles.redstoneplus.ambient.heartbeat"
   }
 }

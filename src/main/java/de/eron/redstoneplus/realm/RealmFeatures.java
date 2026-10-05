@@ -75,7 +75,7 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             SpireConfig cfg = context.config();
             BlockPos origin = context.origin();
-            if (!level.getBlockState(origin.below()).isSolid()
+            if (!level.getBlockState(origin.below()).isSolid() || Artery.s(origin.getX(), origin.getZ()) < 0.1
                     || RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())
                     || Sanctums.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
                 return false;
@@ -316,7 +316,8 @@ public final class RealmFeatures {
             RandomSource random = context.random();
             BlockPos origin = context.origin();
             Rotation rotation = Rotation.getRandom(random);
-            if (RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())
+            if (Artery.s(origin.getX(), origin.getZ()) < 0.1
+                    || RealmCities.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())
                     || Sanctums.covers(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), origin.getX(), origin.getZ())) {
                 return false; // the cities and the sanctums are built whole; nothing else lands inside them
             }

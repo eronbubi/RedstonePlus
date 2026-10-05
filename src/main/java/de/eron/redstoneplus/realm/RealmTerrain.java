@@ -43,7 +43,9 @@ public final class RealmTerrain {
         // the Grid: lattice lightlines and the structures at their nodes (see Grid); the walls of the Sealed Reach (see SealedReach)
         GRID(), SEALED_WALL(),
         // the sanctums of the five Echoes, and the giant chains rising from them (see Sanctums)
-        SANCTUMS();
+        SANCTUMS(),
+        // the artery itself (see Artery): the Blood Below and the hanging veins, the vessel's rim wall, the Red Sea
+        ABYSS(), RIM(), RED_SEA();
 
         final String[] biomes;
 
@@ -88,6 +90,10 @@ public final class RealmTerrain {
                     if (!this.inBiome(level, surface)) {
                         continue;
                     }
+                    boolean vessel = this.shape == Shape.ABYSS || this.shape == Shape.RIM || this.shape == Shape.RED_SEA;
+                    if (!vessel && (top <= level.getMinBuildHeight() + 12 || Artery.s(x, z) <= 0.02)) {
+                        continue; // nothing is built over the void
+                    }
                     any |= switch (this.shape) {
                         case DUNES -> dune(level, a, b, x, z, top, sea);
                         case MESAS -> mesa(level, a, b, x, z, top, sea);
@@ -102,6 +108,9 @@ public final class RealmTerrain {
                         case GRID -> Grid.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case SEALED_WALL -> SealedReach.column(level, x, z, top);
                         case SANCTUMS -> Sanctums.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
+                        case ABYSS -> ArteryWorldgen.abyss(level, x, z);
+                        case RIM -> ArteryWorldgen.rim(level, x, z, top);
+                        case RED_SEA -> ArteryWorldgen.sea(level, x, z, top);
                     };
                 }
             }

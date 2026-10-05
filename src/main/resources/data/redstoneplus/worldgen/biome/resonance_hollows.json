@@ -88,7 +88,10 @@
       "redstoneplus:grid",
       "redstoneplus:sealed_wall",
       "redstoneplus:sanctums",
-      "redstoneplus:scree"
+      "redstoneplus:scree",
+      "redstoneplus:red_sea",
+      "redstoneplus:rim",
+      "redstoneplus:abyss"
     ],
     [
       "redstoneplus:resonance_gatehouse"

@@ -404,6 +404,8 @@ SPECIAL = {
                                            at(bell(523, 1.2), 0.75) * 0.3)],
     'entity.light_cycle.derez': [lambda: mix(servo(1600, 100, 0.9, 0.1) * 0.6, crackle(0.9, 160) * 0.5, whoosh(0.9, 200, 4000) * 0.4)],
     'block.lightline.lay': [lambda: mix(thud(110, 0.2) * 0.6, zap(0.25) * 0.5, sparks(0.4, 10) * 0.4)],
+    # the realm's heartbeat: a deep double beat, felt more than heard
+    'ambient.heartbeat': [lambda: mix(thud(38, 0.5, 0.6) * 1.0, at(thud(44, 0.45, 0.6) * 0.7, 0.4), low(noise(1.0), 120) * env(1.0, 0.01, curve=5) * 0.3)],
     # the story: an Echo wakes, a giant chain breaks, the realm is freed
     'event.echo_awaken': [lambda: mix(drone(41, 4.0) * 0.7, at(bell(82, 3.5), 0.3) * 0.6, whoosh(4.0, 40, 3000) * 0.5, at(crackle(2.0, 80), 1.5) * 0.4)],
     'event.chain_break': [lambda: mix(metal(180, 1.5) * 0.7, at(chain(3.5, 28, 1500), 0.1) * 0.7, at(thud(32, 2.0), 0.05) * 0.8,
@@ -417,6 +419,7 @@ SPECIAL_SUBTITLES = {
     'entity.light_cycle.rez': ('Light cycle materialises', 'Lichtrad materialisiert'),
     'entity.light_cycle.derez': ('Light cycle dissolves', 'Lichtrad zerfällt'),
     'block.lightline.lay': ('Lightline laid', 'Lichtbahn verlegt'),
+    'ambient.heartbeat': ('The realm\'s heart beats', 'Das Herz des Reichs schlägt'),
     'event.echo_awaken': ('An Echo awakens', 'Ein Echo erwacht'),
     'event.chain_break': ('A giant chain breaks', 'Eine Riesenkette bricht'),
     'event.realm_freed': ('The realm is free', 'Das Reich ist frei'),

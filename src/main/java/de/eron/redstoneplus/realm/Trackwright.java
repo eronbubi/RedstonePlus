@@ -53,6 +53,8 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
     private int jobLeft;
     private int jobLaid;
     private boolean branch;
+    /** Columns where a job failed lately (unpavable, a cliff, deep water): not tried again for a while. */
+    private final java.util.ArrayDeque<Long> failed = new java.util.ArrayDeque<>();
 
     public Trackwright(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
@@ -187,7 +189,7 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
                 }
                 for (Direction d : new Direction[]{Direction.EAST, Direction.WEST}) {
                     int nx = x + d.getStepX();
-                    if (this.tile(level, x, lineZ) && !this.tile(level, nx, lineZ) && level.isLoaded(new BlockPos(nx, 0, lineZ))
+                    if (this.tile(level, x, lineZ) && !this.tile(level, nx, lineZ) && !this.failedBefore(nx, lineZ) && level.isLoaded(new BlockPos(nx, 0, lineZ))
                             && !Grid.sealed(level, new BlockPos(nx, 64, lineZ))) {
                         int dist = Math.abs(x - bx) + Math.abs(lineZ - bz);
                         if (dist < best) {
@@ -206,7 +208,7 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
                 }
                 for (Direction d : new Direction[]{Direction.SOUTH, Direction.NORTH}) {
                     int nz = z + d.getStepZ();
-                    if (this.tile(level, lineX, z) && !this.tile(level, lineX, nz) && level.isLoaded(new BlockPos(lineX, 0, nz))
+                    if (this.tile(level, lineX, z) && !this.tile(level, lineX, nz) && !this.failedBefore(lineX, nz) && level.isLoaded(new BlockPos(lineX, 0, nz))
                             && !Grid.sealed(level, new BlockPos(lineX, 64, nz))) {
                         int dist = Math.abs(z - bz) + Math.abs(lineX - bx);
                         if (dist < best) {
@@ -248,7 +250,7 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
             }
             int sx = x + side.getStepX();
             int sz = z + side.getStepZ();
-            if (!clear || Grid.sealed(level, new BlockPos(sx, 64, sz))) {
+            if (!clear || this.failedBefore(sx, sz) || Grid.sealed(level, new BlockPos(sx, 64, sz))) {
                 continue;
             }
             this.startJob(sx, sz, Grid.surfaceTileY(level, x, z), side, 20 + this.random.nextInt(44), true);
@@ -265,6 +267,18 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
         this.jobLeft = length;
         this.jobLaid = 0;
         this.branch = branch;
+    }
+
+    private boolean failedBefore(int x, int z) {
+        return this.failed.contains(BlockPos.asLong(x, 0, z));
+    }
+
+    /** The job stopped where it could not go on: remember the column so the same dead end is not tried again and again. */
+    private void markFailed() {
+        this.failed.addLast(BlockPos.asLong(this.jobX, 0, this.jobZ));
+        while (this.failed.size() > 24) {
+            this.failed.removeFirst();
+        }
     }
 
     private void endJob(ServerLevel level, boolean waystop) {
@@ -322,7 +336,8 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
 
         @Override
         public boolean canUse() {
-            if (!this.calm() || !(this.mob.level() instanceof ServerLevel level)) {
+            if (!this.calm() || !(this.mob.level() instanceof ServerLevel level)
+                    || !net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, this.mob)) {
                 return false;
             }
             if (this.mob.jobLeft > 0) {
@@ -337,7 +352,8 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
 
         @Override
         public boolean canContinueToUse() {
-            return this.mob.jobLeft > 0 && this.calm();
+            return this.mob.jobLeft > 0 && this.calm() && this.mob.level() instanceof ServerLevel level
+                    && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, this.mob);
         }
 
         @Override
@@ -376,6 +392,7 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
             if (dx * dx + dz * dz > 3.2 * 3.2) {
                 this.work = 0;
                 if (++this.walking > 240) {
+                    m.markFailed();
                     m.endJob(level, true); // could not get there: the branch ends where it is
                     return;
                 }
@@ -400,6 +417,7 @@ public class Trackwright extends PathfinderMob implements RealmAnimated {
             }
             int y = Grid.lay(level, m.jobX, m.jobZ, m.jobY);
             if (y == Integer.MIN_VALUE) {
+                m.markFailed();
                 m.endJob(level, true);
                 return;
             }

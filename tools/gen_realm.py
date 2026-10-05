@@ -808,6 +808,15 @@ for bid, (img, e, g, de_, dg) in GRID_BLOCKS.items():
     name(f'block.{NS}.{bid}', e, g, de_, dg)
     pickaxe.append(f'{NS}:{bid}')
 needs_iron.append(f'{NS}:quarantine_plating')
+# natural ground a Trackwright may pave: the realm's rock and soils and plain vanilla ground, never builds, ores, logs or valuables
+write(os.path.join(DATA, 'tags', 'block', 'lightline_pavable.json'), {'replace': False, 'values': [
+    f'{NS}:{b}' for b in ('realmstone', 'deep_realmstone', 'hematite', 'dark_hematite', 'cinder_rock', 'tempest_basalt', 'frost_realmstone',
+                          'fossil_circuit', 'salt_crust', 'karst_limestone', 'lichen_karst', 'rust_sand', 'red_clay', 'fen_mud', 'canal_moss',
+                          'briar_soil', 'heather_turf', 'root_soil', 'grove_moss', 'rusted_soil', 'slag', 'sulfur_crust', 'redstone_vein',
+                          'blight_crust')] + [
+    f'minecraft:{b}' for b in ('dirt', 'coarse_dirt', 'rooted_dirt', 'grass_block', 'podzol', 'mud', 'clay', 'gravel', 'sand', 'red_sand',
+                               'stone', 'granite', 'diorite', 'andesite', 'tuff', 'calcite', 'deepslate', 'blackstone', 'basalt',
+                               'terracotta', 'red_terracotta', 'orange_terracotta', 'snow_block', 'packed_ice', 'magma_block', 'netherrack')]})
 shaped('lightline', ['BBB', 'RGR', 'BBB'], {'B': f'{NS}:realmstone_bricks', 'R': 'minecraft:redstone', 'G': 'minecraft:glowstone_dust'},
        f'{NS}:lightline', 6)
 shaped('grid_beacon', ['CRC', 'RGR', 'CRC'], {'C': f'{NS}:realm_cog', 'R': 'minecraft:redstone', 'G': 'minecraft:glowstone'}, f'{NS}:grid_beacon')
@@ -872,6 +881,7 @@ for key, e, g in (
         ('message.redstoneplus.cycle_auto_on', 'Automatic return on: your cycle will always come back to you.', 'Automatische Rückkehr an: dein Rad kommt immer zu dir zurück.'),
         ('message.redstoneplus.cycle_auto_off', 'Automatic return off: your cycle stays where you leave it.', 'Automatische Rückkehr aus: dein Rad bleibt, wo du es lässt.'),
         ('message.redstoneplus.cycle_not_yours', 'This light cycle is bound to another rider.', 'Dieses Lichtrad gehört einem anderen Fahrer.'),
+        ('message.redstoneplus.cycle_busy', 'Someone is riding your light cycle right now.', 'Gerade fährt jemand anderes dein Lichtrad.'),
         ('hud.redstoneplus.cycle.speed', '%s blocks/s', '%s Blöcke/s'),
         ('hud.redstoneplus.cycle.locked', 'LIGHTLINE LOCK', 'AUF DER LICHTBAHN'),
         ('hud.redstoneplus.cycle.free', 'free ride', 'freie Fahrt'),

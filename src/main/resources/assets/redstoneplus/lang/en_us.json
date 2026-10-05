@@ -855,5 +855,6 @@
   "entity.redstoneplus.wirewraith.desc": "The Sealed Reach. A stilt-walker of tangled wire with a hollow bell for a head. Its scream darkens and slows everyone near and drags its prey closer. Outside the Concordance: it hunts everyone.",
   "entity.redstoneplus.maw_engine.desc": "The Sealed Reach. A furnace on four legs that is mostly mouth. It gapes, lunges, and its burning bite holds you fast. Outside the Concordance: it hunts everyone.",
   "biome.redstoneplus.sealed_reach.desc": "Realm. Blighted land under a blood-red sky and a fog that never lifts, walled in by the Wirewrights: quarantine plating, sealed gates, warning signs all around. Wirewraiths and Maw Engines.",
-  "entity.redstoneplus.light_cycle.desc": "The realm's racing cycle, given to every visitor and kept at their side. Rides the Grid's lightlines locked on, at up to 44 blocks a second."
+  "entity.redstoneplus.light_cycle.desc": "The realm's racing cycle, given to every visitor and kept at their side. Rides the Grid's lightlines locked on, at up to 44 blocks a second.",
+  "message.redstoneplus.cycle_busy": "Someone is riding your light cycle right now."
 }

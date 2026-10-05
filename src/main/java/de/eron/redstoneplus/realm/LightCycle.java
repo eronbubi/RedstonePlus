@@ -267,14 +267,30 @@ public class LightCycle extends Entity {
             this.lerpSteps--;
         }
         if (this.level() instanceof ServerLevel server) {
-            // while someone drives, the server takes the driver's word for where the cycle is (see the class comment)
-            this.noPhysics = driver != null;
+            // while someone drives it on a lightline, the server takes the driver's word for where the cycle is (see the class
+            // comment); off the lines it checks collisions like any vehicle, so plates, tripwires and portals work as usual
+            this.noPhysics = driver != null && this.overLightline();
             if (this.tickCount % 40 == 0) {
                 CycleBond.checkCycle(server, this);
             }
         } else {
             this.clientVisuals();
         }
+    }
+
+    /** A lightline in the column under the cycle, or in the one it is climbing towards. */
+    private boolean overLightline() {
+        int y = (int) Math.floor(this.getY()) - 1;
+        BlockPos at = this.blockPosition();
+        if (this.tileAt(at, y) != Integer.MIN_VALUE) {
+            return true;
+        }
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            if (this.tileAt(at.relative(d), y) != Integer.MIN_VALUE) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -304,6 +320,29 @@ public class LightCycle extends Entity {
     @Override
     public float lerpTargetYRot() {
         return this.lerpSteps > 0 ? (float) this.lerpYRot : this.getYRot();
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger) {
+        super.removePassenger(passenger);
+        this.resetDriving();
+    }
+
+    @Override
+    protected void addPassenger(Entity passenger) {
+        super.addPassenger(passenger);
+        this.resetDriving();
+    }
+
+    /** A new ride starts from standstill, off the line, with nothing queued (that state only lived on the last driver's client). */
+    private void resetDriving() {
+        this.speed = 0;
+        this.trackDir = null;
+        this.queuedTurn = 0;
+        this.queuedTicks = 0;
+        this.reverseHold = 0;
+        this.fallSpeed = 0;
+        this.lastDecision = Long.MIN_VALUE;
     }
 
     /** Nobody rides it: it rolls to a stop and sits on the ground. */
@@ -354,7 +393,7 @@ public class LightCycle extends Entity {
 
     /** True if the chunks ahead have not arrived yet: the cycle waits for the world instead of falling into nothing. */
     private boolean worldAheadMissing(Vec3 dir) {
-        for (int d = 8; d <= 40; d += 16) {
+        for (int d = 12; d <= 24; d += 12) {
             BlockPos ahead = BlockPos.containing(this.getX() + dir.x * d, this.getY(), this.getZ() + dir.z * d);
             if (!this.level().hasChunkAt(ahead)) {
                 return true;
@@ -369,14 +408,14 @@ public class LightCycle extends Entity {
         float diff = Mth.wrapDegrees(driver.getYRot() - this.getYRot());
         float maxTurn = (float) Mth.clamp(14.0 - Math.abs(this.speed) * 10.0, 5.0, 14.0);
         this.setYRot(this.getYRot() + Mth.clamp(diff, -maxTurn, maxTurn));
-        this.yRotO = this.getYRot();
         double target = forward > 0 ? FREE_MAX : forward < 0 ? -REVERSE_MAX : 0;
         float yaw = this.getYRot() * Mth.DEG_TO_RAD;
         Vec3 heading = new Vec3(-Mth.sin(yaw), 0, Mth.cos(yaw));
-        if (hold || this.worldAheadMissing(heading)) {
+        boolean stop = hold || this.worldAheadMissing(heading);
+        if (stop) {
             target = 0;
         }
-        this.approach(target, 0.025, hold ? 0.08 : forward < 0 && this.speed > 0 ? 0.05 : 0.015);
+        this.approach(target, 0.025, stop ? 0.08 : forward < 0 && this.speed > 0 ? 0.05 : 0.015);
         Vec3 motion = this.getDeltaMovement();
         this.setDeltaMovement(heading.x * this.speed, motion.y - this.getGravity(), heading.z * this.speed);
         this.move(MoverType.SELF, this.getDeltaMovement());
@@ -434,6 +473,16 @@ public class LightCycle extends Entity {
         return Grid.tileY(this.level(), column.getX(), column.getZ(), nearY);
     }
 
+    /** The tile in that column the cycle can ride onto: there is room for it on top. MIN_VALUE if none, or if it is blocked. */
+    private int openTileAt(BlockPos column, int nearY) {
+        int y = this.tileAt(column, nearY);
+        if (y == Integer.MIN_VALUE) {
+            return y;
+        }
+        net.minecraft.world.phys.AABB box = this.getType().getDimensions().makeBoundingBox(column.getX() + 0.5, y + 1.0, column.getZ() + 0.5).deflate(0.07);
+        return this.level().noCollision(this, box) ? y : Integer.MIN_VALUE;
+    }
+
     private void driveTrack(LivingEntity driver, float forward, boolean boost, boolean hold) {
         this.noPhysics = true;
         Direction dir = this.trackDir;
@@ -447,10 +496,11 @@ public class LightCycle extends Entity {
             target = Math.min(this.speed, TRACK_MAX) * 0.985;
         }
         Vec3 heading = new Vec3(dir.getStepX(), 0, dir.getStepZ());
-        if (hold || this.worldAheadMissing(heading)) {
+        boolean stop = hold || this.worldAheadMissing(heading);
+        if (stop) {
             target = 0;
         }
-        this.approach(target, boost ? 0.05 : 0.035, hold ? 0.12 : forward < 0 ? 0.09 : 0.01);
+        this.approach(target, boost ? 0.05 : 0.035, stop ? 0.12 : forward < 0 ? 0.09 : 0.01);
         if (forward < 0 && this.speed < 0.01) {
             if (++this.reverseHold > 10) {
                 this.reverseHold = 0;
@@ -516,7 +566,7 @@ public class LightCycle extends Entity {
             } else {
                 // past the centre: on towards the next tile, unless it is higher than we are (the grav-lift climbs first)
                 BlockPos nextColumn = tile.relative(dir);
-                int nextY = this.tileAt(nextColumn, curY);
+                int nextY = this.openTileAt(nextColumn, curY);
                 double boundary = center + 0.5 * sign;
                 double limit = 1.0; // up to the next tile's centre, where the next decision is made
                 if (nextY == Integer.MIN_VALUE) {
@@ -579,7 +629,6 @@ public class LightCycle extends Entity {
         this.setPos(x, y, z);
         this.setDeltaMovement(this.position().subtract(old));
         this.setYRot(this.trackDir != null ? this.trackDir.toYRot() : this.getYRot());
-        this.yRotO = this.getYRot();
     }
 
     /** At the centre of a tile: straight on, a queued turn, a corner, or the turn the driver looks at. Null: dead end. */
@@ -587,9 +636,9 @@ public class LightCycle extends Entity {
     private Direction decide(LivingEntity driver, BlockPos tile, Direction dir, int y) {
         Direction left = dir.getCounterClockWise();
         Direction right = dir.getClockWise();
-        boolean f = this.tileAt(tile.relative(dir), y) != Integer.MIN_VALUE;
-        boolean l = this.tileAt(tile.relative(left), y) != Integer.MIN_VALUE;
-        boolean r = this.tileAt(tile.relative(right), y) != Integer.MIN_VALUE;
+        boolean f = this.openTileAt(tile.relative(dir), y) != Integer.MIN_VALUE;
+        boolean l = this.openTileAt(tile.relative(left), y) != Integer.MIN_VALUE;
+        boolean r = this.openTileAt(tile.relative(right), y) != Integer.MIN_VALUE;
         if (this.queuedTicks > 0) {
             if (this.queuedTurn < 0 && l) {
                 this.queuedTicks = 0;

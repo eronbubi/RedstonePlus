@@ -101,24 +101,27 @@ public final class Grid {
         return Integer.MIN_VALUE;
     }
 
-    /** The tile that is the top block of a column (what maps and Trackwrights look at), or MIN_VALUE. */
+    /**
+     * The highest tile near the top of a column (what maps and Trackwrights look at), or MIN_VALUE. It looks a little way
+     * down from the heightmap, so tiles under a roof (depot halls, spires, bell gates) or a post still count.
+     */
     public static int surfaceTileY(Level level, int x, int z) {
         int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
-        if (isTile(level.getBlockState(new BlockPos(x, top, z)))) {
-            return top;
-        }
-        // a lamp post or a plant may stand on it
-        if (isTile(level.getBlockState(new BlockPos(x, top - 1, z)))) {
-            return top - 1;
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        for (int y = top; y >= top - 14; y--) {
+            if (isTile(level.getBlockState(p.set(x, y, z)))) {
+                return y;
+            }
         }
         return Integer.MIN_VALUE;
     }
 
+    /** Natural ground a Trackwright may pave (block tag redstoneplus:lightline_pavable): never builds, valuables or tree trunks. */
+    public static final net.minecraft.tags.TagKey<Block> PAVABLE = net.minecraft.tags.TagKey.create(Registries.BLOCK, Realm.id("lightline_pavable"));
+
     /** Ground a lightline may be laid into: natural, solid, whole blocks, nothing the Wirewrights built, nothing with contents. */
     static boolean pavable(Level level, BlockPos pos, BlockState state) {
-        return !state.isAir() && state.getFluidState().isEmpty() && !state.hasBlockEntity() && state.getDestroySpeed(level, pos) >= 0
-                && state.isCollisionShapeFullBlock(level, pos) && !RealmRules.built(state) && !(state.getBlock() instanceof TrapBlock)
-                && !state.is(Blocks.BEDROCK) && !state.is(Blocks.REDSTONE_BLOCK);
+        return state.is(PAVABLE) && state.getFluidState().isEmpty() && !state.hasBlockEntity() && state.isCollisionShapeFullBlock(level, pos);
     }
 
     /** True inside the walls of the Sealed Reach: nothing of the Grid goes there. */
@@ -257,15 +260,19 @@ public final class Grid {
             return false;
         }
         boolean built = false;
+        // near a node the line ramps from the ground to the plaza's level, so it never ends at a step too high to ride
+        int fromNode = Math.max(Math.abs(dx), Math.abs(dz));
+        int rampTo = fromNode <= RAMP && (dx == 0 || dz == 0) && nodeStands(level, gen, random, i, j) ? nodeBase(level, gen, random, i, j)
+                : Integer.MIN_VALUE;
         if (dz == 0) {
             int edge = Math.floorDiv(x - OFFSET, SPACING);
             if (lineSurvives(seed, edge, j, true, x - line(edge))) {
-                built = lineTile(level, x, z, top, Math.floorMod(x - OFFSET, 48) == 24);
+                built = lineTile(level, x, z, top, Math.floorMod(x - OFFSET, 48) == 24, rampTo, fromNode);
             }
         } else if (dx == 0) {
             int edge = Math.floorDiv(z - OFFSET, SPACING);
             if (lineSurvives(seed, edge, i, false, z - line(edge))) {
-                built = lineTile(level, x, z, top, Math.floorMod(z - OFFSET, 48) == 24);
+                built = lineTile(level, x, z, top, Math.floorMod(z - OFFSET, 48) == 24, rampTo, fromNode);
             }
         }
         // a light pylon beside the line every 48 blocks, where the line still runs
@@ -291,16 +298,26 @@ public final class Grid {
         return block.defaultBlockState();
     }
 
-    /** A tile of a lattice line: into the ground, or as a causeway on shallow water with a pier now and then. */
-    private static boolean lineTile(WorldGenLevel level, int x, int z, int top, boolean pier) {
+    /** How far out from a node's centre the lines ramp to the plaza's level. */
+    private static final int RAMP = NODE_R + 28;
+
+    /**
+     * A tile of a lattice line: into the ground, or as a causeway on shallow water with a pier now and then. Within
+     * {@link #RAMP} of a node ({@code rampTo} is then the plaza's level) the tile sits on a ramp between the ground and the plaza.
+     */
+    private static boolean lineTile(WorldGenLevel level, int x, int z, int top, boolean pier, int rampTo, int fromNode) {
         int sea = level.getSeaLevel();
         BlockPos ground = new BlockPos(x, top - 1, z);
         boolean wet = !level.getFluidState(new BlockPos(x, top, z)).isEmpty() || !level.getFluidState(ground).isEmpty();
         if (wet) {
-            if (top < sea - 14) {
-                return false; // the open sea: the line ends at the shore
+            // the water's surface (lakes above sea level too), and only over shallow water: the line ends at the open sea
+            int y = top;
+            while (y < top + 24 && !level.getFluidState(new BlockPos(x, y + 1, z)).isEmpty()) {
+                y++;
             }
-            int y = sea - 1;
+            if (y - top > 12 || !level.getFluidState(new BlockPos(x, y, z)).is(net.minecraft.tags.FluidTags.WATER)) {
+                return false;
+            }
             set(level, x, y, z, s(Realm.LIGHTLINE.get()));
             if (pier || Math.floorMod(x + z, 8) == 0) {
                 for (int yy = y - 1; yy >= top - 1 && yy > y - 16; yy--) {
@@ -313,7 +330,19 @@ public final class Grid {
         if (below.isAir() || below.is(Blocks.LAVA)) {
             return false;
         }
-        set(level, x, top - 1, z, s(Realm.LIGHTLINE.get()));
+        int tileY = top - 1;
+        if (rampTo != Integer.MIN_VALUE) {
+            double t = (fromNode - NODE_R) / (double) (RAMP - NODE_R);
+            tileY = (int) Math.round(rampTo + (top - 1 - rampTo) * t);
+            for (int y = top - 1; y < tileY; y++) {
+                set(level, x, y, z, s(Realm.REALMSTONE_BRICKS.get())); // the ramp's embankment
+            }
+            for (int y = tileY + 1; y < top; y++) {
+                set(level, x, y, z, s(Blocks.AIR)); // the ramp's cutting
+            }
+        }
+        set(level, x, tileY, z, s(Realm.LIGHTLINE.get()));
+        top = Math.max(top, tileY + 1);
         for (int y = top; y <= top + 2; y++) {
             BlockState a = level.getBlockState(new BlockPos(x, y, z));
             if (!a.isAir() && (a.canBeReplaced() || a.is(Realm.REDSTONE_CLUSTER.get())) && a.getFluidState().isEmpty()) {
@@ -461,11 +490,11 @@ public final class Grid {
                 set(level, x, base + 5, z, s(Realm.GRID_BEACON.get()));
             }
         }
-        // stockpile of lightline in the south-west quarter
-        if (dx >= -11 && dx <= -9 && dz >= 3 && dz <= 7) {
+        // a stockpile of crated tiles in the south-west quarter (crates, not track: a cycle must not mistake it for a line)
+        if (dx >= -12 && dx <= -10 && dz >= 3 && dz <= 6) {
             int h = 1 + (int) Math.floorMod(colHash, 2L);
             for (int y = base + 1; y <= base + h; y++) {
-                set(level, x, y, z, s(Realm.LIGHTLINE.get()));
+                set(level, x, y, z, y == base + h ? s(Realm.GRID_BEACON.get()) : s(Realm.RUST_PLATING.get()));
             }
         }
         // gantry crane in the north-west quarter
@@ -480,7 +509,7 @@ public final class Grid {
                 for (int y = base + 6; y <= base + 9; y++) {
                     set(level, x, y, z, s(Blocks.CHAIN).setValue(ChainBlock.AXIS, Direction.Axis.Y));
                 }
-                set(level, x, base + 5, z, s(Realm.LIGHTLINE.get()));
+                set(level, x, base + 5, z, s(Realm.GRID_BEACON.get()));
             }
         }
         // the Trackwrights: spawned once, from the centre column

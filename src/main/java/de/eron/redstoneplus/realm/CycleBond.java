@@ -134,6 +134,9 @@ public final class CycleBond {
         ServerLevel level = player.serverLevel();
         LightCycle old = find(player);
         if (old != null) {
+            if (old.isVehicle() && !old.hasPassenger(player)) {
+                return null; // somebody else is riding it right now: never pull it out from under them
+            }
             derez(old);
         }
         LightCycle cycle = Realm.LIGHT_CYCLE.get().create(level);
@@ -214,10 +217,13 @@ public final class CycleBond {
         }
         LightCycle cycle = find(player);
         boolean present = cycle != null && cycle.level() == player.level() && cycle.distanceToSqr(player) < REACH * REACH
-                && !cycle.level().getBlockState(cycle.blockPosition()).isSuffocating(cycle.level(), cycle.blockPosition());
+                && cycle.level().noCollision(cycle, cycle.getBoundingBox().deflate(0.1));
         if (present) {
             LOST.remove(player.getUUID());
             return;
+        }
+        if (!player.onGround() || player.isFallFlying() || player.getAbilities().flying || player.isInWater()) {
+            return; // only rebuild it beside a rider standing on solid ground, never in mid-air
         }
         int seconds = LOST.merge(player.getUUID(), 1, Integer::sum);
         if (seconds >= LOST_SECONDS) {
@@ -292,7 +298,9 @@ public final class CycleBond {
             if (cycle != null && cycle.level() == level && cycle.distanceToSqr(player) < 8 * 8 && !cycle.isVehicle()) {
                 player.startRiding(cycle);
             } else {
-                rez(sp, true);
+                if (rez(sp, true) == null) {
+                    player.displayClientMessage(Component.translatable("message.redstoneplus.cycle_busy").withStyle(ChatFormatting.RED), true);
+                }
             }
             player.getCooldowns().addCooldown(this, 30);
             return InteractionResultHolder.success(stack);

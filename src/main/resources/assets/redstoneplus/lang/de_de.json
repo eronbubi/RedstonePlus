@@ -855,5 +855,6 @@
   "entity.redstoneplus.wirewraith.desc": "Die Versiegelte Weite. Ein Stelzengänger aus verknäultem Draht mit einer hohlen Glocke als Kopf. Sein Schrei verdunkelt und verlangsamt alle in der Nähe und zieht seine Beute heran. Außerhalb der Eintracht: jagt jeden.",
   "entity.redstoneplus.maw_engine.desc": "Die Versiegelte Weite. Ein Ofen auf vier Beinen, der vor allem Maul ist. Er reißt es auf, springt, und sein glühender Biss hält dich fest. Außerhalb der Eintracht: jagt jeden.",
   "biome.redstoneplus.sealed_reach.desc": "Reich. Verdorbenes Land unter blutrotem Himmel und ewigem Nebel, von den Drahtwerkern eingemauert: Quarantäneplatten, versiegelte Tore, ringsum Warnschilder. Drahtgespenster und Schlundmaschinen.",
-  "entity.redstoneplus.light_cycle.desc": "Das Rennrad des Reichs, jedem Besucher gegeben und an seiner Seite gehalten. Fährt eingerastet auf den Lichtbahnen des Rasters, mit bis zu 44 Blöcken pro Sekunde."
+  "entity.redstoneplus.light_cycle.desc": "Das Rennrad des Reichs, jedem Besucher gegeben und an seiner Seite gehalten. Fährt eingerastet auf den Lichtbahnen des Rasters, mit bis zu 44 Blöcken pro Sekunde.",
+  "message.redstoneplus.cycle_busy": "Gerade fährt jemand anderes dein Lichtrad."
 }

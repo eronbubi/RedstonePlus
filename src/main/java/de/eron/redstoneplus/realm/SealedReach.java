@@ -80,6 +80,7 @@ public final class SealedReach {
         private final Monster mob;
         private BlockPos home;
         private int outside;
+        private int clock;
 
         StayInsideGoal(Monster mob) {
             this.mob = mob;
@@ -95,12 +96,18 @@ public final class SealedReach {
             if (this.home == null && !this.out()) {
                 this.home = this.mob.blockPosition();
             }
-            return this.home != null && this.mob.tickCount % 20 == 0 && this.out();
+            // goals are only polled every other tick: count calls, not ticks
+            return this.home != null && ++this.clock % 10 == 0 && this.out();
         }
 
         @Override
         public boolean canContinueToUse() {
             return this.out();
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
         }
 
         @Override
@@ -204,7 +211,7 @@ public final class SealedReach {
             if (this.level() instanceof ServerLevel level && this.isAlive()) {
                 if (this.abilityCooldown > 0) {
                     this.abilityCooldown--;
-                } else {
+                } else if (inReach(level, this.blockPosition())) {
                     LivingEntity target = this.getTarget();
                     if (target != null && target.isAlive() && this.hasLineOfSight(target)) {
                         this.ability(level, target);
@@ -445,9 +452,14 @@ public final class SealedReach {
             for (int line = 0; line < 4; line++) {
                 text = text.setMessage(line, Component.translatable("quarantine.redstoneplus.sign." + which + "." + line));
             }
-            sign.setText(text, true);
-            sign.setText(text, false);
-            sign.setWaxed(true);
+            // during world generation the sign has no level yet, and its setters would try to notify one: load it as saved data instead
+            var ops = level.registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE);
+            net.minecraft.nbt.Tag encoded = SignText.DIRECT_CODEC.encodeStart(ops, text).getOrThrow();
+            net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+            tag.put("front_text", encoded);
+            tag.put("back_text", encoded.copy());
+            tag.putBoolean("is_waxed", true);
+            sign.loadWithComponents(tag, level.registryAccess());
         }
     }
 }

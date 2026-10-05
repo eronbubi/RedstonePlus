@@ -154,6 +154,9 @@ public class GridMapScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollY == 0) {
+            return false;
+        }
         this.zoom = Mth.clamp(this.zoom + (scrollY > 0 ? 1 : -1), 0, ZOOMS.length - 1);
         return true;
     }

@@ -260,7 +260,9 @@ def setup_lighting(scene):
         tc.target = bpy.data.objects.get('preview_target')
         tc.track_axis = 'TRACK_NEGATIVE_Z'
         tc.up_axis = 'UP_Y'
-    # bloom: glare on the bright parts in the compositor
+    # bloom: glare on the bright parts in the compositor (Blender 5 moved the compositor to node groups; skip it there)
+    if not hasattr(scene, 'node_tree'):
+        return
     scene.use_nodes = True
     nt = scene.node_tree
     rl = nt.nodes.get('Render Layers') or nt.nodes.new('CompositorNodeRLayers')

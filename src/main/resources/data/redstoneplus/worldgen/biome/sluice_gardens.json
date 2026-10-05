@@ -3,12 +3,12 @@
   "temperature": 0.7,
   "downfall": 0.9,
   "effects": {
-    "sky_color": 9089184,
-    "fog_color": 11061432,
-    "water_color": 3848352,
-    "water_fog_color": 1065018,
-    "grass_color": 4889200,
-    "foliage_color": 4889200,
+    "sky_color": 15249544,
+    "fog_color": 14727320,
+    "water_color": 13662250,
+    "water_fog_color": 4202506,
+    "grass_color": 13138480,
+    "foliage_color": 13138480,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
@@ -55,6 +55,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -91,6 +97,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:scree"
     ],
     [],
@@ -116,8 +124,6 @@
       "redstoneplus:fen_reed_patch",
       "redstoneplus:copper_reed_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

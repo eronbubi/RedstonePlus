@@ -3,12 +3,12 @@
   "temperature": 0.5,
   "downfall": 0.9,
   "effects": {
-    "sky_color": 4080224,
-    "fog_color": 3028038,
-    "water_color": 2273440,
-    "water_fog_color": 666152,
-    "grass_color": 2779754,
-    "foliage_color": 2779754,
+    "sky_color": 5909034,
+    "fog_color": 3809312,
+    "water_color": 11546650,
+    "water_fog_color": 2754566,
+    "grass_color": 6957594,
+    "foliage_color": 6957594,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
@@ -18,7 +18,13 @@
     "particle": {
       "probability": 0.004,
       "options": {
-        "type": "minecraft:electric_spark"
+        "type": "minecraft:dust",
+        "color": [
+          1.0,
+          0.55,
+          0.15
+        ],
+        "scale": 0.8
       }
     },
     "music": {
@@ -55,6 +61,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -91,6 +103,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:tempest_pillar",
       "redstoneplus:scree"
     ],
@@ -112,8 +126,6 @@
     ],
     [],
     [],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

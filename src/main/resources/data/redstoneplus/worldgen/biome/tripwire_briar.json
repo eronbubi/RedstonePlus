@@ -4,11 +4,11 @@
   "downfall": 0.8,
   "effects": {
     "sky_color": 14200928,
-    "fog_color": 12099680,
-    "water_color": 4880970,
-    "water_fog_color": 1714714,
-    "grass_color": 5925418,
-    "foliage_color": 5925418,
+    "fog_color": 12098144,
+    "water_color": 9067050,
+    "water_fog_color": 2759178,
+    "grass_color": 8018474,
+    "foliage_color": 8018474,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
@@ -55,6 +55,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -91,6 +97,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:scree"
     ],
     [],
@@ -117,8 +125,6 @@
       "redstoneplus:lichen_tuft_patch",
       "redstoneplus:briar_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

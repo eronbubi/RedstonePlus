@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " C ",
+    "IRI",
+    " I "
+  ],
+  "key": {
+    "C": {
+      "item": "redstoneplus:realm_cog"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "id": "redstoneplus:cycle_key",
+    "count": 1
+  }
+}

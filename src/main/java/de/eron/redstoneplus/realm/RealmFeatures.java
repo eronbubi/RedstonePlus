@@ -181,7 +181,8 @@ public final class RealmFeatures {
             if (state.is(Realm.REALMSTONE_BRICKS.get()) || state.is(Realm.KARST_BRICKS.get()) || state.is(Realm.FROST_REALMSTONE.get())) {
                 return Realm.REALMSTONE.get().defaultBlockState();
             }
-            if (state.is(Realm.SHELL_PLATING.get()) || state.is(Blocks.WEATHERED_COPPER) || state.is(Blocks.OXIDIZED_CUT_COPPER)) {
+            if (state.is(Realm.SHELL_PLATING.get()) || state.is(Blocks.WAXED_EXPOSED_COPPER) || state.is(Blocks.WAXED_CUT_COPPER)
+                    || state.is(Blocks.WAXED_COPPER_BLOCK)) {
                 return Realm.RUST_PLATING.get().defaultBlockState();
             }
             if (state.is(Blocks.RED_STAINED_GLASS) || state.is(Blocks.GLASS)) {
@@ -482,9 +483,9 @@ public final class RealmFeatures {
 
     // ---------- Sluice Gardens: bridge tripwire -> floodgates along the bank ----------
     static void sluiceBridge(Build b) {
-        BlockState bank = Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
-        BlockState copper = Blocks.OXIDIZED_CUT_COPPER.defaultBlockState();
-        b.foundation(-7, -7, 7, 7, Blocks.MOSS_BLOCK.defaultBlockState(), Blocks.MUD_BRICKS.defaultBlockState(), 4);
+        BlockState bank = Realm.CRACKED_REALMSTONE_BRICKS.get().defaultBlockState();
+        BlockState copper = Blocks.WAXED_CUT_COPPER.defaultBlockState();
+        b.foundation(-7, -7, 7, 7, Realm.CANAL_MOSS.get().defaultBlockState(), Blocks.MUD_BRICKS.defaultBlockState(), 4);
         // channel with water along z
         for (int z = -7; z <= 7; z++) {
             b.set(-3, -5, z, bank);
@@ -549,8 +550,8 @@ public final class RealmFeatures {
 
     // ---------- Tripwire Briar: tripwire -> launcher walls; a laser sensor watch post further on ----------
     static void briarAmbush(Build b) {
-        BlockState moss = Blocks.MOSS_BLOCK.defaultBlockState();
-        BlockState cobble = Blocks.MOSSY_COBBLESTONE.defaultBlockState();
+        BlockState moss = Realm.BRIAR_SOIL.get().defaultBlockState();
+        BlockState cobble = Realm.CRACKED_REALMSTONE_BRICKS.get().defaultBlockState();
         b.foundation(-5, -8, 5, 9, moss, Blocks.DIRT.defaultBlockState(), 4);
         b.fill(-1, -1, -8, 1, -1, 9, Blocks.COARSE_DIRT.defaultBlockState());
         b.tripwire(-1, 1, 0, 0, cobble);

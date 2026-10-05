@@ -593,5 +593,129 @@
       }
     ],
     "subtitle": "subtitles.redstoneplus.ambient.great_bell"
+  },
+  "entity.trackwright.ambient": {
+    "sounds": [
+      "redstoneplus:entity/trackwright/ambient1",
+      "redstoneplus:entity/trackwright/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.trackwright.ambient"
+  },
+  "entity.trackwright.hurt": {
+    "sounds": [
+      "redstoneplus:entity/trackwright/hurt1",
+      "redstoneplus:entity/trackwright/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.trackwright.hurt"
+  },
+  "entity.trackwright.death": {
+    "sounds": [
+      "redstoneplus:entity/trackwright/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.trackwright.death"
+  },
+  "entity.trackwright.step": {
+    "sounds": [
+      "redstoneplus:entity/trackwright/step1",
+      "redstoneplus:entity/trackwright/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.trackwright.step"
+  },
+  "entity.trackwright.ability": {
+    "sounds": [
+      "redstoneplus:entity/trackwright/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.trackwright.ability"
+  },
+  "entity.wirewraith.ambient": {
+    "sounds": [
+      "redstoneplus:entity/wirewraith/ambient1",
+      "redstoneplus:entity/wirewraith/ambient2",
+      "redstoneplus:entity/wirewraith/ambient3"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.wirewraith.ambient"
+  },
+  "entity.wirewraith.hurt": {
+    "sounds": [
+      "redstoneplus:entity/wirewraith/hurt1",
+      "redstoneplus:entity/wirewraith/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.wirewraith.hurt"
+  },
+  "entity.wirewraith.death": {
+    "sounds": [
+      "redstoneplus:entity/wirewraith/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.wirewraith.death"
+  },
+  "entity.wirewraith.step": {
+    "sounds": [
+      "redstoneplus:entity/wirewraith/step1",
+      "redstoneplus:entity/wirewraith/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.wirewraith.step"
+  },
+  "entity.wirewraith.ability": {
+    "sounds": [
+      "redstoneplus:entity/wirewraith/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.wirewraith.ability"
+  },
+  "entity.maw_engine.ambient": {
+    "sounds": [
+      "redstoneplus:entity/maw_engine/ambient1",
+      "redstoneplus:entity/maw_engine/ambient2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.maw_engine.ambient"
+  },
+  "entity.maw_engine.hurt": {
+    "sounds": [
+      "redstoneplus:entity/maw_engine/hurt1",
+      "redstoneplus:entity/maw_engine/hurt2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.maw_engine.hurt"
+  },
+  "entity.maw_engine.death": {
+    "sounds": [
+      "redstoneplus:entity/maw_engine/death1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.maw_engine.death"
+  },
+  "entity.maw_engine.step": {
+    "sounds": [
+      "redstoneplus:entity/maw_engine/step1",
+      "redstoneplus:entity/maw_engine/step2"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.maw_engine.step"
+  },
+  "entity.maw_engine.ability": {
+    "sounds": [
+      "redstoneplus:entity/maw_engine/ability1"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.maw_engine.ability"
+  },
+  "entity.light_cycle.engine": {
+    "sounds": [
+      "redstoneplus:entity/light_cycle/engine"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.light_cycle.engine"
+  },
+  "entity.light_cycle.rez": {
+    "sounds": [
+      "redstoneplus:entity/light_cycle/rez"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.light_cycle.rez"
+  },
+  "entity.light_cycle.derez": {
+    "sounds": [
+      "redstoneplus:entity/light_cycle/derez"
+    ],
+    "subtitle": "subtitles.redstoneplus.entity.light_cycle.derez"
+  },
+  "block.lightline.lay": {
+    "sounds": [
+      "redstoneplus:block/lightline/lay"
+    ],
+    "subtitle": "subtitles.redstoneplus.block.lightline.lay"
   }
 }

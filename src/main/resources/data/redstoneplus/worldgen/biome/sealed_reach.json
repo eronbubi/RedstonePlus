@@ -1,0 +1,104 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.8,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 3802630,
+    "fog_color": 2753540,
+    "water_color": 4852230,
+    "water_fog_color": 1311234,
+    "grass_color": 3803656,
+    "foliage_color": 3803656,
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "particle": {
+      "probability": 0.03,
+      "options": {
+        "type": "minecraft:dust",
+        "color": [
+          0.55,
+          0.05,
+          0.03
+        ],
+        "scale": 1.2
+      }
+    },
+    "music": {
+      "sound": "redstoneplus:music.realm",
+      "min_delay": 1200,
+      "max_delay": 4800,
+      "replace_current_music": true
+    }
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "redstoneplus:wirewraith",
+        "weight": 30,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "redstoneplus:maw_engine",
+        "weight": 20,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "axolotls": [],
+    "underground_water_creature": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
+  },
+  "features": [
+    [],
+    [],
+    [
+      "redstoneplus:veins",
+      "redstoneplus:roads",
+      "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
+      "redstoneplus:scree"
+    ],
+    [],
+    [
+      "redstoneplus:ruin",
+      "redstoneplus:monolith",
+      "redstoneplus:beast_cage",
+      "redstoneplus:generator_hall",
+      "redstoneplus:relay_spire",
+      "redstoneplus:circuit_temple"
+    ],
+    [],
+    [
+      "redstoneplus:ore_realm_redstone",
+      "redstoneplus:ore_realm_iron",
+      "redstoneplus:ore_realm_copper"
+    ],
+    [
+      "redstoneplus:cave_clusters_floor"
+    ],
+    [],
+    [
+      "redstoneplus:cinder_bloom_patch",
+      "redstoneplus:briar_patch"
+    ],
+    []
+  ]
+}

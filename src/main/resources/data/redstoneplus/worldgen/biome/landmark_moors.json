@@ -61,6 +61,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -97,6 +103,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:scree"
     ],
     [],
@@ -121,8 +129,6 @@
     [
       "redstoneplus:crimson_heather_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

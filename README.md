@@ -123,6 +123,52 @@ Neu aufbauen aus `tools/realm_mobs.py`: `python tools/gen_realm_mobs.py`, dann
 `blender -b -P tools/blender/build_mobs.py -- --rebuild NAME`. Texte, Blöcke und Weltgenerierung:
 `python tools/gen_realm.py`, Geräusche: `python tools/gen_realm_sounds.py`.
 
+## Das Raster, Lichträder und die Versiegelte Weite (neu)
+
+**Das Raster:** Leuchtende **Lichtbahnen** ziehen sich alle 256 Blöcke von Nord nach Süd und von Ost nach West durch das
+Reich. An jeder Kreuzung steht ein **Knoten**: ein Raddepot (überdachte Halle mit Kreisverkehr, Leuchtfeuer und Vorratskiste),
+ein Kreuzungsturm (Turm auf vier Beinen über der Kreuzung), ein Bahnwerk (ummauerter Hof mit Halle, Kran und Bahnwerkern) oder
+ein Glockentor (Bögen mit Glocken über den Einfahrten). Alle 48 Blöcke steht ein Leuchtmast an der Bahn; über flaches Wasser
+führt ein Damm. Viele Bahnen sind gebrochen.
+
+**Bahnwerker** (eigenes Blender-Modell) sind die Straßenbauer des Rasters: Sie laufen zu den Bruchstellen und legen Kachel um
+Kachel, bis die Bahn wieder ganz ist, und sie beginnen **neue Abzweige** im rechten Winkel, die an einer Haltestelle mit
+Leuchtfeuer enden. Das Raster wächst also, während man spielt. Mit der Spielregel `mobGriefing` lässt sich das abschalten.
+
+**Lichtrad:** Beim ersten Betreten des Reichs materialisiert neben dem Spieler ein **Lichtrad** (Blender-Modell, leuchtende
+Felgen, Lichtwand dahinter), dazu der **Lichtrad-Schlüssel**. Rechtsklick zum Aufsteigen. Abseits der Bahnen fährt es wie ein
+schneller Wagen (W/S, lenkt in Blickrichtung). Auf einer Lichtbahn **rastet es ein**: es folgt der Bahn von selbst, bleibt
+mittig, fährt bis 28 Blöcke/s (**Springen halten**: Schub bis 44 Blöcke/s) und gleitet mit seinem Gravlift über Stufen bis
+6 Blöcke. Vor einer Kreuzung **A oder D tippen** zum Abbiegen; ohne Eingabe geht es geradeaus, an einer reinen Abzweigung in
+Blickrichtung. **S** bremst, S im Stand wendet. Vor dem Schlag der Großen Glocke bremst es von selbst und hält still (sonst
+wäre die dritte Regel gebrochen). Fehlen die Chunks voraus noch, wartet es.
+
+Das Reich **hält das Rad immer beim Spieler**: Jede Sekunde wird geprüft, ob es existiert, in derselben Welt und in Reichweite
+ist; fehlt es (zurückgelassen, aus der Welt gefallen, entladen, kaputt), wird es nach ein paar Sekunden neben dem Spieler neu
+gebaut. Es gibt immer nur eins. Der Schlüssel ruft es jederzeit (auch in anderen Dimensionen), Schleichen + Benutzen schaltet die
+automatische Rückkehr an/aus, Schleichen + Schlagen auf das eigene Rad stellt es weg. Der Bund überlebt den Tod.
+
+**Anzeige:** Beim Fahren zeigt links oben eine Karte die Bahnen in der Nähe (Norden oben, Raster schwach dahinter, Bahnwerker
+bernsteinfarben, andere Räder rot), dazu Tempo, ob das Rad eingerastet ist, die nächste Kreuzung mit ihren Richtungen, die
+vorgemerkte Abbiegung und die Glockenwarnung. **M** öffnet die **Rasterkarte** (zoomen mit dem Mausrad, ziehen zum Umsehen).
+
+**Die Versiegelte Weite:** Ein neues Biom auf großen Flächen im Landesinneren, rundum von einer **Mauer aus Quarantäneplatten** mit
+Warnlampen umschlossen; wo Bahnen auf die Mauer treffen, sind die Tore versiegelt, außen stehen **Warnschilder** und Dornen.
+Drinnen: blutroter Himmel, Nebel, Fäulniskruste, und zwei Kreaturen mit eigenen Blender-Modellen, die die Eintracht nie hielten:
+das **Drahtgespenst** (Stelzengänger aus Draht mit Glockenkopf; sein Schrei verdunkelt und zieht heran) und die
+**Schlundmaschine** (Ofen auf vier Beinen mit riesigem Maul; springt und beißt). Sie jagen jeden, sie zu bekämpfen bricht keine
+Regel, und sie verlassen die Mauern nicht.
+
+**Farben:** Himmel, Wasser, Nebel, Pflanzen und Böden des ganzen Reichs bleiben jetzt bei Rot, Orange und Gelb (keine blauen
+Meere oder Himmel mehr, kein Türkis, kein Grün, keine blauen Eisflächen). `python tools/realm_palette.py` prüft das.
+
+**Regeln fertig:** Der Tod setzt die Zählung jetzt verlässlich zurück (die Rückkehr aus dem End nicht), der Balken bleibt nach dem
+Tod nicht mehr hängen, Sühne ruft die jagenden Kreaturen zurück, eine Lampe zählt nur einmal (und höchstens eine pro Minute),
+der Balken zählt die Sekunden bis zum Glockenschlag herunter, und Lichtbahnen und Quarantänemauern gelten als gebaut.
+
+**Blender ohne Oberfläche:** `pip install bpy` (Python 3.11) genügt; dann laufen `python tools/blender/build_mobs.py -- NAME`
+und `python tools/blender/export_mobs.py -- NAME` wie mit `blender -b -P`. Für die Vorschaubilder braucht Linux `libegl1`.
+
 ## Handbuch im Spiel
 
 Das **RedstonePlus-Handbuch** (Kreativ-Tab, oder Buch + Redstone craften; jeder Spieler bekommt es beim ersten Betreten)

@@ -39,7 +39,9 @@ public final class RealmTerrain {
         // everywhere: glowing veins in the ground, and the broken roads of the old world
         VEINS(), ROADS(),
         // the ruined Foundry Cities, hundreds of blocks wide (see RealmCities)
-        CITIES();
+        CITIES(),
+        // the Grid: lattice lightlines and the structures at their nodes (see Grid); the walls of the Sealed Reach (see SealedReach)
+        GRID(), SEALED_WALL();
 
         final String[] biomes;
 
@@ -95,6 +97,8 @@ public final class RealmTerrain {
                         case VEINS -> vein(level, a, b, x, z, top);
                         case ROADS -> road(level, a, b, x, z, top, sea);
                         case CITIES -> RealmCities.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
+                        case GRID -> Grid.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
+                        case SEALED_WALL -> SealedReach.column(level, x, z, top);
                     };
                 }
             }
@@ -190,7 +194,7 @@ public final class RealmTerrain {
         return true;
     }
 
-    /** Deep cracks in the ice sheet: narrow, with walls of packed ice. */
+    /** Deep cracks in the rime: narrow, with walls of frost realmstone. */
     private static boolean crevasse(WorldGenLevel level, SimplexNoise a, SimplexNoise b, int x, int z, int top) {
         double n = Math.abs(a.getValue(x * 0.012, z * 0.012));
         if (n > 0.05) {
@@ -198,7 +202,7 @@ public final class RealmTerrain {
         }
         int depth = 8 + (int) ((b.getValue(x * 0.05, z * 0.05) + 1) * 5);
         for (int y = 0; y < depth; y++) {
-            set(level, x, top - 1 - y, z, n > 0.035 ? Blocks.PACKED_ICE.defaultBlockState() : Blocks.AIR.defaultBlockState());
+            set(level, x, top - 1 - y, z, n > 0.035 ? Realm.FROST_REALMSTONE.get().defaultBlockState() : Blocks.AIR.defaultBlockState());
         }
         return true;
     }

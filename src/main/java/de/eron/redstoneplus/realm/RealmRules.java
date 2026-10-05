@@ -5,6 +5,8 @@ import de.eron.redstoneplus.registry.ModRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -45,17 +48,36 @@ import java.util.UUID;
  *     <li>Do not break what the Wirewrights built.</li>
  *     <li>Be still when the Great Bell tolls.</li>
  * </ol>
- * A bar at the top of the screen counts the broken rules while you are in the realm. From {@link #CONDEMNED} on, every
- * creature hunts you. Three rites set things right: relight a dead lamp with redstone (one rule), ring a bell while the
- * Great Bell tolls (two rules), or lay an Etched Plate on Bell Bronze (all of them). The realm forgets the dead.
+ * A bar at the top of the screen counts the broken rules while you are in the realm, and warns before the Great Bell
+ * tolls. From {@link #CONDEMNED} on, every creature hunts you. Three rites set things right: relight a dead lamp with
+ * redstone (one rule; each lamp only once, and not more than once a minute), ring a bell while the Great Bell tolls (two
+ * rules), or lay an Etched Plate on Bell Bronze (all of them). Atoning calls off the creatures that were hunting you.
+ * The realm forgets the dead: dying clears the count (coming back from the End does not).
+ * <p>
+ * The things walled into the Sealed Reach never kept the Concordance: they hunt everyone, and striking them is no crime.
  */
 public final class RealmRules {
     public static final int MAX = 5;
     public static final int CONDEMNED = 3;
-    private static final String BROKEN = "redstoneplus_rules_broken";
+    /** Kept under Forge's PlayerPersisted tag, so it survives respawning and the trip back from the End. */
+    private static final String PERSISTED = "PlayerPersisted";
+    private static final String DATA = "redstoneplus_concordance";
+    private static final String BROKEN = "broken";
+    private static final String ANSWERED = "bell_answered";
+    private static final String RELIT = "relit_lamps";
+    private static final String RELIT_AT = "relit_at";
+    private static final String WELCOMED = "welcomed";
+    /** Older versions kept the count straight in the player's data. */
+    private static final String LEGACY_BROKEN = "redstoneplus_rules_broken";
     private static final String PROVOKED = "redstoneplus_provoked_until";
     private static final String COOLDOWN = "redstoneplus_rule_cooldown";
-    private static final String ANSWERED = "redstoneplus_bell_answered";
+    /** How many relit lamps a player's record remembers. */
+    private static final int RELIT_MEMORY = 48;
+    private static final int RELIT_COOLDOWN = 1200;
+    /** Ticks before a toll during which the bar warns. */
+    private static final int TOLL_WARNING = 100;
+    /** Ticks after a toll during which moving breaks the third rule. */
+    static final int TOLL_STILL = 60;
 
     private static final Map<UUID, ServerBossEvent> BARS = new HashMap<>();
     /** Where each player stood when the Great Bell last tolled. */
@@ -71,14 +93,34 @@ public final class RealmRules {
         MinecraftForge.EVENT_BUS.addListener(RealmRules::rite);
         MinecraftForge.EVENT_BUS.addListener(RealmRules::playerTick);
         MinecraftForge.EVENT_BUS.addListener(RealmRules::logout);
+        MinecraftForge.EVENT_BUS.addListener(RealmRules::respawn);
+        MinecraftForge.EVENT_BUS.addListener(RealmRules::changedDimension);
     }
 
     static boolean inRealm(Level level) {
         return level.dimension().equals(Realm.REALM);
     }
 
+    /** This player's record with the Concordance (created on first use, carried over from older versions). */
+    private static CompoundTag data(Player player) {
+        CompoundTag root = player.getPersistentData();
+        CompoundTag persisted = root.getCompound(PERSISTED);
+        if (!root.contains(PERSISTED)) {
+            root.put(PERSISTED, persisted);
+        }
+        CompoundTag data = persisted.getCompound(DATA);
+        if (!persisted.contains(DATA)) {
+            persisted.put(DATA, data);
+        }
+        if (root.contains(LEGACY_BROKEN)) {
+            data.putInt(BROKEN, Math.max(data.getInt(BROKEN), root.getInt(LEGACY_BROKEN)));
+            root.remove(LEGACY_BROKEN);
+        }
+        return data;
+    }
+
     public static int broken(Player player) {
-        return player.getPersistentData().getInt(BROKEN);
+        return data(player).getInt(BROKEN);
     }
 
     private static boolean playing(Player player) {
@@ -99,6 +141,11 @@ public final class RealmRules {
         return false;
     }
 
+    /** The things walled into the Sealed Reach: the Concordance does not bind them, nor protect them. */
+    static boolean lawless(Entity entity) {
+        return entity instanceof SealedReach.Lawless;
+    }
+
     // ================================================================================================ the rules
     private static void breakRule(ServerPlayer player, String rule) {
         long now = player.level().getGameTime();
@@ -108,27 +155,50 @@ public final class RealmRules {
         player.getPersistentData().putLong(COOLDOWN, now + 60);
         int before = broken(player);
         int after = Math.min(MAX, before + 1);
-        player.getPersistentData().putInt(BROKEN, after);
+        data(player).putInt(BROKEN, after);
         player.level().playSound(null, player.blockPosition(), RealmSounds.GREAT_BELL.get(), SoundSource.AMBIENT, 0.6F, 1.6F);
         player.displayClientMessage(Component.translatable("rules.redstoneplus." + rule).withStyle(ChatFormatting.RED), true);
         if (before < CONDEMNED && after >= CONDEMNED) {
             player.level().playSound(null, player.blockPosition(), RealmSounds.GREAT_BELL.get(), SoundSource.AMBIENT, 2.0F, 0.6F);
+            player.sendSystemMessage(Component.translatable("rules.redstoneplus.condemned").withStyle(ChatFormatting.DARK_RED));
         }
         updateBar(player);
     }
 
     private static void forgive(ServerPlayer player, int count) {
-        int after = Math.max(0, broken(player) - count);
-        player.getPersistentData().putInt(BROKEN, after);
+        int before = broken(player);
+        int after = Math.max(0, before - count);
+        data(player).putInt(BROKEN, after);
         ServerLevel level = player.serverLevel();
         level.playSound(null, player.blockPosition(), SoundEvents.BELL_RESONATE, SoundSource.PLAYERS, 1.0F, 1.4F);
         level.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 30, 0.6, 0.8, 0.6, 0.05);
+        player.displayClientMessage(Component.translatable(after == 0 ? "rules.redstoneplus.forgiven_all" : "rules.redstoneplus.forgiven", after, MAX)
+                .withStyle(ChatFormatting.GOLD), true);
+        // whoever was only hunting because of the broken rules lets go
+        player.getPersistentData().remove(PROVOKED);
+        if (after < CONDEMNED) {
+            calm(player);
+        }
         updateBar(player);
+    }
+
+    /** Realm creatures around the player that were hunting them stop, unless the player is still fighting them. */
+    private static void calm(ServerPlayer player) {
+        AABB area = player.getBoundingBox().inflate(64.0);
+        for (Mob mob : player.serverLevel().getEntitiesOfClass(Mob.class, area, m -> m.getTarget() == player && realmCreature(m) && !lawless(m))) {
+            if (mob.getLastHurtByMob() == player && mob.tickCount - mob.getLastHurtByMobTimestamp() < 100) {
+                continue;
+            }
+            mob.setTarget(null);
+            mob.setLastHurtByMob(null);
+            mob.getNavigation().stop();
+        }
     }
 
     /** Realm creatures only take a player as their target if the player has broken the rules or just provoked them. */
     private static void changeTarget(LivingChangeTargetEvent event) {
-        if (!(event.getNewTarget() instanceof Player player) || !inRealm(event.getEntity().level()) || !realmCreature(event.getEntity())) {
+        if (!(event.getNewTarget() instanceof Player player) || !inRealm(event.getEntity().level()) || !realmCreature(event.getEntity())
+                || lawless(event.getEntity())) {
             return;
         }
         if (broken(player) >= CONDEMNED || player.getPersistentData().getLong(PROVOKED) > player.level().getGameTime()
@@ -141,7 +211,7 @@ public final class RealmRules {
     /** Rule 1: do not strike first. Striking also sets the creatures around you on you for a while. */
     private static void attack(LivingAttackEvent event) {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player) || !playing(player) || !inRealm(player.level())
-                || !realmCreature(event.getEntity())) {
+                || !realmCreature(event.getEntity()) || lawless(event.getEntity())) {
             return;
         }
         boolean defending = event.getEntity() instanceof Mob mob && mob.getTarget() == player;
@@ -153,17 +223,21 @@ public final class RealmRules {
 
     private static final Set<String> BUILT = Set.of("realmstone_bricks", "cracked_realmstone_bricks", "chiseled_realmstone_bricks",
             "wirewright_tiles", "bell_bronze", "rust_plating", "karst_bricks", "crusher", "hazard_switch", "lockdown_gate", "floodgate",
-            "kiln_turret", "volley_launcher", "tripper_rail");
+            "kiln_turret", "volley_launcher", "tripper_rail", "lightline", "grid_beacon", "quarantine_plating");
+
+    /** True for the blocks the second rule protects. */
+    public static boolean built(BlockState state) {
+        var key = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+        boolean ours = key != null && key.getNamespace().equals("redstoneplus") && BUILT.contains(key.getPath());
+        return ours || state.is(ModRegistry.INSTANT_LAMP.get()) || state.is(Blocks.BELL);
+    }
 
     /** Rule 2: do not break what the Wirewrights built. */
     private static void breakBlock(BlockEvent.BreakEvent event) {
         if (!(event.getPlayer() instanceof ServerPlayer player) || !playing(player) || !(event.getLevel() instanceof Level level) || !inRealm(level)) {
             return;
         }
-        BlockState state = event.getState();
-        var key = ForgeRegistries.BLOCKS.getKey(state.getBlock());
-        boolean built = key != null && key.getNamespace().equals("redstoneplus") && BUILT.contains(key.getPath());
-        if (built || state.is(ModRegistry.INSTANT_LAMP.get()) || state.is(Blocks.BELL)) {
+        if (built(event.getState())) {
             breakRule(player, "break_built");
         }
     }
@@ -177,6 +251,16 @@ public final class RealmRules {
         }
     }
 
+    /** Ticks until the Great Bell next tolls (0 on the toll itself). */
+    public static int ticksToToll(long gameTime) {
+        return (int) Math.floorMod(-gameTime, (long) RealmBell.INTERVAL);
+    }
+
+    /** Ticks since the Great Bell last tolled. */
+    public static int ticksSinceToll(long gameTime) {
+        return (int) Math.floorMod(gameTime, (long) RealmBell.INTERVAL);
+    }
+
     // ================================================================================================ the rites
     private static void rite(PlayerInteractEvent.RightClickBlock event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || !inRealm(player.level())) {
@@ -186,7 +270,7 @@ public final class RealmRules {
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
         ItemStack held = event.getItemStack();
-        // relight a dead lamp with redstone: one rule forgiven
+        // relight a dead lamp with redstone: one rule forgiven (each lamp once, at most once a minute)
         if (state.is(ModRegistry.INSTANT_LAMP.get()) && !state.getValue(SimpleBlocks.Lamp.LIT) && held.is(Items.REDSTONE)) {
             level.setBlock(pos, state.setValue(SimpleBlocks.Lamp.LIT, true), 2);
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 20, 0.4, 0.4, 0.4, 0.2);
@@ -194,7 +278,14 @@ public final class RealmRules {
                 held.shrink(1);
             }
             if (broken(player) > 0) {
-                forgive(player, 1);
+                if (relitBefore(player, pos)) {
+                    player.displayClientMessage(Component.translatable("rules.redstoneplus.lamp_known").withStyle(ChatFormatting.GRAY), true);
+                } else if (data(player).getLong(RELIT_AT) > level.getGameTime()) {
+                    player.displayClientMessage(Component.translatable("rules.redstoneplus.lamp_wait").withStyle(ChatFormatting.GRAY), true);
+                } else {
+                    rememberRelit(player, pos, level.getGameTime());
+                    forgive(player, 1);
+                }
             }
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
@@ -202,10 +293,10 @@ public final class RealmRules {
         }
         // answer the Great Bell: ring a bell while it tolls, two rules forgiven (once per toll)
         if (state.getBlock() instanceof BellBlock) {
-            long sinceToll = Math.floorMod(level.getGameTime(), RealmBell.INTERVAL);
+            long sinceToll = ticksSinceToll(level.getGameTime());
             long toll = level.getGameTime() - sinceToll;
-            if (sinceToll <= 100 && player.getPersistentData().getLong(ANSWERED) != toll && broken(player) > 0) {
-                player.getPersistentData().putLong(ANSWERED, toll);
+            if (sinceToll <= 100 && data(player).getLong(ANSWERED) != toll && broken(player) > 0) {
+                data(player).putLong(ANSWERED, toll);
                 forgive(player, 2);
             }
             return;
@@ -224,6 +315,27 @@ public final class RealmRules {
         }
     }
 
+    private static boolean relitBefore(Player player, BlockPos pos) {
+        long key = pos.asLong();
+        for (long l : data(player).getLongArray(RELIT)) {
+            if (l == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void rememberRelit(Player player, BlockPos pos, long now) {
+        CompoundTag data = data(player);
+        long[] old = data.getLongArray(RELIT);
+        int keep = Math.min(old.length, RELIT_MEMORY - 1);
+        long[] list = new long[keep + 1];
+        System.arraycopy(old, old.length - keep, list, 0, keep);
+        list[keep] = pos.asLong();
+        data.put(RELIT, new LongArrayTag(list));
+        data.putLong(RELIT_AT, now + RELIT_COOLDOWN);
+    }
+
     // ================================================================================================ the bar
     private static void playerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player)) {
@@ -231,8 +343,8 @@ public final class RealmRules {
         }
         Vec3 atToll = AT_TOLL.get(player.getUUID());
         if (atToll != null) {
-            long since = Math.floorMod(player.level().getGameTime(), RealmBell.INTERVAL);
-            if (!inRealm(player.level()) || since > 60) {
+            long since = ticksSinceToll(player.level().getGameTime());
+            if (!inRealm(player.level()) || since > TOLL_STILL || !player.isAlive()) {
                 AT_TOLL.remove(player.getUUID());
             } else if (player.position().distanceToSqr(atToll) > 2.0 * 2.0) {
                 AT_TOLL.remove(player.getUUID());
@@ -252,17 +364,57 @@ public final class RealmRules {
             return;
         }
         int n = broken(player);
-        String key = n == 0 ? "rules.redstoneplus.bar.harmony" : n >= CONDEMNED ? "rules.redstoneplus.bar.condemned" : "rules.redstoneplus.bar.broken";
-        bar.setName(Component.translatable(key, n, MAX));
+        long time = player.level().getGameTime();
+        int toToll = ticksToToll(time);
+        int sinceToll = ticksSinceToll(time);
+        Component name;
+        if (sinceToll <= TOLL_STILL) {
+            name = Component.translatable("rules.redstoneplus.bar.tolling");
+        } else if (toToll <= TOLL_WARNING) {
+            name = Component.translatable("rules.redstoneplus.bar.toll_soon", (toToll + 19) / 20);
+        } else {
+            String key = n == 0 ? "rules.redstoneplus.bar.harmony" : n >= CONDEMNED ? "rules.redstoneplus.bar.condemned" : "rules.redstoneplus.bar.broken";
+            name = Component.translatable(key, n, MAX);
+        }
+        bar.setName(name);
         bar.setColor(n == 0 ? BossEvent.BossBarColor.WHITE : n >= CONDEMNED ? BossEvent.BossBarColor.RED : BossEvent.BossBarColor.YELLOW);
         bar.setProgress(1.0F - n / (float) MAX);
         bar.addPlayer(player);
+        CompoundTag data = data(player);
+        if (!data.getBoolean(WELCOMED) && playing(player)) {
+            data.putBoolean(WELCOMED, true);
+            player.sendSystemMessage(Component.translatable("rules.redstoneplus.welcome").withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    /** A new player object after death or the End: the old one leaves the bar, and the dead are forgiven. */
+    private static void respawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        ServerBossEvent bar = BARS.get(player.getUUID());
+        if (bar != null) {
+            bar.removeAllPlayers(); // the old player object would otherwise keep the bar on screen
+        }
+        AT_TOLL.remove(player.getUUID());
+        if (!event.isEndConquered()) {
+            data(player).putInt(BROKEN, 0); // the realm forgets the dead
+            player.getPersistentData().remove(PROVOKED);
+        }
+        updateBar(player);
+    }
+
+    private static void changedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            AT_TOLL.remove(player.getUUID());
+            updateBar(player);
+        }
     }
 
     private static void logout(PlayerEvent.PlayerLoggedOutEvent event) {
         ServerBossEvent bar = BARS.remove(event.getEntity().getUUID());
-        if (bar != null && event.getEntity() instanceof ServerPlayer player) {
-            bar.removePlayer(player);
+        if (bar != null) {
+            bar.removeAllPlayers();
         }
         AT_TOLL.remove(event.getEntity().getUUID());
     }

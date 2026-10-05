@@ -103,10 +103,14 @@ public final class Guide {
     /** Every player gets the guide the first time they join a world. */
     private static void firstJoin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        if (!player.getPersistentData().getBoolean(GIVEN)) {
-            player.getPersistentData().putBoolean(GIVEN, true);
+        // kept under PlayerPersisted: Forge drops the rest of a player's data on death, which handed out the book again
+        net.minecraft.nbt.CompoundTag root = player.getPersistentData();
+        net.minecraft.nbt.CompoundTag persisted = root.getCompound("PlayerPersisted");
+        if (!persisted.getBoolean(GIVEN) && !root.getBoolean(GIVEN)) {
             player.getInventory().add(new ItemStack(GUIDE.get()));
         }
+        persisted.putBoolean(GIVEN, true);
+        root.put("PlayerPersisted", persisted);
     }
 
     public static class GuideItem extends Item {

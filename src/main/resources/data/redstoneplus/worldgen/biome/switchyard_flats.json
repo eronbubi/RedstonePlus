@@ -3,7 +3,7 @@
   "temperature": 1.2,
   "downfall": 0.1,
   "effects": {
-    "sky_color": 12614304,
+    "sky_color": 13138026,
     "fog_color": 13666928,
     "water_color": 9062970,
     "water_fog_color": 3807760,
@@ -73,6 +73,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -110,6 +116,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:slag_heap",
       "redstoneplus:scree"
     ],
@@ -136,8 +144,6 @@
     [
       "redstoneplus:salt_brush_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

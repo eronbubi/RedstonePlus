@@ -1244,3 +1244,217 @@ replace_clip('scrap_jackal', 'ability', L, False, {
     'jaw': R(lambda u: (15 * max(0, s(u, 4)), 0, 0), L),
 })
 add_clip('scrap_jackal', 'hurt', merge(hurt('body', 'head', 12), {'tail': rot(keys((0, 0), (0.1, -30), (0.4, 0)))}), 0.4, False)
+
+
+# ================================================================================================ the Grid
+# The light cycle (a vehicle, not a creature: the renderer spins its wheels and leans it into turns) and the
+# Trackwright, the last of the Wirewrights' road builders, which lays the glowing lightlines the cycles run on.
+
+# ---- Light Cycle: a low redstone racing cycle; two enclosed wheels with glowing rims, a red light band all around
+mob('light_cycle', [
+    part('body', (0, 14, 0), [
+        cube((-3, 8, -16), (6, 6, 30), 'cycle_black', {'top': 'redtrace', 'right': 'redtrace', 'left': 'redtrace'}),
+        cube((-3.25, 11, -16.25), (6.5, 1, 30.5), 'cycle_red'),
+        cube((-3, 9, -21), (6, 5, 5), 'cycle_black', {'front': 'eyes2'}),
+        cube((-3, 6.5, -3), (6, 1.5, 11), 'cycle_black', {'top': 'grill_small'}),
+        cube((-3, 7, 14), (6, 6, 6), 'cycle_black', {'back': 'grill_small'}),
+        cube((-2.5, 5, -12), (5, 3, 8), 'cycle_glass'),
+    ]),
+    part('fin', (0, 7, 16), [cube((-0.5, 2, 15), (1, 5, 5), 'cycle_red')], parent='body'),
+    part('handlebar', (0, 7, -8), [cube((-5, 6, -9), (10, 1, 1), 'iron'), cube((-5.5, 5.5, -9.5), (2, 2, 2), 'cycle_black'),
+                                   cube((3.5, 5.5, -9.5), (2, 2, 2), 'cycle_black')], parent='body'),
+    part('wheel_front', (0, 17, -14), [cube((-4, 11, -20), (8, 12, 12), 'cycle_black', {'right': 'wheel', 'left': 'wheel', 'front': 'cycle_rim',
+                                                                                         'back': 'cycle_rim', 'top': 'cycle_rim', 'bottom': 'cycle_rim'})],
+         parent='body'),
+    part('wheel_back', (0, 17, 14), [cube((-4, 11, 8), (8, 12, 12), 'cycle_black', {'right': 'wheel', 'left': 'wheel', 'front': 'cycle_rim',
+                                                                                     'back': 'cycle_rim', 'top': 'cycle_rim', 'bottom': 'cycle_rim'})],
+         parent='body'),
+], {}, look=(), shadow=0.7)
+replace_clip('light_cycle', 'idle', 2.0, True, {
+    'fin': S(lambda u: (1, 1 + 0.06 * s(u), 1 + 0.06 * s(u)), 2.0),
+    'body': P(lambda u: (0, 0.15 * s(u, 2), 0), 2.0),
+})
+
+# ---- Trackwright: a crab-legged paving engine. Its spool holds lightline, the nozzle at its back presses it into the ground
+_tw_legs = []
+for _n, _x, _z in (('leg_fl', 6, -5), ('leg_fr', -6, -5), ('leg_bl', 6, 5), ('leg_br', -6, 5)):
+    _sx = 1 if _x > 0 else -1
+    _tw_legs.append(part(_n, (_x, 15, _z), [cube((_x - 1 + _sx, 14.5, _z - 1), (2, 9.5, 2), 'dark_iron'),
+                                            cube((_x - 1.5 + _sx * 1.5, 22, _z - 1.5), (3, 2, 3), 'rust')],
+                         rot=(0, 0, -22 * _sx)))
+mob('trackwright', [
+    part('body', (0, 14, 0), [
+        cube((-7, 8, -9), (14, 8, 18), 'rust', {'top': 'rivets', 'right': 'redtrace', 'left': 'redtrace'}),
+        cube((-6, 6, -7), (12, 2, 13), 'dark_iron', {'top': 'grill_small'}),
+    ]),
+    part('head', (0, 12, -9), [cube((-4, 8, -14), (8, 7, 5), 'dark_iron', {'front': 'eyes3'}),
+                               cube((-1.5, 6.5, -13), (3, 2, 3), 'cycle_amber')], parent='body'),
+    part('mand_l', (2.5, 14, -14), [cube((1.5, 13.5, -18), (2, 2, 4), 'brass')], parent='head'),
+    part('mand_r', (-2.5, 14, -14), [cube((-3.5, 13.5, -18), (2, 2, 4), 'brass')], parent='head'),
+    part('spool', (0, 3.5, 3), [cube((-5, 1, 0), (10, 5, 6), 'cycle_red'), cube((-6, 0.5, -0.5), (1, 6, 7), 'iron'),
+                                cube((5, 0.5, -0.5), (1, 6, 7), 'iron')], parent='body'),
+    part('nozzle', (0, 13, 9), [cube((-2, 12, 9), (4, 4, 6), 'iron', {'top': 'rivets'}), cube((-1.5, 15, 12.5), (3, 4, 3), 'cycle_red')], parent='body'),
+    *_tw_legs,
+], {}, shadow=0.7)
+L = 0.8
+replace_clip('trackwright', 'walk', L, True, {
+    'leg_fl': R(lambda u: (gait_value(u, 28, 0.55), 0, swing_lift(u, -12, 0.55)), L),
+    'leg_br': R(lambda u: (gait_value(u, 28, 0.55), 0, swing_lift(u, 12, 0.55)), L),
+    'leg_fr': R(lambda u: (gait_value(u + 0.5, 28, 0.55), 0, swing_lift(u + 0.5, 12, 0.55)), L),
+    'leg_bl': R(lambda u: (gait_value(u + 0.5, 28, 0.55), 0, swing_lift(u + 0.5, -12, 0.55)), L),
+    'body': merge(P(lambda u: (0, -0.4 * abs(s(u)), 0), L), R(lambda u: (0, 0, 2.5 * s(u)), L)),
+    'head': R(lambda u: (3 * s(u, 2), 4 * s(u), 0), L),
+    'spool': R(lambda u: (90 * u, 0, 0), L),
+})
+L = 3.0
+replace_clip('trackwright', 'idle', L, True, {
+    'head': rot(keys3((0, (0, 0, 0)), (0.6, (10, 25, 0)), (1.3, (10, 25, 0)), (1.8, (8, -25, 0)), (2.5, (8, -25, 0)), (3.0, (0, 0, 0)))),
+    'mand_l': R(lambda u: (0, -10 * max(0, s(u, 3)), 0), L), 'mand_r': R(lambda u: (0, 10 * max(0, s(u, 3)), 0), L),
+    'spool': R(lambda u: (20 * s(u), 0, 0), L),
+    'body': S(lambda u: (1, 1 + 0.02 * s(u, 2), 1), L),
+})
+L = 0.5
+replace_clip('trackwright', 'attack', L, False, {
+    'head': rot(keys3((0, (0, 0, 0)), (0.12, (-18, 0, 0)), (0.25, (12, 0, 0)), (0.5, (0, 0, 0)))),
+    'mand_l': rot(keys3((0, (0, 0, 0)), (0.12, (0, -35, 0)), (0.22, (0, 15, 0)), (0.5, (0, 0, 0)))),
+    'mand_r': rot(keys3((0, (0, 0, 0)), (0.12, (0, 35, 0)), (0.22, (0, -15, 0)), (0.5, (0, 0, 0)))),
+})
+L = 1.0
+replace_clip('trackwright', 'ability', L, False, {
+    # laying a tile: it crouches, the nozzle stamps down twice, the spool feeds
+    'body': merge(P(lambda u: (0, 1.5 * min(1, u * 5) * min(1, (1 - u) * 5), 0), L), R(lambda u: (-6 * min(1, u * 5) * min(1, (1 - u) * 5), 0, 0), L)),
+    'nozzle': merge(P(lambda u: (0, 3 * max(0, s(u, 2)), 0), L, 32), R(lambda u: (25 * max(0, s(u, 2)), 0, 0), L, 32)),
+    'spool': R(lambda u: (-360 * u, 0, 0), L, 24),
+    'head': R(lambda u: (20 * min(1, u * 4) * min(1, (1 - u) * 4), 0, 0), L),
+})
+add_clip('trackwright', 'hurt', hurt('body', 'head', 12), 0.4, False)
+
+
+# ================================================================================================ the Sealed Reach
+# What the Wirewrights walled in: things that never kept the Concordance.
+
+# ---- Wirewraith: a gaunt stilt-walker of tangled wire with a hollow bell for a head and scythe-claws that drag
+mob('wirewraith', [
+    part('leg_l', (2.5, 4, 0), [cube((1.5, 4, -1), (2, 20, 2), 'wire_dark'), cube((1, 21, -2), (3, 3, 3), 'blade')]),
+    part('leg_r', (-2.5, 4, 0), [cube((-3.5, 4, -1), (2, 20, 2), 'wire_dark'), cube((-4, 21, -2), (3, 3, 3), 'blade')]),
+    part('body', (0, 4, 0), [
+        cube((-3.5, 1, -2), (7, 3, 4), 'cable'),
+        cube((-1, -16, -1), (2, 17, 2), 'wire_dark'),
+        cube((-5, -14, -3), (10, 9, 6), 'cage'),
+        cube((-2, -12, -1.5), (4, 4, 3), 'cycle_red'),
+    ]),
+    part('head', (0, -17, 0), [cube((-4.5, -25, -4.5), (9, 8, 9), 'bell_dark', {'front': 'scream'}),
+                               cube((-3, -28, -3), (6, 3, 6), 'bell_dark'), cube((-1, -30, -1), (2, 2, 2), 'wire_dark')], parent='body'),
+    part('jaw', (0, -17, -3), [cube((-3.5, -17.5, -5.5), (7, 4, 5), 'bone', {'top': 'teeth', 'front': 'teeth'})], parent='head', rot=(28, 0, 0)),
+    part('arm_l', (5, -14, 0), [cube((4.5, -14, -1), (2, 22, 2), 'wire_dark')], parent='body', rot=(0, 0, -8)),
+    part('arm_r', (-5, -14, 0), [cube((-6.5, -14, -1), (2, 22, 2), 'wire_dark')], parent='body', rot=(0, 0, 8)),
+    part('claw_l', (5.5, 8, 0), [cube((5, 8, -5), (1, 11, 7), 'blade')], parent='arm_l'),
+    part('claw_r', (-5.5, 8, 0), [cube((-6, 8, -5), (1, 11, 7), 'blade')], parent='arm_r'),
+    part('tendril_a', (3, -6, 2), [cube((2.5, -6, 1.5), (1, 12, 1), 'cable')], parent='body', rot=(10, 0, -10)),
+    part('tendril_b', (-2, -6, 2), [cube((-2.5, -6, 1.5), (1, 14, 1), 'cable')], parent='body', rot=(15, 0, 8)),
+    part('tendril_c', (0, -5, -2.5), [cube((-0.5, -5, -3), (1, 9, 1), 'cable'), cube((-1, 3, -3.5), (2, 2, 2), 'cycle_red')], parent='body',
+         rot=(-12, 0, 0)),
+], {}, look=('head',), shadow=0.5)
+L = 2.4
+replace_clip('wirewraith', 'walk', L, True, {
+    'leg_l': R(lambda u: (gait_value(u, 22, 0.6), 0, 0), L), 'leg_r': R(lambda u: (gait_value(u + 0.5, 22, 0.6), 0, 0), L),
+    'body': merge(R(lambda u: (10 + 3 * s(u, 2), 6 * s(u), 4 * s(u)), L), P(lambda u: (0, -0.8 * abs(s(u)), 0), L)),
+    'head': R(lambda u: (-8, -10 * s(u), 12 * s(u, 0.5)), L),
+    'arm_l': R(lambda u: (-gait_value(u + 0.5, 12, 0.6) - 12, 0, -4 * s(u)), L),
+    'arm_r': R(lambda u: (-gait_value(u, 12, 0.6) - 12, 0, 4 * s(u)), L),
+    'claw_l': R(lambda u: (20 + 8 * s(u, 2), 0, 0), L), 'claw_r': R(lambda u: (20 + 8 * s(u, 2, 0.5), 0, 0), L),
+    'tendril_a': R(lambda u: (20 * s(u, 2), 0, 10 * s(u)), L), 'tendril_b': R(lambda u: (18 * s(u, 2, 0.3), 0, -8 * s(u)), L),
+    'tendril_c': R(lambda u: (-25 * s(u, 2, 0.6), 0, 0), L),
+})
+L = 4.0
+replace_clip('wirewraith', 'idle', L, True, {
+    # it stands too still, then its head snaps to another angle
+    'head': rot(snap((0, (0, 0, 0)), (0.9, (0, 0, 35)), (1.8, (-15, 40, 20)), (2.6, (10, -30, -25)), (3.4, (0, 0, 0)), (4.0, (0, 0, 0)))),
+    'body': merge(R(lambda u: (6, 0, 2 * s(u)), L), S(lambda u: (1 + 0.03 * s(u, 2), 1 + 0.04 * s(u, 2), 1 + 0.03 * s(u, 2)), L)),
+    'arm_l': R(lambda u: (-6, 0, -3 + 3 * s(u, 2)), L), 'arm_r': R(lambda u: (-6, 0, 3 - 3 * s(u, 2, 0.5)), L),
+    'claw_l': rot(snap((0, (15, 0, 0)), (1.3, (45, 0, 0)), (1.5, (15, 0, 0)), (4.0, (15, 0, 0)))),
+    'tendril_a': R(lambda u: (12 * s(u, 3), 0, 8 * s(u)), L), 'tendril_b': R(lambda u: (10 * s(u, 3, 0.4), 0, -6 * s(u)), L),
+    'tendril_c': R(lambda u: (-15 * s(u, 2, 0.6), 0, 6 * s(u)), L),
+})
+L = 0.7
+replace_clip('wirewraith', 'attack', L, False, {
+    'arm_l': rot(keys3((0, (0, 0, 0)), (0.2, (-150, 0, -30)), (0.38, (-20, 0, 15)), (0.7, (0, 0, 0)))),
+    'arm_r': rot(keys3((0, (0, 0, 0)), (0.28, (-150, 0, 30)), (0.46, (-20, 0, -15)), (0.7, (0, 0, 0)))),
+    'claw_l': rot(keys3((0, (0, 0, 0)), (0.2, (-40, 0, 0)), (0.38, (50, 0, 0)), (0.7, (0, 0, 0)))),
+    'claw_r': rot(keys3((0, (0, 0, 0)), (0.28, (-40, 0, 0)), (0.46, (50, 0, 0)), (0.7, (0, 0, 0)))),
+    'body': rot(keys3((0, (0, 0, 0)), (0.2, (-10, 0, 0)), (0.4, (25, 0, 0)), (0.7, (0, 0, 0)))),
+})
+L = 1.6
+replace_clip('wirewraith', 'ability', L, False, {
+    # the scream: it rears, the bell-head tips back and shakes, arms flung wide
+    'body': rot(keys3((0, (0, 0, 0)), (0.3, (-20, 0, 0)), (1.2, (-20, 0, 0)), (1.6, (0, 0, 0)))),
+    'head': R(lambda u: (-40 * min(1, u * 4) * min(1, (1 - u) * 4), 0, 14 * s(u, 9)), L, 48),
+    'arm_l': rot(keys3((0, (0, 0, 0)), (0.3, (-30, 0, -95)), (1.2, (-30, 0, -95)), (1.6, (0, 0, 0)))),
+    'arm_r': rot(keys3((0, (0, 0, 0)), (0.3, (-30, 0, 95)), (1.2, (-30, 0, 95)), (1.6, (0, 0, 0)))),
+    'tendril_a': R(lambda u: (40 * s(u, 6), 0, 30 * s(u, 5)), L, 32), 'tendril_b': R(lambda u: (40 * s(u, 6, 0.3), 0, -30 * s(u, 5)), L, 32),
+    'tendril_c': R(lambda u: (-50 * s(u, 6, 0.6), 0, 0), L, 32),
+})
+add_clip('wirewraith', 'hurt', merge(hurt('body', 'head', 14), {'tendril_a': rot(wave(0.45, 35, 'x', cycles=2))}), 0.45, False)
+
+# ---- Maw Engine: a furnace on four legs that is mostly mouth: crusher-plate jaws, a glowing gullet, smoking stacks
+mob('maw_engine', [
+    part('body', (0, 10, 2), [
+        cube((-9, 0, -6), (18, 12, 22), 'furnace', {'top': 'grill', 'back': 'grill', 'right': 'ribs', 'left': 'ribs'}),
+        cube((-2, -3, -4), (4, 3, 18), 'bone', {'top': 'teeth'}),
+    ]),
+    part('jaw_upper', (0, 4, -6), [cube((-8, -2, -20), (16, 8, 14), 'dark_iron', {'bottom': 'teeth', 'front': 'eyes6', 'top': 'rivets'}),
+                                   cube((-6, 5.5, -18), (12, 1, 12), 'cycle_red')], parent='body'),
+    part('jaw_lower', (0, 9, -6), [cube((-7.5, 8, -19), (15, 5, 13), 'dark_iron', {'top': 'teeth'}),
+                                   cube((-5, 7.5, -16), (10, 1, 9), 'ember')], parent='body'),
+    part('stack_l', (3, 0, 10), [cube((2, -10, 9), (4, 10, 4), 'dark_iron', {'top': 'ember_top'})], parent='body'),
+    part('stack_r', (-3, 0, 12), [cube((-6, -7, 11), (4, 7, 4), 'dark_iron', {'top': 'ember_top'})], parent='body'),
+    part('tail', (0, 6, 16), [cube((-1, 5, 16), (2, 2, 10), 'chain'), cube((-2, 4, 25), (4, 4, 3), 'rust', {'back': 'rivets'})], parent='body',
+         rot=(-15, 0, 0)),
+    part('leg_fl', (7, 10, -3), [cube((5, 10, -6), (6, 14, 6), 'rust', {'front': 'rivets'}), cube((4.5, 21, -7), (7, 3, 7), 'dark_iron')]),
+    part('leg_fr', (-7, 10, -3), [cube((-11, 10, -6), (6, 14, 6), 'rust', {'front': 'rivets'}), cube((-11.5, 21, -7), (7, 3, 7), 'dark_iron')]),
+    part('leg_bl', (7, 10, 12), [cube((5, 10, 9), (6, 14, 6), 'rust'), cube((4.5, 21, 8), (7, 3, 7), 'dark_iron')]),
+    part('leg_br', (-7, 10, 12), [cube((-11, 10, 9), (6, 14, 6), 'rust'), cube((-11.5, 21, 8), (7, 3, 7), 'dark_iron')]),
+], {}, look=('jaw_upper',), shadow=1.0, scale=1.15)
+L = 1.6
+replace_clip('maw_engine', 'walk', L, True, {
+    'leg_fl': R(lambda u: (gait_value(u, 24, 0.6), 0, 0), L), 'leg_br': R(lambda u: (gait_value(u + 0.08, 24, 0.6), 0, 0), L),
+    'leg_fr': R(lambda u: (gait_value(u + 0.5, 24, 0.6), 0, 0), L), 'leg_bl': R(lambda u: (gait_value(u + 0.58, 24, 0.6), 0, 0), L),
+    'body': merge(P(lambda u: (0, 1.2 * footfall(u, 2, 3), 0), L), R(lambda u: (2 * footfall(u, 2, 3), 0, 3 * s(u)), L)),
+    'jaw_upper': R(lambda u: (-6 - 4 * footfall(u, 2, 2), 0, 0), L), 'jaw_lower': R(lambda u: (8 + 4 * footfall(u, 2, 2), 0, 0), L),
+    'tail': R(lambda u: (6 * s(u, 2), 18 * s(u), 0), L),
+    'stack_l': S(lambda u: (1, 1 + 0.12 * footfall(u, 2, 2), 1), L), 'stack_r': S(lambda u: (1, 1 + 0.12 * footfall(u, 2, 2, ), 1), L),
+})
+L = 3.0
+replace_clip('maw_engine', 'idle', L, True, {
+    # it breathes through the mouth: the gullet glows brighter as the jaws part
+    'jaw_upper': R(lambda u: (-4 - 6 * max(0, s(u)), 0, 0), L), 'jaw_lower': R(lambda u: (6 + 10 * max(0, s(u)), 0, 0), L),
+    'body': S(lambda u: (1 + 0.025 * s(u), 1 + 0.035 * s(u), 1 + 0.02 * s(u)), L),
+    'stack_l': S(lambda u: (1, 1 + 0.1 * max(0, s(u, 2)), 1), L), 'stack_r': S(lambda u: (1, 1 + 0.1 * max(0, s(u, 2, 0.5)), 1), L),
+    'tail': R(lambda u: (4 * s(u), 10 * s(u, 0.5), 0), L),
+})
+L = 0.6
+replace_clip('maw_engine', 'attack', L, False, {
+    'jaw_upper': rot(keys3((0, (0, 0, 0)), (0.18, (-40, 0, 0)), (0.28, (6, 0, 0)), (0.6, (0, 0, 0)))),
+    'jaw_lower': rot(keys3((0, (0, 0, 0)), (0.18, (40, 0, 0)), (0.28, (-4, 0, 0)), (0.6, (0, 0, 0)))),
+    'body': merge(rot(keys3((0, (0, 0, 0)), (0.18, (-6, 0, 0)), (0.3, (8, 0, 0)), (0.6, (0, 0, 0)))),
+                  pos(keys3((0, (0, 0, 0)), (0.28, (0, 0, -3)), (0.6, (0, 0, 0))))),
+})
+L = 1.2
+replace_clip('maw_engine', 'ability', L, False, {
+    # the lunge: it gapes wide, springs, and slams shut
+    'jaw_upper': rot(keys3((0, (0, 0, 0)), (0.35, (-55, 0, 0)), (0.75, (-55, 0, 0)), (0.85, (8, 0, 0)), (1.2, (0, 0, 0)))),
+    'jaw_lower': rot(keys3((0, (0, 0, 0)), (0.35, (50, 0, 0)), (0.75, (50, 0, 0)), (0.85, (-4, 0, 0)), (1.2, (0, 0, 0)))),
+    'body': merge(rot(keys3((0, (0, 0, 0)), (0.35, (8, 0, 0)), (0.6, (-12, 0, 0)), (0.85, (6, 0, 0)), (1.2, (0, 0, 0)))),
+                  pos(keys3((0, (0, 0, 0)), (0.35, (0, 1.5, 2)), (0.6, (0, -2, -5)), (1.2, (0, 0, 0))))),
+    'leg_fl': rot(keys3((0, (0, 0, 0)), (0.35, (20, 0, 0)), (0.6, (-45, 0, 0)), (1.2, (0, 0, 0)))),
+    'leg_fr': rot(keys3((0, (0, 0, 0)), (0.35, (20, 0, 0)), (0.6, (-45, 0, 0)), (1.2, (0, 0, 0)))),
+    'stack_l': S(lambda u: (1.1, 1 + 0.4 * max(0, s(u, 3)), 1.1), L, 24), 'stack_r': S(lambda u: (1.1, 1 + 0.4 * max(0, s(u, 3, 0.3)), 1.1), L, 24),
+})
+add_clip('maw_engine', 'hurt', merge(hurt('body', 'jaw_upper', 8), {'jaw_lower': rot(keys((0, 0), (0.08, 30), (0.4, 0)))}), 0.45, False)
+
+# second pass: the wraith's jaw hangs open and works while it screams; the maw grows a ridge of bone spikes
+add_clip('wirewraith', 'idle', {'jaw': rot(snap((0, (0, 0, 0)), (1.8, (14, 0, 0)), (2.6, (0, 0, -8)), (3.4, (0, 0, 0)), (4.0, (0, 0, 0))))})
+add_clip('wirewraith', 'ability', {'jaw': R(lambda u: (30 * min(1, u * 4) * min(1, (1 - u) * 4) + 6 * s(u, 12), 0, 0), 1.6, 48)})
+add_clip('wirewraith', 'attack', {'jaw': rot(keys3((0, (0, 0, 0)), (0.2, (25, 0, 0)), (0.45, (0, 0, 0)), (0.7, (0, 0, 0))))})
+add_cubes('maw_engine', 'body', cube((-1, -7, -2), (2, 4, 2), 'bone'), cube((-1, -8, 4), (2, 5, 2), 'bone'), cube((-1, -6, 10), (2, 3, 2), 'bone'),
+          cube((-9.5, 1, -5), (1, 3, 1), 'bone'), cube((8.5, 1, -5), (1, 3, 1), 'bone'))

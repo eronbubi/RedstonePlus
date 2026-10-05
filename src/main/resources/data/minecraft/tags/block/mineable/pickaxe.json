@@ -113,6 +113,10 @@
     "redstoneplus:cracked_realmstone_bricks",
     "redstoneplus:chiseled_realmstone_bricks",
     "redstoneplus:bell_bronze",
-    "redstoneplus:wirewright_tiles"
+    "redstoneplus:wirewright_tiles",
+    "redstoneplus:lightline",
+    "redstoneplus:grid_beacon",
+    "redstoneplus:blight_crust",
+    "redstoneplus:quarantine_plating"
   ]
 }

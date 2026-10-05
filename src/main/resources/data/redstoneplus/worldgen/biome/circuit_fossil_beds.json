@@ -78,6 +78,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:scree"
     ],
     [],
@@ -101,8 +103,6 @@
     [
       "redstoneplus:red_coral_shrub_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

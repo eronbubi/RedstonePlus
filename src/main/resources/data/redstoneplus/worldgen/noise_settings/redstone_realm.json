@@ -1591,14 +1591,14 @@
                                     "then_run": {
                                       "type": "minecraft:block",
                                       "result_state": {
-                                        "Name": "minecraft:packed_ice"
+                                        "Name": "redstoneplus:frost_realmstone"
                                       }
                                     }
                                   },
                                   {
                                     "type": "minecraft:block",
                                     "result_state": {
-                                      "Name": "minecraft:snow_block"
+                                      "Name": "redstoneplus:salt_crust"
                                     }
                                   }
                                 ]
@@ -1879,6 +1879,92 @@
                           "type": "minecraft:block",
                           "result_state": {
                             "Name": "redstoneplus:root_soil"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "minecraft:condition",
+                  "if_true": {
+                    "type": "minecraft:biome",
+                    "biome_is": [
+                      "redstoneplus:sealed_reach"
+                    ]
+                  },
+                  "then_run": {
+                    "type": "minecraft:sequence",
+                    "sequence": [
+                      {
+                        "type": "minecraft:condition",
+                        "if_true": {
+                          "type": "minecraft:stone_depth",
+                          "offset": 0,
+                          "add_surface_depth": false,
+                          "secondary_depth_range": 0,
+                          "surface_type": "floor"
+                        },
+                        "then_run": {
+                          "type": "minecraft:sequence",
+                          "sequence": [
+                            {
+                              "type": "minecraft:condition",
+                              "if_true": {
+                                "type": "minecraft:water",
+                                "offset": -1,
+                                "surface_depth_multiplier": 0,
+                                "add_stone_depth": false
+                              },
+                              "then_run": {
+                                "type": "minecraft:sequence",
+                                "sequence": [
+                                  {
+                                    "type": "minecraft:condition",
+                                    "if_true": {
+                                      "type": "minecraft:noise_threshold",
+                                      "noise": "minecraft:surface",
+                                      "min_threshold": 0.4,
+                                      "max_threshold": 9
+                                    },
+                                    "then_run": {
+                                      "type": "minecraft:block",
+                                      "result_state": {
+                                        "Name": "redstoneplus:cinder_rock"
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "type": "minecraft:block",
+                                    "result_state": {
+                                      "Name": "redstoneplus:blight_crust"
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "type": "minecraft:block",
+                              "result_state": {
+                                "Name": "redstoneplus:blight_crust"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "type": "minecraft:condition",
+                        "if_true": {
+                          "type": "minecraft:stone_depth",
+                          "offset": 0,
+                          "add_surface_depth": true,
+                          "secondary_depth_range": 0,
+                          "surface_type": "floor"
+                        },
+                        "then_run": {
+                          "type": "minecraft:block",
+                          "result_state": {
+                            "Name": "redstoneplus:dark_hematite"
                           }
                         }
                       }

@@ -47,9 +47,11 @@ public final class RealmSky extends DimensionSpecialEffects {
         return color.multiply(brightness * 0.94F + 0.06F, brightness * 0.94F + 0.06F, brightness * 0.91F + 0.09F);
     }
 
+    /** The Sealed Reach lies under a fog that never lifts; the rest of the realm is clear. */
     @Override
     public boolean isFoggyAt(int x, int z) {
-        return false;
+        var level = Minecraft.getInstance().level;
+        return level != null && level.getBiome(new net.minecraft.core.BlockPos(x, level.getSeaLevel(), z)).is(de.eron.redstoneplus.realm.SealedReach.BIOME);
     }
 
     /** 1 right at a toll, fading to 0 over four seconds. */

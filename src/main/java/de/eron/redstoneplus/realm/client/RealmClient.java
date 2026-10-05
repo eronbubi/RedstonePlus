@@ -41,13 +41,19 @@ public final class RealmClient {
         creature("spark_mite", Realm.SPARK_MITE);
         creature("lamp_moth", Realm.LAMP_MOTH);
         creature("scrap_jackal", Realm.SCRAP_JACKAL);
+        creature("trackwright", Realm.TRACKWRIGHT);
+        creature("wirewraith", Realm.WIREWRAITH);
+        creature("maw_engine", Realm.MAW_ENGINE);
 
-        modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) ->
-                CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name))));
+        modBus.addListener((EntityRenderersEvent.RegisterLayerDefinitions event) -> {
+            CREATURES.keySet().forEach(name -> event.registerLayerDefinition(layer(name), () -> RealmModel.layer(name)));
+            event.registerLayerDefinition(LightCycleRenderer.LAYER, () -> RealmModel.layer("light_cycle"));
+        });
         modBus.addListener(RealmClient::renderers);
         modBus.addListener(RealmParticles::register);
         modBus.addListener(RealmSky::register);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmSky::clientTick);
+        CycleClient.init(modBus);
     }
 
     private static ModelLayerLocation layer(String name) {
@@ -58,5 +64,6 @@ public final class RealmClient {
     private static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         CREATURES.forEach((name, type) -> event.registerEntityRenderer((EntityType) type.get(),
                 ctx -> new RealmRenderer<>(ctx, name, layer(name))));
+        event.registerEntityRenderer(Realm.LIGHT_CYCLE.get(), LightCycleRenderer::new);
     }
 }

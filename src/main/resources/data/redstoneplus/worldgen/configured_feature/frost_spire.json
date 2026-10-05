@@ -5,7 +5,7 @@
       "Name": "redstoneplus:frost_realmstone"
     },
     "accent": {
-      "Name": "minecraft:packed_ice"
+      "Name": "redstoneplus:salt_crust"
     },
     "min_height": 10,
     "max_height": 26,

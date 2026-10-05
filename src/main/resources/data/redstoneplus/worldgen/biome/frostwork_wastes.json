@@ -1,14 +1,14 @@
 {
-  "has_precipitation": true,
-  "temperature": -0.6,
-  "downfall": 0.5,
+  "has_precipitation": false,
+  "temperature": 0.3,
+  "downfall": 0.0,
   "effects": {
-    "sky_color": 9083568,
-    "fog_color": 11057352,
-    "water_color": 3828378,
-    "water_fog_color": 662058,
-    "grass_color": 9085104,
-    "foliage_color": 9085104,
+    "sky_color": 15253672,
+    "fog_color": 15784136,
+    "water_color": 13138522,
+    "water_fog_color": 2757648,
+    "grass_color": 14200992,
+    "foliage_color": 14200992,
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,
@@ -61,6 +61,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -98,6 +104,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:frost_spire",
       "redstoneplus:scree"
     ],
@@ -122,8 +130,6 @@
     [
       "redstoneplus:frost_fern_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

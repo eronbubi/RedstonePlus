@@ -65,7 +65,7 @@ public final class Realm {
     /** The biomes of the realm (defined in data/redstoneplus/worldgen/biome, written by tools/gen_realm.py). */
     public static final List<String> BIOMES = List.of("piston_karst", "switchyard_flats", "resonance_hollows", "sluice_gardens",
             "kiln_barrens", "tripwire_briar", "arsenal_dunes", "circuit_fossil_beds", "rubedo_gardens", "landmark_moors", "red_clay_fen",
-            "hematite_scarps", "tempest_shoals", "frostwork_wastes", "vein_mire", "oxide_salt_flats", "lamplit_grove");
+            "hematite_scarps", "tempest_shoals", "frostwork_wastes", "vein_mire", "oxide_salt_flats", "lamplit_grove", "sealed_reach");
 
     // ---------- getting there: a frame of redstone blocks lit with flint and steel ----------
     public static final RegistryObject<Block> REALM_PORTAL = BLOCKS.register("realm_portal", () -> new RealmPortalBlock(
@@ -82,7 +82,7 @@ public final class Realm {
     public static final RegistryObject<Block> CINDER_ROCK = block("cinder_rock", Block::new, () -> rock(MapColor.COLOR_BLACK).sound(SoundType.BASALT));
     public static final RegistryObject<Block> TEMPEST_BASALT = block("tempest_basalt", Block::new,
             () -> rock(MapColor.COLOR_BLACK).sound(SoundType.POLISHED_DEEPSLATE));
-    public static final RegistryObject<Block> FROST_REALMSTONE = block("frost_realmstone", Block::new, () -> rock(MapColor.ICE).friction(0.9F));
+    public static final RegistryObject<Block> FROST_REALMSTONE = block("frost_realmstone", Block::new, () -> rock(MapColor.TERRACOTTA_WHITE).friction(0.9F));
     public static final RegistryObject<Block> FOSSIL_CIRCUIT = block("fossil_circuit", Block::new,
             () -> rock(MapColor.TERRACOTTA_RED).lightLevel(s -> 4));
     public static final RegistryObject<Block> REDSTONE_VEIN = block("redstone_vein", Block::new,
@@ -104,15 +104,26 @@ public final class Realm {
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.5F).sound(SoundType.SAND));
     public static final RegistryObject<Block> RED_CLAY = block("red_clay", Block::new, () -> soil(MapColor.TERRACOTTA_RED, SoundType.GRAVEL));
     public static final RegistryObject<Block> FEN_MUD = block("fen_mud", Block::new, () -> soil(MapColor.TERRACOTTA_BROWN, SoundType.MUD));
-    public static final RegistryObject<Block> CANAL_MOSS = block("canal_moss", Block::new, () -> soil(MapColor.COLOR_CYAN, SoundType.MOSS));
+    public static final RegistryObject<Block> CANAL_MOSS = block("canal_moss", Block::new, () -> soil(MapColor.COLOR_ORANGE, SoundType.MOSS));
     public static final RegistryObject<Block> BRIAR_SOIL = block("briar_soil", Block::new, () -> soil(MapColor.DIRT, SoundType.ROOTED_DIRT));
     public static final RegistryObject<Block> HEATHER_TURF = block("heather_turf", Block::new, () -> soil(MapColor.CRIMSON_NYLIUM, SoundType.NYLIUM));
     public static final RegistryObject<Block> ROOT_SOIL = block("root_soil", Block::new, () -> soil(MapColor.TERRACOTTA_BLACK, SoundType.ROOTED_DIRT));
-    public static final RegistryObject<Block> GROVE_MOSS = block("grove_moss", Block::new, () -> soil(MapColor.WARPED_NYLIUM, SoundType.MOSS));
+    public static final RegistryObject<Block> GROVE_MOSS = block("grove_moss", Block::new, () -> soil(MapColor.CRIMSON_NYLIUM, SoundType.MOSS));
     public static final RegistryObject<Block> PALE_ROOT_LOG = block("pale_root_log", net.minecraft.world.level.block.RotatedPillarBlock::new,
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.WOOL).strength(2.0F).sound(SoundType.WOOD));
     public static final RegistryObject<Block> VEIN_LOG = block("vein_log", net.minecraft.world.level.block.RotatedPillarBlock::new,
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.CRIMSON_STEM).strength(2.0F).sound(SoundType.WOOD).lightLevel(s -> 6));
+
+    // ---------- the Grid: the glowing lightlines the light cycles run on, and the beacons at its nodes ----------
+    public static final RegistryObject<Block> LIGHTLINE = block("lightline", Block::new,
+            () -> rock(MapColor.FIRE).strength(2.0F, 8.0F).sound(SoundType.METAL).lightLevel(s -> 10).emissiveRendering((s, l, p) -> true));
+    public static final RegistryObject<Block> GRID_BEACON = block("grid_beacon", Block::new,
+            () -> rock(MapColor.FIRE).strength(3.0F, 9.0F).sound(SoundType.METAL).lightLevel(s -> 15).emissiveRendering((s, l, p) -> true));
+    // ---------- the Sealed Reach: its blighted ground, and the plating of the walls built around it ----------
+    public static final RegistryObject<Block> BLIGHT_CRUST = block("blight_crust", Block::new,
+            () -> rock(MapColor.TERRACOTTA_BLACK).strength(1.2F, 6.0F).sound(SoundType.NYLIUM).lightLevel(s -> 3));
+    public static final RegistryObject<Block> QUARANTINE_PLATING = block("quarantine_plating", Block::new,
+            () -> rock(MapColor.COLOR_YELLOW).strength(8.0F, 1200.0F).sound(SoundType.NETHERITE_BLOCK));
 
     // ---------- the realm's own plants and crystals ----------
     public static final RegistryObject<Block> CRIMSON_HEATHER = plant("crimson_heather", 0);
@@ -145,7 +156,7 @@ public final class Realm {
             () -> BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).strength(0.6F).sound(SoundType.GRAVEL));
     public static final RegistryObject<Block> SLAG = block("slag", Block::new, () -> rock(MapColor.COLOR_BLACK).sound(SoundType.TUFF));
     public static final RegistryObject<Block> RESONANT_CRYSTAL = block("resonant_crystal", AmethystBlock::new,
-            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(1.5F).sound(SoundType.AMETHYST)
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(1.5F).sound(SoundType.AMETHYST)
                     .lightLevel(s -> 12).requiresCorrectToolForDrops());
     public static final RegistryObject<Block> SULFUR_CRUST = block("sulfur_crust", Block::new,
             () -> rock(MapColor.COLOR_YELLOW).sound(SoundType.NETHERRACK));
@@ -162,7 +173,7 @@ public final class Realm {
     public static final RegistryObject<Block> HAZARD_SWITCH = block("hazard_switch", TrapBlock.HazardSwitch::new, () -> trap(MapColor.TERRACOTTA_RED));
     public static final RegistryObject<Block> LOCKDOWN_GATE = block("lockdown_gate", TrapBlock.LockdownGate::new,
             () -> trap(MapColor.METAL).noOcclusion().isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
-    public static final RegistryObject<Block> FLOODGATE = block("floodgate", TrapBlock.Floodgate::new, () -> trap(MapColor.WARPED_STEM));
+    public static final RegistryObject<Block> FLOODGATE = block("floodgate", TrapBlock.Floodgate::new, () -> trap(MapColor.COLOR_ORANGE));
     public static final RegistryObject<Block> KILN_TURRET = block("kiln_turret", TrapBlock.KilnTurret::new,
             () -> trap(MapColor.COLOR_BLACK).lightLevel(s -> s.getValue(TrapBlock.FIRING) ? 13 : 0));
     public static final RegistryObject<Block> VOLLEY_LAUNCHER = block("volley_launcher", TrapBlock.VolleyLauncher::new, () -> trap(MapColor.PLANT));
@@ -179,13 +190,16 @@ public final class Realm {
     public static final RegistryObject<Item> PULSE_INJECTOR = item("pulse_injector", RealmItems.PulseInjector::new,
             () -> new Item.Properties().durability(64).rarity(Rarity.UNCOMMON));
     public static final RegistryObject<Block> DECOY_BEACON = block("decoy_beacon", RealmBlocks.DecoyBeacon::new,
-            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(2.0F).sound(SoundType.COPPER).lightLevel(s -> 10));
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(2.0F).sound(SoundType.COPPER).lightLevel(s -> 10));
     public static final RegistryObject<Item> REPEATER_WRENCH = item("repeater_wrench", RealmItems.RepeaterWrench::new, () -> new Item.Properties().stacksTo(1));
     public static final RegistryObject<Item> SIGNAL_JAMMER = item("signal_jammer", RealmItems.SignalJammer::new,
             () -> new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     public static final RegistryObject<Item> INSULATED_CUTTERS = item("insulated_cutters", RealmItems.InsulatedCutters::new,
             () -> new Item.Properties().durability(238).component(net.minecraft.core.component.DataComponents.TOOL,
                     net.minecraft.world.item.ShearsItem.createToolProperties()));
+
+    /** Summons, recalls and binds the light cycle (see CycleBond). */
+    public static final RegistryObject<Item> CYCLE_KEY = item("cycle_key", CycleBond.CycleKey::new, () -> new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 
     public static final RegistryObject<BlockEntityType<RealmBlocks.DecoyBeaconEntity>> DECOY_BEACON_BE = BLOCK_ENTITIES.register("decoy_beacon",
             () -> BlockEntityType.Builder.of(RealmBlocks.DecoyBeaconEntity::new, DECOY_BEACON.get()).build(null));
@@ -230,6 +244,21 @@ public final class Realm {
     public static final RegistryObject<EntityType<RealmFauna.ScrapJackal>> SCRAP_JACKAL = mob("scrap_jackal",
             () -> EntityType.Builder.<RealmFauna.ScrapJackal>of(RealmFauna.ScrapJackal::new, MobCategory.CREATURE).sized(0.8F, 0.9F).eyeHeight(0.75F).clientTrackingRange(10));
 
+    // ---------- the Grid: the light cycle every visitor is given, and the Trackwrights that lay the lightlines ----------
+    public static final RegistryObject<EntityType<LightCycle>> LIGHT_CYCLE = ENTITIES.register("light_cycle",
+            () -> EntityType.Builder.<LightCycle>of(LightCycle::new, MobCategory.MISC).sized(0.9F, 1.0F).passengerAttachments(0.55F)
+                    .fireImmune().clientTrackingRange(16).updateInterval(1).build("light_cycle"));
+    public static final RegistryObject<EntityType<Trackwright>> TRACKWRIGHT = mob("trackwright",
+            () -> EntityType.Builder.<Trackwright>of(Trackwright::new, MobCategory.CREATURE).sized(1.3F, 1.2F).eyeHeight(0.9F).clientTrackingRange(10));
+
+    // ---------- the Sealed Reach: what the Wirewrights walled in ----------
+    public static final RegistryObject<EntityType<SealedReach.Wirewraith>> WIREWRAITH = mob("wirewraith",
+            () -> EntityType.Builder.<SealedReach.Wirewraith>of(SealedReach.Wirewraith::new, MobCategory.MONSTER).sized(0.8F, 3.2F).eyeHeight(2.8F)
+                    .clientTrackingRange(10));
+    public static final RegistryObject<EntityType<SealedReach.MawEngine>> MAW_ENGINE = mob("maw_engine",
+            () -> EntityType.Builder.<SealedReach.MawEngine>of(SealedReach.MawEngine::new, MobCategory.MONSTER).fireImmune().sized(1.8F, 1.9F)
+                    .eyeHeight(1.2F).clientTrackingRange(10));
+
     // ---------- world generation ----------
     public static final RegistryObject<Feature<RealmFeatures.SpireConfig>> SPIRE = FEATURES.register("spire", RealmFeatures.Spire::new);
 
@@ -269,6 +298,9 @@ public final class Realm {
         egg("spark_mite", SPARK_MITE, 0xb86a30, 0xff3a1a);
         egg("lamp_moth", LAMP_MOTH, 0x8a6a4a, 0xffd060);
         egg("scrap_jackal", SCRAP_JACKAL, 0x6a5a50, 0xe04020);
+        egg("trackwright", TRACKWRIGHT, 0xa8582a, 0xff3020);
+        egg("wirewraith", WIREWRAITH, 0x2e1614, 0xff2a10);
+        egg("maw_engine", MAW_ENGINE, 0x5a5450, 0xffb030);
     }
 
     private Realm() {
@@ -331,6 +363,8 @@ public final class Realm {
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(Realm::lightPortal);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmBell::levelTick);
         RealmRules.init();
+        CycleBond.init();
+        SealedReach.init();
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -385,6 +419,9 @@ public final class Realm {
         event.put(SPARK_MITE.get(), RealmFauna.SparkMite.attributes().build());
         event.put(LAMP_MOTH.get(), RealmFauna.LampMoth.attributes().build());
         event.put(SCRAP_JACKAL.get(), RealmFauna.ScrapJackal.attributes().build());
+        event.put(TRACKWRIGHT.get(), Trackwright.attributes().build());
+        event.put(WIREWRAITH.get(), SealedReach.Wirewraith.attributes().build());
+        event.put(MAW_ENGINE.get(), SealedReach.MawEngine.attributes().build());
     }
 
     private static void spawnPlacements(SpawnPlacementRegisterEvent event) {
@@ -410,5 +447,9 @@ public final class Realm {
         event.register(SPARK_MITE.get(), ground, height, Mob::checkMobSpawnRules, op);
         event.register(LAMP_MOTH.get(), SpawnPlacementTypes.NO_RESTRICTIONS, height, Mob::checkMobSpawnRules, op);
         event.register(SCRAP_JACKAL.get(), ground, height, Mob::checkMobSpawnRules, op);
+        event.register(TRACKWRIGHT.get(), ground, height, Mob::checkMobSpawnRules, op);
+        // the things in the Sealed Reach walk in any light; only their biome lists them, so they never spawn outside the walls
+        event.register(WIREWRAITH.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
+        event.register(MAW_ENGINE.get(), ground, height, Monster::checkAnyLightMonsterSpawnRules, op);
     }
 }

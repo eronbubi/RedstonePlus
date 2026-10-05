@@ -35,10 +35,19 @@ public final class RealmSounds {
     public static final Set SPARK_MITE = set("spark_mite");
     public static final Set LAMP_MOTH = set("lamp_moth");
     public static final Set SCRAP_JACKAL = set("scrap_jackal");
+    public static final Set TRACKWRIGHT = set("trackwright");
+    public static final Set WIREWRAITH = set("wirewraith");
+    public static final Set MAW_ENGINE = set("maw_engine");
 
     public static final RegistryObject<SoundEvent> REALM_TRAVEL = sound("block.realm_gate.travel");
     /** The toll of the Great Bell in the sky. */
     public static final RegistryObject<SoundEvent> GREAT_BELL = sound("ambient.great_bell");
+    /** The light cycle: its engine (looped and pitched with speed by the client), and materialising / dissolving. */
+    public static final RegistryObject<SoundEvent> CYCLE_ENGINE = sound("entity.light_cycle.engine");
+    public static final RegistryObject<SoundEvent> CYCLE_REZ = sound("entity.light_cycle.rez");
+    public static final RegistryObject<SoundEvent> CYCLE_DEREZ = sound("entity.light_cycle.derez");
+    /** A Trackwright pressing a lightline tile into the ground. */
+    public static final RegistryObject<SoundEvent> LIGHTLINE_LAY = sound("block.lightline.lay");
     /** The realm's music (three tracks, one picked at random). */
     public static final RegistryObject<SoundEvent> MUSIC = sound("music.realm");
 

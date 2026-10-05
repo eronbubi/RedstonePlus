@@ -3,10 +3,10 @@
   "temperature": 0.9,
   "downfall": 0.3,
   "effects": {
-    "sky_color": 7907583,
-    "fog_color": 14207144,
-    "water_color": 3840728,
-    "water_fog_color": 1060938,
+    "sky_color": 14721136,
+    "fog_color": 15255712,
+    "water_color": 13134384,
+    "water_fog_color": 3807754,
     "grass_color": 12623968,
     "foliage_color": 12623968,
     "mood_sound": {
@@ -61,6 +61,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -97,6 +103,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:karst_spire",
       "redstoneplus:scree"
     ],
@@ -122,8 +130,6 @@
     [
       "redstoneplus:lichen_tuft_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

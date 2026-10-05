@@ -291,9 +291,49 @@ RECIPES.update({
     },
 })
 
+# the Grid's builder and the things of the Sealed Reach
+RECIPES.update({
+    'trackwright': {
+        'ambient': v(lambda: mix(servo(300, 520, 0.5, 0.2) * 0.4, at(metal(1800, 0.08), 0.35) * 0.3, at(metal(2100, 0.06), 0.45) * 0.2)),
+        'hurt': v(lambda: mix(metal(900, 0.25) * 0.6, servo(500, 200, 0.25, 0.5) * 0.5)),
+        'death': [lambda: mix(servo(500, 60, 1.2, 0.4), at(metal(700, 0.8), 0.3) * 0.6, at(sparks(0.8, 20), 0.5) * 0.5, at(thud(70, 0.5), 1.0) * 0.5)],
+        'step': v(lambda: mix(metal(2400, 0.04, bright=0.5) * 0.18, thud(140, 0.05) * 0.2)),
+        'ability': [lambda: mix(piston(0.3, 1.3) * 0.8, at(thud(90, 0.3), 0.12) * 0.7, at(sparks(0.5, 16), 0.12) * 0.5, at(zap(0.25), 0.15) * 0.4)],
+    },
+    'wirewraith': {
+        'ambient': v(lambda: mix(chain(1.4, 7, 2600) * 0.25, at(bell(311, 1.6), 0.4) * 0.25, growl(70, 1.6, 0.9) * 0.35), 3),
+        'hurt': v(lambda: mix(bell(415, 0.6) * 0.6, chain(0.4, 4, 3000) * 0.5, zap(0.3) * 0.3)),
+        'death': [lambda: mix(bell(277, 3.0) * 0.7, at(bell(262, 3.0), 0.05) * 0.5, chain(2.0, 12, 2200) * 0.5, at(whoosh(1.5, 80, 1200), 0.5) * 0.6)],
+        'step': v(lambda: mix(chain(0.15, 2, 2800) * 0.25, thud(220, 0.05) * 0.15)),
+        'ability': [lambda: mix(growl(55, 2.2, 1.0) * 0.6, bell(233, 2.2) * 0.5, at(bell(247, 2.0), 0.03) * 0.5, whoosh(2.2, 120, 5000) * 0.7,
+                                crackle(2.2, 90) * 0.3)],
+    },
+    'maw_engine': {
+        'ambient': v(lambda: mix(growl(45, 2.0, 0.6) * 0.6, hiss(1.6, 400, 3000, 0.3) * 0.25, at(crackle(1.2, 30), 0.3) * 0.3)),
+        'hurt': v(lambda: mix(growl(90, 0.5, 1.0) * 0.6, metal(300, 0.4) * 0.6)),
+        'death': [lambda: mix(growl(40, 3.0, 1.0), at(piston(1.0, 0.35), 0.3) * 0.8, at(thud(35, 1.5), 1.0), at(hiss(2.0, 300, 4000), 0.8) * 0.5)],
+        'step': v(lambda: mix(thud(45, 0.4, 0.4) * 0.8, metal(400, 0.2) * 0.2)),
+        'ability': [lambda: mix(growl(60, 1.2, 1.0) * 0.7, at(piston(0.4, 0.4), 0.7) * 1.1, at(thud(50, 0.6), 0.8) * 0.8)],
+    },
+})
+
 SPECIAL = {
     'block.realm_gate.travel': [lambda: mix(servo(80, 600, 1.5, 0.2) * 0.6, whoosh(1.6, 100, 3000), at(bell(196, 2.0), 0.9) * 0.5,
                                             at(sparks(1.0, 25), 0.4) * 0.3)],
+    # the light cycle: a seamless engine tone (looped by the game, pitched with speed), materialising, and the lightline being laid
+    'entity.light_cycle.engine': [lambda: mix(np.sin(2 * np.pi * 55 * t(2.0)) * 0.5, np.sin(2 * np.pi * 110 * t(2.0)) * 0.3,
+                                              np.sign(np.sin(2 * np.pi * 82.5 * t(2.0))) * 0.08, band(noise(2.0), 200, 900) * 0.12)],
+    'entity.light_cycle.rez': [lambda: mix(servo(120, 1600, 1.0, 0.1) * 0.6, whoosh(1.0, 300, 6000) * 0.6, at(sparks(0.6, 30), 0.4) * 0.4,
+                                           at(bell(523, 1.2), 0.75) * 0.3)],
+    'entity.light_cycle.derez': [lambda: mix(servo(1600, 100, 0.9, 0.1) * 0.6, crackle(0.9, 160) * 0.5, whoosh(0.9, 200, 4000) * 0.4)],
+    'block.lightline.lay': [lambda: mix(thud(110, 0.2) * 0.6, zap(0.25) * 0.5, sparks(0.4, 10) * 0.4)],
+}
+SPECIAL_SUBTITLES = {
+    'block.realm_gate.travel': ('Realm Gate hums', 'Reichstor summt'),
+    'entity.light_cycle.engine': ('Light cycle hums', 'Lichtrad summt'),
+    'entity.light_cycle.rez': ('Light cycle materialises', 'Lichtrad materialisiert'),
+    'entity.light_cycle.derez': ('Light cycle dissolves', 'Lichtrad zerfällt'),
+    'block.lightline.lay': ('Lightline laid', 'Lichtbahn verlegt'),
 }
 
 SUBTITLES = {
@@ -309,6 +349,7 @@ NAMES = {
     'living_capacitor': ('Living Capacitor', 'Lebender Kondensator'), 'relay_strider': ('Relay Strider', 'Relais-Schreiter'),
     'bellows_hog': ('Bellows Hog', 'Blasebalg-Keiler'), 'flesh_press': ('Flesh Press', 'Fleischpresse'),
     'spark_mite': ('Spark Mite', 'Funkenmilbe'), 'lamp_moth': ('Lamp Moth', 'Lampenmotte'), 'scrap_jackal': ('Scrap Jackal', 'Schrottschakal'),
+    'trackwright': ('Trackwright', 'Bahnwerker'), 'wirewraith': ('Wirewraith', 'Drahtgespenst'), 'maw_engine': ('Maw Engine', 'Schlundmaschine'),
 }
 
 
@@ -346,8 +387,7 @@ def main():
         rel = key.replace('.', '/')
         write(os.path.join(ASSETS, 'sounds', rel + '.ogg'), recipes[0]())
         entries[key] = {'sounds': [f'redstoneplus:{rel}'], 'subtitle': f'subtitles.redstoneplus.{key}'}
-        en[f'subtitles.redstoneplus.{key}'] = 'Realm Gate hums'
-        de[f'subtitles.redstoneplus.{key}'] = 'Reichstor summt'
+        en[f'subtitles.redstoneplus.{key}'], de[f'subtitles.redstoneplus.{key}'] = SPECIAL_SUBTITLES[key]
         count += 1
     with open(sounds_json, 'w', encoding='utf-8') as f:
         json.dump(entries, f, indent=2, ensure_ascii=False)

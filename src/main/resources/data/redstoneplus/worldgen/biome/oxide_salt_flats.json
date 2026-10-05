@@ -5,8 +5,8 @@
   "effects": {
     "sky_color": 15509592,
     "fog_color": 15251576,
-    "water_color": 6332544,
-    "water_fog_color": 1718826,
+    "water_color": 14192714,
+    "water_fog_color": 3809290,
     "grass_color": 12619872,
     "foliage_color": 12619872,
     "mood_sound": {
@@ -73,6 +73,12 @@
         "weight": 5,
         "minCount": 2,
         "maxCount": 3
+      },
+      {
+        "type": "redstoneplus:trackwright",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
       }
     ],
     "ambient": [
@@ -109,6 +115,8 @@
       "redstoneplus:veins",
       "redstoneplus:roads",
       "redstoneplus:cities",
+      "redstoneplus:grid",
+      "redstoneplus:sealed_wall",
       "redstoneplus:salt_mound",
       "redstoneplus:scree"
     ],
@@ -136,8 +144,6 @@
     [
       "redstoneplus:salt_brush_patch"
     ],
-    [
-      "minecraft:freeze_top_layer"
-    ]
+    []
   ]
 }

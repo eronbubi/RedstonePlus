@@ -44,13 +44,14 @@ final class RealmStructures {
                 case "piston_karst" -> new Palette(s(Realm.KARST_BRICKS.get()), rust, s(Realm.LICHEN_KARST.get()), vein, s(Realm.KARST_LIMESTONE.get()));
                 case "kiln_barrens" -> new Palette(s(Blocks.POLISHED_BLACKSTONE_BRICKS), rust, s(Realm.SULFUR_CRUST.get()), s(Blocks.MAGMA_BLOCK),
                         s(Realm.CINDER_ROCK.get()));
-                case "sluice_gardens", "tripwire_briar" -> new Palette(bricks, s(Blocks.OXIDIZED_CUT_COPPER), s(Blocks.OXIDIZED_COPPER), vein,
+                // waxed copper: it never turns teal, the realm stays red, orange and yellow
+                case "sluice_gardens", "tripwire_briar" -> new Palette(bricks, s(Blocks.WAXED_CUT_COPPER), s(Blocks.WAXED_COPPER_BLOCK), vein,
                         s(Realm.CANAL_MOSS.get()));
-                case "frostwork_wastes" -> new Palette(s(Realm.FROST_REALMSTONE.get()), s(Realm.SHELL_PLATING.get()), s(Blocks.PACKED_ICE), vein,
-                        s(Blocks.SNOW_BLOCK));
+                case "frostwork_wastes" -> new Palette(s(Realm.FROST_REALMSTONE.get()), s(Realm.SHELL_PLATING.get()), s(Realm.SALT_CRUST.get()), vein,
+                        s(Realm.SALT_CRUST.get()));
                 case "tempest_shoals" -> new Palette(s(Realm.TEMPEST_BASALT.get()), s(Realm.SHELL_PLATING.get()), s(Realm.REDSTONE_CLUSTER.get()), vein,
                         s(Realm.TEMPEST_BASALT.get()));
-                case "oxide_salt_flats" -> new Palette(bricks, s(Blocks.WEATHERED_COPPER), s(Realm.SALT_CRUST.get()), vein, s(Realm.SALT_CRUST.get()));
+                case "oxide_salt_flats" -> new Palette(bricks, s(Blocks.WAXED_EXPOSED_COPPER), s(Realm.SALT_CRUST.get()), vein, s(Realm.SALT_CRUST.get()));
                 case "hematite_scarps" -> new Palette(s(Realm.DARK_HEMATITE.get()), rust, s(Realm.HEMATITE.get()), vein, s(Realm.HEMATITE.get()));
                 case "arsenal_dunes" -> new Palette(bricks, s(Realm.SHELL_PLATING.get()), rust, vein, s(Realm.RUST_SAND.get()));
                 case "lamplit_grove" -> new Palette(s(Realm.DEEP_REALMSTONE.get()), rust, s(Realm.GROVE_MOSS.get()), vein, s(Realm.GROVE_MOSS.get()));
@@ -308,14 +309,14 @@ final class RealmStructures {
         }
     }
 
-    /** A patch of old rails running under the ice. */
+    /** A patch of old rails running under a crust of amber rime. */
     static void iceRails(RealmFeatures.Build b) {
         int len = 8 + b.random.nextInt(12);
         for (int z = 0; z <= len; z++) {
             b.set(0, -2, z, Realm.FROST_REALMSTONE.get());
             b.set(0, -1, z, b.rail(RailShape.NORTH_SOUTH));
             for (int x = -1; x <= 1; x++) {
-                b.set(x, 0, z, Blocks.ICE);
+                b.set(x, 0, z, Blocks.ORANGE_STAINED_GLASS);
             }
             if (z % 7 == 3) {
                 b.set(1, -1, z, Realm.REDSTONE_VEIN.get());

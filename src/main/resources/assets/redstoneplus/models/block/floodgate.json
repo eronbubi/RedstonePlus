@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "side": "minecraft:block/oxidized_cut_copper",
-    "top": "minecraft:block/oxidized_cut_copper",
-    "front": "minecraft:block/oxidized_copper_grate"
+    "side": "minecraft:block/cut_copper",
+    "top": "minecraft:block/cut_copper",
+    "front": "minecraft:block/copper_grate"
   }
 }

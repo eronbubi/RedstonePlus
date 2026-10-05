@@ -67,6 +67,15 @@ MATERIALS = {
     'purple_glow': ('#c060ff', '#f0c8ff', 'glow', True),
     'uranium': ('#8aff44', '#e0ffa0', 'glow', True),
     'ruby_glow': ('#ff3a5a', '#ffb0bc', 'glow', True),
+    # the Grid: light cycles and trackwrights
+    'cycle_black': ('#221c1e', '#4a3436', 'metal', False),
+    'cycle_glass': ('#4a1410', '#a03024', 'crystal', False),
+    'cycle_red': ('#ff3020', '#ffb090', 'glow', True),
+    'cycle_amber': ('#ff9a20', '#ffe0a0', 'glow', True),
+    # the Sealed Reach
+    'wire_dark': ('#2e1614', '#8a2020', 'cable', False),
+    'bell_dark': ('#3e2618', '#6e3e22', 'metal', False),
+    'blade': ('#8e8278', '#dccab2', 'metal', False),
 }
 
 
@@ -286,6 +295,52 @@ class Painter:
                         yy = min(y0 + h - 1, max(y0, yy + r.choice((-1, 1))))
         elif deco == 'ember_top':
             dot(cx - 1, cy - 1, orange, size=2)
+        elif deco == 'wheel':
+            # a light cycle wheel seen from the side: glowing rim, dark spokes, glowing hub
+            rr = (min(w, h) - 1) / 2.0
+            for dy in range(h):
+                for dx in range(w):
+                    d = math.hypot(dx - (w - 1) / 2.0, dy - (h - 1) / 2.0)
+                    if rr - 1.2 <= d <= rr + 0.3:
+                        self.put(x0 + dx, y0 + dy, (255, 60, 30) if (dx + dy) % 3 else (255, 170, 120), glow=True)
+                    elif rr - 2.2 <= d < rr - 1.2:
+                        self.put(x0 + dx, y0 + dy, (60, 30, 30))
+                    elif d < 1.6:
+                        self.put(x0 + dx, y0 + dy, (255, 120, 60), glow=True)
+                    elif d < rr - 2.2 and (abs(dx - dy) <= 0 or abs(dx + dy - (w - 1)) <= 0):
+                        self.put(x0 + dx, y0 + dy, (120, 50, 40))
+        elif deco == 'cycle_rim':
+            # the tread of a glowing wheel
+            for dy in range(h):
+                for dx in range(w):
+                    self.put(x0 + dx, y0 + dy, (255, 50, 25) if (dy + dx) % 4 else (255, 160, 100), glow=True)
+        elif deco == 'redtrace':
+            # glowing red circuit traces with bright pads
+            for _ in range(max(2, w * h // 40)):
+                xx, yy = x0 + r.randrange(w), y0 + r.randrange(h)
+                for k in range(8):
+                    self.put(xx, yy, (255, 50, 30) if k else (255, 190, 140), glow=True)
+                    if r.random() < 0.5:
+                        xx = min(x0 + w - 1, max(x0, xx + r.choice((-1, 1))))
+                    else:
+                        yy = min(y0 + h - 1, max(y0, yy + r.choice((-1, 1))))
+        elif deco == 'scream':
+            # a hollow bell face: two thin glowing slits, and a gaping mouth that burns inside
+            for dy in range(h):
+                for dx in range(w):
+                    self.put(x0 + dx, y0 + dy, (24, 10, 8))
+            ey = y0 + max(1, h // 4)
+            for xx in (x0 + 1, x0 + 2, x0 + w - 3, x0 + w - 2):
+                self.put(xx, ey, (255, 40, 20), glow=True)
+            mw, mh = max(2, w // 2), max(2, h // 2)
+            mx, my = x0 + (w - mw) // 2, y0 + h - mh - 1
+            for dy in range(mh):
+                for dx in range(mw):
+                    edge = dx in (0, mw - 1) or dy in (0, mh - 1)
+                    self.put(mx + dx, my + dy, (255, 90, 30) if edge else (255, 200, 120), glow=True)
+            for xx in range(mx, mx + mw, 2):
+                self.put(xx, my, (230, 222, 200))
+                self.put(xx, my + mh - 1, (230, 222, 200))
         elif deco == 'bubbles':
             for _ in range(3):
                 xx, yy = x0 + 1 + r.randrange(max(1, w - 3)), y0 + 1 + r.randrange(max(1, h - 3))

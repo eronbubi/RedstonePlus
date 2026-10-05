@@ -181,7 +181,7 @@ save(specks(specks(limestone, '#d8883a', 0.6, rows=range(0, 5)), '#d8883a', 0.2,
 save(tint(vanilla('block/stone_bricks'), '#dcc8a0', gain=1.2), 'block', 'karst_bricks')
 save(tint(vanilla('block/coarse_dirt'), '#b0482c', gain=1.4), 'block', 'rusted_soil')
 save(specks(tint(vanilla('block/blackstone'), '#6a4a40', gain=1.6), '#e07a30', 0.04), 'block', 'slag')
-save(recolor(vanilla('block/amethyst_block'), '#40e0ff'), 'block', 'resonant_crystal')
+save(recolor(vanilla('block/amethyst_block'), '#ffb030'), 'block', 'resonant_crystal')
 save(specks(tint(vanilla('block/tuff'), '#f0d840', gain=1.7), '#fff4a0', 0.08), 'block', 'sulfur_crust')
 for b in ('karst_limestone', 'karst_bricks', 'rusted_soil', 'slag', 'resonant_crystal', 'sulfur_crust'):
     simple_block(b)
@@ -192,7 +192,7 @@ item_model('lichen_karst', f'{NS}:block/lichen_karst')
 pickaxe += [f'{NS}:{b}' for b in ('karst_limestone', 'lichen_karst', 'karst_bricks', 'slag', 'resonant_crystal', 'sulfur_crust')]
 shovel.append(f'{NS}:rusted_soil')
 
-briar = specks(tint(vanilla('block/dead_bush'), '#4a5a2a', gain=1.6), '#c02020', 0.08)
+briar = specks(tint(vanilla('block/dead_bush'), '#5a3a22', gain=1.6), '#c02020', 0.08)
 save(briar, 'block', 'briar_thorns')
 model('block/briar_thorns', {'parent': 'minecraft:block/cross', 'render_type': 'minecraft:cutout', 'textures': {'cross': f'{NS}:block/briar_thorns'}})
 blockstate('briar_thorns', {'variants': {'': {'model': f'{NS}:block/briar_thorns'}}})
@@ -265,10 +265,10 @@ TERRAIN = {
                       'The dark bands of the scarps.', 'Die dunklen Bänder der Klippen.'),
     'cinder_rock': (specks(tint(vanilla('block/blackstone'), '#4a3e3a', gain=1.45), '#ff8a20', 0.03), 'pickaxe', 'Cinder Rock', 'Schlackenfels',
                     'Black rock of the Kiln Barrens.', 'Schwarzer Fels der Brennofen-Öde.'),
-    'tempest_basalt': (specks(tint(vanilla('block/polished_basalt_side'), '#303844', gain=1.5), '#40e0c8', 0.02), 'pickaxe', 'Tempest Basalt', 'Sturmbasalt',
+    'tempest_basalt': (specks(tint(vanilla('block/polished_basalt_side'), '#3a3030', gain=1.5), '#ff7a30', 0.02), 'pickaxe', 'Tempest Basalt', 'Sturmbasalt',
                        'Glassy black stone of the Tempest Shoals.', 'Glasiger schwarzer Stein der Sturmbänke.'),
-    'frost_realmstone': (specks(tint(vanilla('block/stone'), '#7a8a9c', gain=1.35), '#ffffff', 0.08), 'pickaxe', 'Frost Realmstone', 'Frost-Reichsstein',
-                         'Frozen rock of the Frostwork Wastes. Slippery.', 'Gefrorener Fels der Frostwerk-Öde. Rutschig.'),
+    'frost_realmstone': (specks(tint(vanilla('block/stone'), '#c8a090', gain=1.35), '#fff0e0', 0.08), 'pickaxe', 'Frost Realmstone', 'Frost-Reichsstein',
+                         'Rime-crusted rock of the Frostwork Wastes. Slippery.', 'Bereifter Fels der Frostwerk-Öde. Rutschig.'),
     'fossil_circuit': (traces(tint(vanilla('block/stone'), '#7a3030', gain=1.3), '#ff4a30'), 'pickaxe', 'Fossil Circuit', 'Fossile Schaltung',
                        'Ancient circuits turned to stone. Glows faintly.', 'Uralte, versteinerte Schaltungen. Leuchtet schwach.'),
     'redstone_vein': (traces(tint(vanilla('block/redstone_block'), '#e02a1a', gain=1.1), '#ffb080', 3), 'pickaxe', 'Redstone Vein', 'Redstone-Ader',
@@ -283,16 +283,16 @@ TERRAIN = {
                   'Roter Sand der Arsenal-Dünen. Fällt wie Sand.'),
     'red_clay': (tint(vanilla('block/clay'), '#b8503e', gain=1.3), 'shovel', 'Red Clay', 'Roter Ton', 'Clay of the Red Clay Fen.', 'Ton des Rotton-Moors.'),
     'fen_mud': (tint(vanilla('block/mud'), '#7a3024', gain=1.5), 'shovel', 'Fen Mud', 'Moorschlamm', 'Sticky red mud.', 'Zäher roter Schlamm.'),
-    'canal_moss': (tint(vanilla('block/moss_block'), '#46b89c', gain=1.4), 'shovel', 'Canal Moss', 'Kanalmoos', 'Teal moss of the Sluice Gardens.',
-                   'Türkises Moos der Schleusengärten.'),
+    'canal_moss': (tint(vanilla('block/moss_block'), '#c8702a', gain=1.4), 'shovel', 'Canal Moss', 'Kanalmoos', 'Rust-orange moss of the Sluice Gardens.',
+                   'Rostoranges Moos der Schleusengärten.'),
     'briar_soil': (tint(vanilla('block/rooted_dirt'), '#5a4a2c', gain=1.4), 'shovel', 'Briar Soil', 'Dornenerde', 'Root-tangled ground of the Tripwire Briar.',
                    'Wurzeldurchzogener Boden des Stolperdraht-Dickichts.'),
     'heather_turf': (specks(tint(vanilla('block/moss_block'), '#a8304a', gain=1.5), '#e05070', 0.1), 'shovel', 'Heather Turf', 'Heidetorf',
                      'Crimson heather of the Landmark Moors.', 'Karminrote Heide der Wegmarken-Moore.'),
     'root_soil': (specks(tint(vanilla('block/rooted_dirt'), '#3a2222', gain=1.4), '#ff3a2a', 0.05), 'shovel', 'Root Soil', 'Wurzelerde',
                   'Dark soil of the Vein Mire, threaded with glowing roots.', 'Dunkle Erde des Adermoors mit leuchtenden Wurzeln.'),
-    'grove_moss': (tint(vanilla('block/moss_block'), '#2e6a6a', gain=1.3), 'shovel', 'Grove Moss', 'Hainmoos', 'Deep teal moss of the Lamplit Grove.',
-                   'Tiefgrünes Moos des Lampenhains.'),
+    'grove_moss': (tint(vanilla('block/moss_block'), '#8a2a2a', gain=1.3), 'shovel', 'Grove Moss', 'Hainmoos', 'Deep crimson moss of the Lamplit Grove.',
+                   'Tiefrotes Moos des Lampenhains.'),
     # the old world's building materials, found in the Foundry Cities
     'cracked_realmstone_bricks': (tint(vanilla('block/cracked_stone_bricks'), '#b0564a', gain=1.3), 'pickaxe', 'Cracked Realmstone Bricks',
                                   'Rissige Reichssteinziegel', 'Bricks split by the Last Toll.', 'Vom Letzten Schlag gesprungene Ziegel.'),
@@ -345,7 +345,7 @@ PLANTS = {
     'lichen_tuft': (tint(vanilla('block/short_grass'), '#eca04a', gain=1.9), 'Lichen Tuft', 'Flechtenbüschel', 'Orange lichen of the karst.', 'Orange Flechte des Karsts.'),
     'cinder_bloom': (recolor(vanilla('block/crimson_fungus'), '#ff8a24'), 'Cinder Bloom', 'Glutblüte', 'A flower that grows from hot cinders. Glows.',
                      'Eine Blume, die aus heißer Schlacke wächst. Leuchtet.'),
-    'frost_fern': (tint(vanilla('block/fern'), '#cfe4f4', gain=1.6), 'Frost Fern', 'Frostfarn', 'Fern of the frozen wastes.', 'Farn der gefrorenen Öde.'),
+    'frost_fern': (tint(vanilla('block/fern'), '#f4dccf', gain=1.6), 'Frost Fern', 'Frostfarn', 'Fern of the frozen wastes.', 'Farn der gefrorenen Öde.'),
 }
 for pid, (img, e, g, de_, dg) in PLANTS.items():
     save(img, 'block', pid)
@@ -489,13 +489,13 @@ orientable_trap('hazard_switch', f'{NS}:block/hazard_switch_side', 'minecraft:bl
                 f'{NS}:block/hazard_switch_front_on', f'{NS}:block/hazard_switch_front_off')
 
 # floodgate: copper grate; fired it pours water, disarmed it is chained shut
-save(recolor(vanilla('block/copper_grate'), '#3a8ae0', 0.05), 'block', 'floodgate_front_open')
-locked = vanilla('block/oxidized_copper_grate').copy()
+save(recolor(vanilla('block/copper_grate'), '#ff8a3a', 0.05), 'block', 'floodgate_front_open')
+locked = vanilla('block/copper_grate').copy()
 lp = locked.load()
 for i in range(16):
     lp[i, 7] = lp[i, 8] = (70, 60, 60, 255)
 save(locked, 'block', 'floodgate_front_locked')
-orientable_trap('floodgate', 'minecraft:block/oxidized_cut_copper', 'minecraft:block/oxidized_cut_copper', 'minecraft:block/oxidized_copper_grate',
+orientable_trap('floodgate', 'minecraft:block/cut_copper', 'minecraft:block/cut_copper', 'minecraft:block/copper_grate',
                 f'{NS}:block/floodgate_front_open', f'{NS}:block/floodgate_front_locked')
 
 # kiln turret: blast furnace
@@ -503,7 +503,7 @@ orientable_trap('kiln_turret', 'minecraft:block/blast_furnace_side', 'minecraft:
                 'minecraft:block/blast_furnace_front_on', 'minecraft:block/furnace_front')
 
 # volley launcher: mossy dispenser
-orientable_trap('volley_launcher', 'minecraft:block/mossy_cobblestone', 'minecraft:block/mossy_stone_bricks', 'minecraft:block/dispenser_front',
+orientable_trap('volley_launcher', f'{NS}:block/cracked_realmstone_bricks', f'{NS}:block/realmstone_bricks', 'minecraft:block/dispenser_front',
                 'minecraft:block/dispenser_front', 'minecraft:block/dropper_front')
 
 # lockdown gate: a portcullis of brass bars. Open it hangs raised in the top of the block
@@ -559,9 +559,9 @@ dside = vanilla('block/cut_copper').copy()
 dp = dside.load()
 for y in range(4, 12):
     for x in range(5, 11):
-        dp[x, y] = (64, 224, 255, 255) if (x + y) % 3 else (190, 250, 255, 255)
+        dp[x, y] = (255, 176, 48, 255) if (x + y) % 3 else (255, 232, 170, 255)
 save(dside, 'block', 'decoy_beacon_side')
-save(recolor(vanilla('block/amethyst_block'), '#40e0ff'), 'block', 'decoy_beacon_core')
+save(recolor(vanilla('block/amethyst_block'), '#ffb030'), 'block', 'decoy_beacon_core')
 model('block/decoy_beacon', {'parent': 'minecraft:block/block', 'textures': {
     'particle': f'{NS}:block/decoy_beacon_side', 'side': f'{NS}:block/decoy_beacon_side', 'core': f'{NS}:block/decoy_beacon_core',
     'metal': 'minecraft:block/cut_copper'}, 'elements': [
@@ -696,6 +696,211 @@ for chest_name, counter in COUNTERS.items():
 chest('realm_relic', [
     {'rolls': {'type': 'minecraft:uniform', 'min': 5, 'max': 8}, 'bonus_rolls': 0, 'entries': COMMON + [entry(f'{NS}:bell_bronze', 1, 4, 10)]},
     {'rolls': 1, 'bonus_rolls': 0, 'entries': [entry(f'{NS}:etched_plate_{i}') for i in range(1, len(LORE_IDS) + 1)]}])
+# ================================================================================================ the Grid and the Sealed Reach
+# Everything here is drawn from scratch (no vanilla textures), so it can be regenerated without the Minecraft jar.
+GRID_RND = random.Random(20261004)
+
+
+def blank(color):
+    return Image.new('RGBA', (16, 16), tuple(int(color[i:i + 2], 16) for i in (1, 3, 5)) + (255,))
+
+
+def noisy(img, amount, rnd):
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            r, g, b, a = px[x, y]
+            f = 1 + rnd.uniform(-amount, amount)
+            px[x, y] = (min(255, int(r * f)), min(255, int(g * f)), min(255, int(b * f)), a)
+    return img
+
+
+def lightline_texture():
+    """A Tron floor tile: dark glass over red light, a glowing rim, a dashed bright lane down the middle, nodes in the corners."""
+    img = noisy(blank('#1c0a08'), 0.18, GRID_RND)
+    px = img.load()
+    for i in range(16):
+        for x, y in ((i, 0), (i, 15), (0, i), (15, i)):
+            px[x, y] = (255, 58, 28, 255)
+        for x, y in ((i, 1), (i, 14), (1, i), (14, i)):
+            if 1 <= i <= 14:
+                px[x, y] = (150, 26, 14, 255)
+    for i in range(2, 14):
+        if i % 4 != 1:
+            px[7, i] = px[8, i] = (255, 176, 112, 255)
+            px[i, 7] = px[i, 8] = (255, 140, 80, 255) if i % 4 == 3 else px[i, 7]
+    for x, y in ((0, 0), (15, 0), (0, 15), (15, 15), (1, 1), (14, 1), (1, 14), (14, 14)):
+        px[x, y] = (255, 210, 160, 255)
+    return img
+
+
+def grid_beacon_texture():
+    img = blank('#2a0c08')
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            d = max(abs(x - 7.5), abs(y - 7.5))
+            if d < 2:
+                px[x, y] = (255, 240, 200, 255)
+            elif d < 4:
+                px[x, y] = (255, 160, 80, 255)
+            elif d < 6:
+                px[x, y] = (255, 70, 30, 255)
+            elif d < 7:
+                px[x, y] = (120, 24, 12, 255)
+            else:
+                px[x, y] = (255, 58, 28, 255) if (x + y) % 2 == 0 else (60, 16, 10, 255)
+    return img
+
+
+def blight_texture():
+    """Black-red crust split by cracks that still glow."""
+    img = noisy(blank('#2a0e0a'), 0.3, GRID_RND)
+    px = img.load()
+    for _ in range(3):
+        x, y = GRID_RND.randrange(16), GRID_RND.randrange(16)
+        for k in range(14):
+            px[x % 16, y % 16] = (255, 110, 30, 255) if k % 3 else (255, 190, 90, 255)
+            if GRID_RND.random() < 0.5:
+                x += GRID_RND.choice((-1, 1))
+            else:
+                y += GRID_RND.choice((-1, 1))
+    for _ in range(10):
+        px[GRID_RND.randrange(16), GRID_RND.randrange(16)] = (70, 20, 14, 255)
+    return img
+
+
+def quarantine_texture():
+    """Hazard plating: diagonal yellow and black stripes, rivets in the corners, rust bleeding through."""
+    img = blank('#2a1a14')
+    px = img.load()
+    for y in range(16):
+        for x in range(16):
+            if ((x + y) // 4) % 2 == 0:
+                px[x, y] = (232, 176, 32, 255)
+            if GRID_RND.random() < 0.08:
+                r, g, b, a = px[x, y]
+                px[x, y] = (min(255, r // 2 + 90), g // 2 + 20, b // 2, 255)
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        px[x, y] = (200, 190, 170, 255)
+    for i in range(16):
+        px[i, 0] = px[i, 15] = px[0, i] = px[15, i] = (60, 40, 30, 255)
+    return noisy(img, 0.08, GRID_RND)
+
+
+GRID_BLOCKS = {
+    'lightline': (lightline_texture(), 'Lightline', 'Lichtbahn',
+                  'A tile of the Grid. Light cycles lock onto rows of it and race along them; Trackwrights lay it. Breaking it breaks the Concordance.',
+                  'Eine Kachel des Rasters. Lichträder rasten auf Reihen davon ein und rasen darauf entlang; Bahnwerker verlegen sie. Sie zu zerstören bricht die Eintracht.'),
+    'grid_beacon': (grid_beacon_texture(), 'Grid Beacon', 'Rasterleuchtfeuer',
+                    'The bright light at the Grid\'s nodes, pylons and waystops. Built by the Wirewrights: do not break it.',
+                    'Das helle Licht an den Knoten, Masten und Haltestellen des Rasters. Von den Drahtwerkern gebaut: nicht zerstören.'),
+    'blight_crust': (blight_texture(), 'Blight Crust', 'Fäulniskruste', 'The cracked, faintly glowing ground of the Sealed Reach.',
+                     'Der rissige, schwach glühende Boden der Versiegelten Weite.'),
+    'quarantine_plating': (quarantine_texture(), 'Quarantine Plating', 'Quarantäneplatten',
+                           'The plating of the walls around the Sealed Reach. Nearly unbreakable, and breaking it breaks the Concordance.',
+                           'Die Platten der Mauern um die Versiegelte Weite. Fast unzerstörbar, und sie zu zerstören bricht die Eintracht.'),
+}
+for bid, (img, e, g, de_, dg) in GRID_BLOCKS.items():
+    save(img, 'block', bid)
+    simple_block(bid)
+    self_drop(bid)
+    name(f'block.{NS}.{bid}', e, g, de_, dg)
+    pickaxe.append(f'{NS}:{bid}')
+needs_iron.append(f'{NS}:quarantine_plating')
+shaped('lightline', ['BBB', 'RGR', 'BBB'], {'B': f'{NS}:realmstone_bricks', 'R': 'minecraft:redstone', 'G': 'minecraft:glowstone_dust'},
+       f'{NS}:lightline', 6)
+shaped('grid_beacon', ['CRC', 'RGR', 'CRC'], {'C': f'{NS}:realm_cog', 'R': 'minecraft:redstone', 'G': 'minecraft:glowstone'}, f'{NS}:grid_beacon')
+shaped('quarantine_plating', ['IYI', 'YIY', 'IYI'], {'I': 'minecraft:iron_ingot', 'Y': 'minecraft:yellow_dye'}, f'{NS}:quarantine_plating', 4)
+
+# the Cycle Key
+P_KEY = {'a': '#2a0c08', 'b': '#ff3a1c', 'c': '#ffb070', 'd': '#6a6a72', 'e': '#a0a0a8', 'f': '#d8d8e0'}
+save(sprite([
+    '................', '..........aaa...', '.........abbba..', '........abcccba.', '........abc.cba.', '........abcccba.',
+    '.........abbba..', '........daaaa...', '.......ded......', '......ded.......', '.....dedd.......', '....ded.d.......',
+    '...ded..........', '..ded.d.........', '..dd............', '................'], P_KEY), 'item', 'cycle_key')
+item_model('cycle_key')
+name(f'item.{NS}.cycle_key', 'Cycle Key', 'Lichtrad-Schlüssel',
+     'The key to your light cycle. Use it to call the cycle and ride it; sneak-use to switch its automatic return on or off.',
+     'Der Schlüssel zu deinem Lichtrad. Benutzen ruft das Rad und setzt dich darauf; Schleichen + Benutzen schaltet seine automatische Rückkehr an oder aus.')
+for i, (e, g) in enumerate((('Use: call your light cycle and ride it', 'Benutzen: Lichtrad rufen und aufsteigen'),
+                            ('Sneak + use: automatic return on/off', 'Schleichen + Benutzen: automatische Rückkehr an/aus'),
+                            ('Ride onto a Lightline to lock on. Jump: overdrive', 'Auf eine Lichtbahn fahren, um einzurasten. Springen: Schub'))):
+    name(f'item.{NS}.cycle_key.tip.{i}', e, g)
+shaped('cycle_key', [' C ', 'IRI', ' I '], {'C': f'{NS}:realm_cog', 'I': 'minecraft:iron_ingot', 'R': 'minecraft:redstone_block'}, f'{NS}:cycle_key')
+name(f'entity.{NS}.light_cycle', 'Light Cycle', 'Lichtrad')
+
+# the Grid's builder and the things of the Sealed Reach
+GRID_CREATURES = {
+    'trackwright': ('Trackwright', 'Bahnwerker', [(f'{NS}:lightline', 2, 5, 1), (f'{NS}:realm_cog', 1, 2, 1), ('minecraft:redstone', 1, 3, 1)]),
+    'wirewraith': ('Wirewraith', 'Drahtgespenst', [('minecraft:chain', 1, 3, 1), ('minecraft:redstone', 2, 6, 1), (f'{NS}:bell_bronze', 0, 1, 0.4),
+                                                   (f'{NS}:etched_plate_6', 1, 1, 0.08)]),
+    'maw_engine': ('Maw Engine', 'Schlundmaschine', [('minecraft:coal', 2, 6, 1), ('minecraft:iron_ingot', 1, 3, 1), (f'{NS}:realm_cog', 1, 3, 1),
+                                                     ('minecraft:magma_cream', 0, 2, 0.5)]),
+}
+for mob, (e, g, drops) in GRID_CREATURES.items():
+    name(f'entity.{NS}.{mob}', e, g)
+    name(f'item.{NS}.{mob}_spawn_egg', f'{e} Spawn Egg', f'{g}-Spawn-Ei')
+    item_model(f'{mob}_spawn_egg', 'minecraft:item/template_spawn_egg')
+    pools = []
+    for item, lo, hi, chance in drops:
+        pool = {'rolls': 1, 'bonus_rolls': 0, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+            {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}, 'add': False},
+            {'function': 'minecraft:enchanted_count_increase', 'enchantment': 'minecraft:looting',
+             'count': {'type': 'minecraft:uniform', 'min': 0, 'max': 1}}]}]}
+        if chance < 1:
+            pool['conditions'] = [{'condition': 'minecraft:random_chance', 'chance': chance}]
+        pools.append(pool)
+    write(os.path.join(DATA, 'loot_table', 'entities', mob + '.json'), {'type': 'minecraft:entity', 'pools': pools,
+                                                                       'random_sequence': f'{NS}:entities/{mob}'})
+chest('grid_depot', [
+    {'rolls': {'type': 'minecraft:uniform', 'min': 4, 'max': 7}, 'bonus_rolls': 0,
+     'entries': COMMON + [entry(f'{NS}:lightline', 6, 18, 18), entry(f'{NS}:grid_beacon', 1, 2, 6)]},
+    {'rolls': 1, 'bonus_rolls': 0, 'conditions': [{'condition': 'minecraft:random_chance', 'chance': 0.3}],
+     'entries': [entry(f'{NS}:etched_plate_{i}') for i in range(1, len(LORE_IDS) + 1)]}])
+
+# texts: the cycle, its HUD and the map, the key binding, and the signs around the Sealed Reach
+for key, e, g in (
+        ('message.redstoneplus.cycle_welcome.0', 'A light cycle answers your arrival. It is yours, and the realm will keep it by your side.',
+         'Ein Lichtrad antwortet auf deine Ankunft. Es gehört dir, und das Reich hält es an deiner Seite.'),
+        ('message.redstoneplus.cycle_welcome.1', 'Right click it to ride. Roll onto a glowing Lightline and it locks on and races along it; tap A or D before a junction to turn.',
+         'Rechtsklick zum Aufsteigen. Fahr auf eine leuchtende Lichtbahn: das Rad rastet ein und rast darauf entlang; tippe vor einer Kreuzung A oder D, um abzubiegen.'),
+        ('message.redstoneplus.cycle_welcome.2', 'Hold jump for overdrive, S to brake. Press M for the Grid Map. Lost it? The Cycle Key calls it back.',
+         'Springen halten für Schub, S bremst. M öffnet die Rasterkarte. Verloren? Der Lichtrad-Schlüssel ruft es zurück.'),
+        ('message.redstoneplus.cycle_returned', 'Your light cycle rematerialises beside you.', 'Dein Lichtrad materialisiert neben dir.'),
+        ('message.redstoneplus.cycle_parked', 'Light cycle put away. Use the Cycle Key to call it back.', 'Lichtrad weggestellt. Der Lichtrad-Schlüssel ruft es zurück.'),
+        ('message.redstoneplus.cycle_auto_on', 'Automatic return on: your cycle will always come back to you.', 'Automatische Rückkehr an: dein Rad kommt immer zu dir zurück.'),
+        ('message.redstoneplus.cycle_auto_off', 'Automatic return off: your cycle stays where you leave it.', 'Automatische Rückkehr aus: dein Rad bleibt, wo du es lässt.'),
+        ('message.redstoneplus.cycle_not_yours', 'This light cycle is bound to another rider.', 'Dieses Lichtrad gehört einem anderen Fahrer.'),
+        ('hud.redstoneplus.cycle.speed', '%s blocks/s', '%s Blöcke/s'),
+        ('hud.redstoneplus.cycle.locked', 'LIGHTLINE LOCK', 'AUF DER LICHTBAHN'),
+        ('hud.redstoneplus.cycle.free', 'free ride', 'freie Fahrt'),
+        ('hud.redstoneplus.cycle.junction', 'Junction in %s: %s', 'Kreuzung in %s: %s'),
+        ('hud.redstoneplus.cycle.end', 'Line ends in %s', 'Bahn endet in %s'),
+        ('hud.redstoneplus.cycle.turn_left', '◀ turn queued', '◀ Abbiegen vorgemerkt'),
+        ('hud.redstoneplus.cycle.turn_right', 'turn queued ▶', 'Abbiegen vorgemerkt ▶'),
+        ('hud.redstoneplus.cycle.bell', 'THE GREAT BELL TOLLS: HOLDING', 'DIE GROSSE GLOCKE SCHLÄGT: HALTEN'),
+        ('hud.redstoneplus.cycle.keys', '[%s] Grid Map', '[%s] Rasterkarte'),
+        ('key.redstoneplus.grid_map', 'Grid Map', 'Rasterkarte'),
+        ('key.categories.redstoneplus', 'RedstonePlus', 'RedstonePlus'),
+        ('screen.redstoneplus.grid_map', 'THE GRID', 'DAS RASTER'),
+        ('screen.redstoneplus.grid_map.legend', 'red: lightlines   diamonds: nodes   amber: Trackwrights   arrows: light cycles   scroll: zoom, drag: look, right click: back to you',
+         'rot: Lichtbahnen   Rauten: Knoten   bernstein: Bahnwerker   Pfeile: Lichträder   Mausrad: Zoom, Ziehen: umsehen, Rechtsklick: zurück zu dir'),
+        ('screen.redstoneplus.grid_map.tile', 'lightline', 'Lichtbahn'),
+        ('screen.redstoneplus.grid_map.empty', 'No loaded world to show here.', 'Hier ist keine geladene Welt zu zeigen.')):
+    en[key] = e
+    de[key] = g
+QUARANTINE_SIGNS = [
+    (('!! QUARANTINE !!', 'The Concordance', 'does not hold', 'beyond this wall'), ('!! QUARANTÄNE !!', 'Die Eintracht', 'gilt nicht', 'hinter der Mauer')),
+    (('SEALED BY ORDER', 'OF THE COUNCIL', '- - -', 'TURN BACK'), ('VERSIEGELT AUF', 'BEFEHL DES RATES', '- - -', 'KEHR UM')),
+    (('DO NOT OPEN', 'THE GATES', '', '(they listen)'), ('ÖFFNE NICHT', 'DIE TORE', '', '(sie lauschen)')),
+    (('LINE CLOSED', 'no cycle', 'came back', 'from the Reach'), ('BAHN GESPERRT', 'kein Rad', 'kam je zurück', 'aus der Weite')),
+]
+for i, (lines_e, lines_g) in enumerate(QUARANTINE_SIGNS):
+    for k in range(4):
+        en[f'quarantine.{NS}.sign.{i}.{k}'] = lines_e[k]
+        de[f'quarantine.{NS}.sign.{i}.{k}'] = lines_g[k]
+
 # ================================================================================================ the Great Bell (sky)
 def great_bell():
     """The Concordance as it hangs in the sky: a cracked bronze bell, its crack and sigils still glowing."""
@@ -778,7 +983,17 @@ for key, e, g in (
         ('toll_still', 'You moved while the Great Bell tolled.', 'Du hast dich bewegt, als die Große Glocke schlug.'),
         ('bar.harmony', 'The Concordance · in harmony', 'Die Eintracht · im Einklang'),
         ('bar.broken', 'The Concordance · rules broken: %s/%s', 'Die Eintracht · gebrochene Regeln: %s/%s'),
-        ('bar.condemned', 'The Concordance · %s/%s · the realm hunts you', 'Die Eintracht · %s/%s · das Reich jagt dich')):
+        ('bar.condemned', 'The Concordance · %s/%s · the realm hunts you', 'Die Eintracht · %s/%s · das Reich jagt dich'),
+        ('bar.toll_soon', 'The Great Bell tolls in %s · be still', 'Die Große Glocke schlägt in %s · halte still'),
+        ('bar.tolling', 'The Great Bell tolls · be still', 'Die Große Glocke schlägt · halte still'),
+        ('condemned', 'Three rules broken. Every creature of the realm now hunts you. Atone to be left in peace again.',
+         'Drei Regeln gebrochen. Jede Kreatur des Reichs jagt dich jetzt. Sühne, um wieder in Ruhe gelassen zu werden.'),
+        ('forgiven', 'The Concordance forgives: %s/%s rules broken.', 'Die Eintracht vergibt: %s/%s Regeln gebrochen.'),
+        ('forgiven_all', 'The Concordance forgives everything. You are in harmony again.', 'Die Eintracht vergibt alles. Du bist wieder im Einklang.'),
+        ('lamp_known', 'You relit this lamp before. The Concordance has already counted it.', 'Diese Lampe hast du schon einmal entzündet. Die Eintracht hat sie schon gezählt.'),
+        ('lamp_wait', 'The lamp burns, but the Concordance only counts one lamp a minute.', 'Die Lampe brennt, doch die Eintracht zählt nur eine Lampe pro Minute.'),
+        ('welcome', 'The realm keeps the Concordance: do not strike first, do not break what the Wirewrights built, be still when the Great Bell tolls. The bar at the top keeps count.',
+         'Das Reich hält die Eintracht: schlag nicht zuerst, zerstöre nicht, was die Drahtwerker gebaut haben, halte still, wenn die Große Glocke schlägt. Der Balken oben zählt mit.')):
     name(f'rules.{NS}.{key}', e, g)
 
 # ================================================================================================ etched plates (lore)
@@ -944,7 +1159,7 @@ spire('kiln_spire', 'cinder_rock', 'minecraft:magma_block', (8, 22), (1, 3), {'t
 spire('hoodoo', 'hematite', 'dark_hematite', (10, 28), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
 spire('tempest_pillar', 'tempest_basalt', 'redstone_vein', (8, 30), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 2})
 spire('rubedo_spire', 'redstone_vein', 'realmstone_bricks', (6, 16), (1, 2), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
-spire('frost_spire', 'frost_realmstone', 'minecraft:packed_ice', (10, 26), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=3)
+spire('frost_spire', 'frost_realmstone', 'salt_crust', (10, 26), (1, 3), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1}, rarity=3)
 spire('dune_rock', 'realmstone', 'rust_sand', (3, 8), (2, 4), {'type': 'minecraft:uniform', 'min_inclusive': 0, 'max_inclusive': 1})
 rock('slag_heap', 'slag', 1)
 rock('sulfur_rock', 'sulfur_crust', rarity=2)
@@ -967,7 +1182,7 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities'):
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities', 'grid', 'sealed_wall'):
     placed(shape, none_feature(shape), [])
 
 # trap sites, scenery and machines: rare and spread out
@@ -990,7 +1205,8 @@ STEPS = [
     [],
     ['minecraft:lake_lava_surface'],
     ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
-     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
+     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid',
+     'redstoneplus:sealed_wall', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree'],
     ['redstoneplus:resonance_gatehouse'],
@@ -1008,10 +1224,10 @@ STEPS = [
     ['redstoneplus:giant_tree', 'redstoneplus:crimson_heather_patch', 'redstoneplus:fen_reed_patch', 'redstoneplus:red_coral_shrub_patch',
      'redstoneplus:pale_stalk_patch', 'redstoneplus:salt_brush_patch', 'redstoneplus:copper_reed_patch', 'redstoneplus:lichen_tuft_patch',
      'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
-    ['minecraft:freeze_top_layer'],
+    [],
 ]
-EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
-              'redstoneplus:scree', 'minecraft:freeze_top_layer'}
+EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
+              'redstoneplus:scree'}
 
 
 def features(*wanted):
@@ -1035,20 +1251,20 @@ RED_DUST = {'type': 'minecraft:dust', 'color': [1.0, 0.15, 0.08], 'scale': 1.0}
 
 # name: english, german, temperature, downfall, colours (sky, fog, water, water fog, grass/foliage), particle, features, monsters, creatures, costs
 BIOMES = {
-    'piston_karst': ('Piston Karst', 'Kolbenkarst', 0.9, 0.3, ('#78a8ff', '#d8c8a8', '#3a9ad8', '#10304a', '#c0a060'), None,
+    'piston_karst': ('Piston Karst', 'Kolbenkarst', 0.9, 0.3, ('#e0a070', '#e8c8a0', '#c86a30', '#3a1a0a', '#c0a060'), None,
                      features('karst_spire', 'crusher_passage', 'crusher_mill', 'lichen_tuft_patch', 'beast_cage'),
                      [('karst_colossus', 25, 1, 1), ('relay_strider', 20, 1, 1), ('detonator_husk', 30, 1, 2)], [('flesh_press', 3, 1, 1)], ['karst_colossus']),
-    'switchyard_flats': ('Switchyard Flats', 'Weichenebene', 1.2, 0.1, ('#c07aa0', '#d08a70', '#8a4a3a', '#3a1a10', '#a8905a'), fx(RED_DUST, 0.004),
+    'switchyard_flats': ('Switchyard Flats', 'Weichenebene', 1.2, 0.1, ('#c8786a', '#d08a70', '#8a4a3a', '#3a1a10', '#a8905a'), fx(RED_DUST, 0.004),
                          features('tracks', 'slag_heap', 'switchyard_junction', 'tower', 'lamp_pylon', 'minecart_loop', 'salt_brush_patch'),
                          [('switchback_crawler', 40, 1, 2), ('detonator_husk', 30, 1, 2), ('kilnbound', 20, 1, 1)], [('bellows_hog', 10, 2, 3)],
                          ['switchback_crawler']),
-    'sluice_gardens': ('Sluice Gardens', 'Schleusengärten', 0.7, 0.9, ('#8ab0a0', '#a8c8b8', '#3ab8a0', '#10403a', '#4a9a70'), None,
+    'sluice_gardens': ('Sluice Gardens', 'Schleusengärten', 0.7, 0.9, ('#e8b088', '#e0b898', '#d0782a', '#40200a', '#c87a30'), None,
                        features('sluice_bridge', 'aqueduct', 'pump_station', 'copper_reed_patch', 'fen_reed_patch'),
                        [('sluice_chainjaw', 40, 1, 2), ('leaking_cell', 30, 1, 2), ('living_capacitor', 20, 1, 2)], [], ['sluice_chainjaw']),
     'kiln_barrens': ('Kiln Barrens', 'Brennofen-Öde', 2.0, 0.0, ('#b0603a', '#8a4a2a', '#c06a2a', '#3a1a0a', '#6a5a3a'), fx('minecraft:white_ash', 0.01),
                      features('lava_channels', 'kiln_spire', 'sulfur_rock', 'lamp_pylon', 'minecraft:lake_lava_surface', 'kiln_bridge', 'cinder_bloom_patch'),
                      [('kiln_brute', 30, 1, 1), ('kilnbound', 40, 1, 2), ('detonator_husk', 15, 1, 1)], [('bellows_hog', 15, 2, 3)], ['kiln_brute']),
-    'tripwire_briar': ('Tripwire Briar', 'Stolperdraht-Dickicht', 0.7, 0.8, ('#d8b060', '#b8a060', '#4a7a4a', '#1a2a1a', '#5a6a2a'), None,
+    'tripwire_briar': ('Tripwire Briar', 'Stolperdraht-Dickicht', 0.7, 0.8, ('#d8b060', '#b89a60', '#8a5a2a', '#2a1a0a', '#7a5a2a'), None,
                        features('briar_ambush', 'briar_patch', 'laser_post', 'tower', 'ruin', 'lichen_tuft_patch'),
                        [('spool_weaver', 40, 1, 2), ('tripwire_brood', 35, 1, 2), ('leaking_cell', 15, 1, 2)], [], ['spool_weaver']),
     'arsenal_dunes': ('Arsenal Dunes', 'Arsenal-Dünen', 1.6, 0.0, ('#e04a36', '#c83a2a', '#9a2020', '#3a0a0a', '#b04a30'), fx(RED_DUST, 0.006),
@@ -1068,30 +1284,37 @@ BIOMES = {
                         features('mesas', 'hoodoo', 'beast_cage', 'ruin', 'red_coral_shrub_patch', 'crusher_mill'),
                         [('karst_colossus', 20, 1, 1), ('tripwire_brood', 30, 1, 2), ('detonator_husk', 25, 1, 2)], [('flesh_press', 4, 1, 1)],
                         ['karst_colossus']),
-    'tempest_shoals': ('Tempest Shoals', 'Sturmbänke', 0.5, 0.9, ('#3e4260', '#2e3446', '#22b0a0', '#0a2a28', '#2a6a6a'), fx('minecraft:electric_spark', 0.004),
+    'tempest_shoals': ('Tempest Shoals', 'Sturmbänke', 0.5, 0.9, ('#5a2a2a', '#3a2020', '#b0301a', '#2a0806', '#6a2a1a'), fx({'type': 'minecraft:dust', 'color': [1.0, 0.55, 0.15], 'scale': 0.8}, 0.004),
                        features('tempest_pillar', 'storm_spire'),
                        [('sluice_chainjaw', 35, 1, 2), ('relay_strider', 25, 1, 1)], [], ['sluice_chainjaw']),
-    'frostwork_wastes': ('Frostwork Wastes', 'Frostwerk-Öde', -0.6, 0.5, ('#8a9ab0', '#a8b8c8', '#3a6a9a', '#0a1a2a', '#8aa0b0'), fx('minecraft:white_ash', 0.02),
+    'frostwork_wastes': ('Frostwork Wastes', 'Frostwerk-Öde', 0.3, 0.0, ('#e8c0a8', '#f0d8c8', '#c87a5a', '#2a1410', '#d8b0a0'), fx('minecraft:white_ash', 0.02),
                          features('crevasses', 'frost_spire', 'ice_rails', 'tower', 'frost_fern_patch'),
                          [('switchback_crawler', 25, 1, 2), ('spool_weaver', 25, 1, 2), ('karst_colossus', 15, 1, 1)], [], ['karst_colossus']),
-    'vein_mire': ('Vein Mire', 'Adermoor', 0.8, 0.9, ('#40403a', '#4a4a40', '#3a1414', '#140404', '#4a3a2a'), fx('minecraft:crimson_spore', 0.01),
+    'vein_mire': ('Vein Mire', 'Adermoor', 0.8, 0.9, ('#4a3a30', '#4a3a32', '#3a1414', '#140404', '#4a3a2a'), fx('minecraft:crimson_spore', 0.01),
                   features('ponds', 'pale_stalk_patch', 'boardwalk', 'fen_reed_patch', 'kiln_hut'),
                   [('leaking_cell', 35, 1, 3), ('tripwire_brood', 30, 1, 2), ('spool_weaver', 20, 1, 1)], [], []),
-    'oxide_salt_flats': ('Oxide Salt Flats', 'Oxid-Salzebene', 1.3, 0.0, ('#eca858', '#e8b878', '#60a080', '#1a3a2a', '#c09060'), fx(RED_DUST, 0.003),
+    'oxide_salt_flats': ('Oxide Salt Flats', 'Oxid-Salzebene', 1.3, 0.0, ('#eca858', '#e8b878', '#d8904a', '#3a200a', '#c09060'), fx(RED_DUST, 0.003),
                          features('salt_mound', 'scrap', 'rail_line', 'ruin', 'lamp_pylon', 'salt_brush_patch', 'tower'),
                          [('switchback_crawler', 30, 1, 2), ('kilnbound', 25, 1, 2), ('detonator_husk', 25, 1, 2)], [('bellows_hog', 10, 2, 3)],
                          ['switchback_crawler']),
-    'lamplit_grove': ('Lamplit Grove', 'Lampenhain', 0.6, 0.8, ('#46306a', '#3e2c64', '#2a3a5a', '#0a0a1a', '#2e6a6a'), fx('minecraft:warped_spore', 0.01),
+    'lamplit_grove': ('Lamplit Grove', 'Lampenhain', 0.6, 0.8, ('#6a2a20', '#5a2418', '#7a2a1a', '#1a0604', '#8a3a1a'), fx('minecraft:crimson_spore', 0.01),
                       features('giant_tree', 'crimson_heather_patch', 'pale_stalk_patch', 'bell_tower'),
                       [('spool_weaver', 30, 1, 2), ('relay_strider', 25, 1, 1), ('bell_stalker', 15, 1, 1)], [], []),
-    'resonance_hollows': ('Resonance Hollows', 'Resonanzhöhlen', 0.6, 0.4, ('#6a5aa8', '#3a2a6a', '#40c8ff', '#10205a', '#6a5aa8'), fx('minecraft:glow', 0.008),
+    'resonance_hollows': ('Resonance Hollows', 'Resonanzhöhlen', 0.6, 0.4, ('#a8603a', '#5a2a14', '#ffa040', '#4a200a', '#a8603a'), fx({'type': 'minecraft:dust', 'color': [1.0, 0.7, 0.25], 'scale': 0.7}, 0.008),
                           features('resonance_gatehouse', 'resonant_crystal_ore', 'cave_clusters_ceiling'),
                           [('bell_stalker', 30, 1, 1), ('tripwire_brood', 35, 1, 2), ('living_capacitor', 25, 1, 2)], [], ['bell_stalker']),
     'circuit_fossil_beds': ('Circuit Fossil Beds', 'Schaltungs-Fossilbetten', 0.9, 0.4, ('#8a1a1a', '#6a1010', '#a02020', '#300808', '#8a2020'), fx(RED_DUST, 0.01),
                             features('ore_redstone_vein', 'cave_clusters_ceiling', 'red_coral_shrub_patch'),
                             [('tripwire_brood', 30, 1, 2), ('living_capacitor', 30, 1, 2), ('relay_strider', 25, 1, 1)], [], []),
+    # walled off: blood-red sky, fog that never lifts (see RealmSky), and the things that never kept the Concordance
+    'sealed_reach': ('The Sealed Reach', 'Die Versiegelte Weite', 0.8, 0.0, ('#3a0606', '#2a0404', '#4a0a06', '#140202', '#3a0a08'),
+                     fx({'type': 'minecraft:dust', 'color': [0.55, 0.05, 0.03], 'scale': 1.2}, 0.03),
+                     features('monolith', 'ruin', 'beast_cage', 'briar_patch', 'cinder_bloom_patch'),
+                     [('wirewraith', 30, 1, 1), ('maw_engine', 20, 1, 1)], [], []),
 }
 UNDERGROUND = {'resonance_hollows', 'circuit_fossil_beds'}
+# no wildlife and no Trackwrights inside the walls of the Sealed Reach
+WALLED = {'sealed_reach'}
 CONSTRUCTS = {'karst_colossus', 'switchback_crawler', 'bell_stalker', 'sluice_chainjaw', 'kiln_brute', 'spool_weaver'}
 # the realm's own wildlife lives everywhere on the surface: grazing mites in herds and the jackal packs that hunt them
 WILDLIFE = [('spark_mite', 14, 3, 6), ('scrap_jackal', 5, 2, 3)]
@@ -1103,8 +1326,9 @@ for biome_name, (e, g, temp, rain, cols, particle, feats, monsters, creatures, c
     if particle:
         effects['particle'] = particle
     effects['music'] = {'sound': f'{NS}:music.realm', 'min_delay': 1200, 'max_delay': 4800, 'replace_current_music': True}
-    if biome_name not in UNDERGROUND:
-        creatures = creatures + WILDLIFE
+    if biome_name not in UNDERGROUND and biome_name not in WALLED:
+        # the realm's wildlife, and now and then a Trackwright out laying lightlines
+        creatures = creatures + WILDLIFE + [('trackwright', 3, 1, 1)]
         ambient = [spawn('lamp_moth', 30, 3, 6)]
     else:
         ambient = []
@@ -1186,10 +1410,11 @@ GROUND = {
     'red_clay_fen': ground([(0.2, 9, 'fen_mud'), 'red_clay'], 'fen_mud', 'red_clay'),
     'hematite_scarps': ground([(0.3, 9, 'dark_hematite'), 'hematite'], 'hematite', 'hematite'),
     'tempest_shoals': ground('tempest_basalt', 'tempest_basalt', 'tempest_basalt'),
-    'frostwork_wastes': ground([(0.35, 9, 'minecraft:packed_ice'), 'minecraft:snow_block'], 'frost_realmstone', 'frost_realmstone'),
+    'frostwork_wastes': ground([(0.35, 9, 'frost_realmstone'), 'salt_crust'], 'frost_realmstone', 'frost_realmstone'),
     'vein_mire': ground([(0.55, 9, 'redstone_vein'), 'root_soil'], 'root_soil', 'root_soil'),
     'oxide_salt_flats': ground([(-0.04, 0.04, 'redstone_vein'), (0.5, 9, 'rusted_soil'), 'salt_crust'], 'salt_crust', 'salt_crust'),
     'lamplit_grove': ground('grove_moss', 'root_soil', 'root_soil'),
+    'sealed_reach': ground([(0.4, 9, 'cinder_rock'), 'blight_crust'], 'blight_crust', 'dark_hematite'),
 }
 # whole cliffs in some biomes are their own rock; the scarps are banded
 cliffs = [cond(biome_is('piston_karst'), cond(y_above(40), blk('karst_limestone'))),
@@ -1252,10 +1477,12 @@ PEAKS = ['frostwork_wastes', 'hematite_scarps', 'piston_karst', 'hematite_scarps
 points = [point('tempest_shoals', cont=(-1.2, -0.35)),
           point('sluice_gardens', t=(0.0, 1.0), cont=(-0.35, -0.11)),
           point('red_clay_fen', t=(-1.0, 0.0), cont=(-0.35, -0.11))]
+SEALED_WEIRDNESS = 0.62
 for ti, tr in enumerate(T):
     points.append(point(PEAKS[ti], t=tr, ero=(-1.0, -0.375)))
     for hi, hr in enumerate(H):
-        points.append(point(FLAT[ti][hi], t=tr, h=hr, ero=(-0.375, 1.0)))
+        points.append(point(FLAT[ti][hi], t=tr, h=hr, ero=(-0.375, 1.0), weird=(-1.0, SEALED_WEIRDNESS)))
+points.append(point('sealed_reach', cont=(0.05, 1.2), ero=(-0.375, 1.0), weird=(SEALED_WEIRDNESS, 1.0)))
 points.append(point('circuit_fossil_beds', h=(-1.0, 0.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
 points.append(point('resonance_hollows', h=(0.0, 1.0), cont=(-1.2, 1.2), dep=[0.2, 0.9]))
 write(os.path.join(DATA, 'dimension', 'redstone_realm.json'), {
@@ -1343,9 +1570,9 @@ particle_frames('realm_steam', [radial(16, lambda d, x, y, k=k: (
 # ember: flickering orange coal
 particle_frames('realm_ember', [radial(8, lambda d, x, y, k=k: (
     (255, 240, 170, 255) if d < 0.3 else (255, 150 - k * 30, 30, 230) if d < 0.65 - k * 0.08 else None)) for k in range(3)])
-# resonance: a thin cyan ring that the particle then grows
+# resonance: a thin amber ring that the particle then grows
 particle_frames('realm_resonance', [radial(16, lambda d, x, y, k=k: (
-    (120, 240, 255, 230 - k * 40) if 0.72 - k * 0.04 < d < 0.92 else (200, 255, 255, 120) if 0.62 < d <= 0.72 - k * 0.04 else None)) for k in range(4)])
+    (255, 170, 60, 230 - k * 40) if 0.72 - k * 0.04 < d < 0.92 else (255, 230, 170, 120) if 0.62 < d <= 0.72 - k * 0.04 else None)) for k in range(4)])
 # drip: green glowing droplet
 particle_frames('realm_drip', [radial(8, lambda d, x, y, k=k: (
     (220, 255, 160, 255) if d < 0.25 else (125, 255, 60, 230) if d < 0.6 - k * 0.1 else None)) for k in range(3)])
@@ -1367,9 +1594,14 @@ BOOK_EN = [
     'THE HISTORY II\n\nTo wake every engine at once the Council ordered the Overtoll. The cradle cracked, the cities answered, and on the last stroke the Bell tore free and rose into the sky.',
     'THE HISTORY III\n\nIt hangs there still in place of the sun. When it tolls, the machines below lose a little more of their purpose. Etched Plates found in old chests tell the rest.',
     'THE RULES\n\nThe realm still keeps the Concordance. Its creatures leave you alone until you:\n\n1. strike first,\n2. break what the Wirewrights built (their bricks, tiles, bronze, lamps, bells and traps),\n3. move while the Great Bell tolls.',
-    'THE COUNT\n\nThe bar at the top counts the rules you have broken. At three, every creature of the realm hunts you on sight. Fight back freely when they come for you: defending is no crime. The realm forgets the dead.',
-    'ATONEMENT\n\nRelight a dead lamp with redstone: one rule.\nRing a bell while the Great Bell tolls: two rules.\nLay an Etched Plate on Bell Bronze (the Cradle plazas are full of it): all of them.',
+    'THE COUNT\n\nThe bar at the top counts the rules you have broken. At three, every creature of the realm hunts you on sight. Fight back freely when they come for you: defending is no crime. The bar also counts down to each toll. The realm forgets the dead.',
+    'ATONEMENT\n\nRelight a dead lamp with redstone: one rule (each lamp once, one a minute).\nRing a bell while the Great Bell tolls: two rules.\nLay an Etched Plate on Bell Bronze (the Cradle plazas are full of it): all of them.\nAtoning calls off the hunt.',
     'FOUNDRY CITIES\n\nThe ruined cities of the Wirewrights spread hundreds of blocks wide, behind broken walls. At the centre of each stands the empty cradle where a bell once hung.',
+    'THE GRID\n\nGlowing Lightlines cross the realm every 256 blocks, north-south and east-west. Where they meet stand nodes: cycle depots, junction spires, trackworks and bell gates. Many lines broke; the Trackwrights mend them.',
+    'LIGHT CYCLES\n\nOn your first visit a light cycle is built for you. Ride it onto a Lightline: it locks on and races along it. Tap A or D before a junction to turn. Hold jump for overdrive, S to brake, S at a standstill to turn round.',
+    'YOUR CYCLE\n\nThe realm keeps it by your side: if it is lost, it is rebuilt next to you. The Cycle Key calls it any time. It holds still by itself while the Great Bell tolls. Press M for the Grid Map; the bar on the left shows the lines around you.',
+    'TRACKWRIGHTS\n\nCrab-legged paving engines. They walk to the broken ends of lines and lay tile after tile, and they start new branch lines that end at a waystop beacon: new ways to turn down. Their lightlines count as built: leave them be.',
+    'THE SEALED REACH\n\nWalled lands with crimson signs all around. Inside, the Wirewraith and the Maw Engine never kept the Concordance: they hunt everyone, and fighting them breaks no rule. They never leave the walls. Neither should you.',
     'PISTON KARST\nPale limestone towers.\n\nTrigger: pressure plate\nResponse: crushing passage\nCounter: Piston Brace (right click a Crusher)\n\nThe vault at the end opens with two levers and an AND gate.',
     'SWITCHYARD FLATS\nRust, slag and rails.\n\nTrigger: Tripper Rail\nResponse: hazard diversion into a spike pit\nCounter: Pulse Injector (burns out a Hazard Switch, and stuns constructs).',
     'RESONANCE HOLLOWS\nCrystal caves deep below.\n\nTrigger: footstep vibration (sculk sensor)\nResponse: gate lockdown\nCounter: Decoy Beacon\n\nSneak: the Bell Stalker hunts by sound.',
@@ -1390,9 +1622,14 @@ BOOK_DE = [
     'DIE GESCHICHTE II\n\nUm alle Maschinen zugleich zu wecken, befahl der Rat den Überschlag. Die Wiege riss, die Städte antworteten, und beim letzten Schlag riss sich die Glocke los und stieg in den Himmel.',
     'DIE GESCHICHTE III\n\nDort hängt sie noch heute statt der Sonne. Wenn sie schlägt, verlieren die Maschinen unten ein wenig mehr ihres Zwecks. Gravierte Platten in alten Truhen erzählen den Rest.',
     'DIE REGELN\n\nDas Reich hält noch die Eintracht. Seine Kreaturen lassen dich in Ruhe, bis du:\n\n1. zuerst zuschlägst,\n2. zerstörst, was die Drahtwerker gebaut haben (Ziegel, Fliesen, Bronze, Lampen, Glocken, Fallen),\n3. dich bewegst, während die Große Glocke schlägt.',
-    'DIE ZÄHLUNG\n\nDer Balken oben zählt deine gebrochenen Regeln. Ab drei jagt dich jede Kreatur des Reichs. Wehr dich ruhig, wenn sie kommen: Verteidigung ist kein Vergehen. Das Reich vergisst die Toten.',
-    'SÜHNE\n\nEine tote Lampe mit Redstone neu entzünden: eine Regel.\nEine Glocke läuten, während die Große Glocke schlägt: zwei Regeln.\nEine Gravierte Platte auf Glockenbronze legen (die Wiegen-Plätze sind voll davon): alle.',
+    'DIE ZÄHLUNG\n\nDer Balken oben zählt deine gebrochenen Regeln. Ab drei jagt dich jede Kreatur des Reichs. Wehr dich ruhig, wenn sie kommen: Verteidigung ist kein Vergehen. Der Balken zählt auch bis zu jedem Schlag herunter. Das Reich vergisst die Toten.',
+    'SÜHNE\n\nEine tote Lampe mit Redstone neu entzünden: eine Regel (jede Lampe einmal, eine pro Minute).\nEine Glocke läuten, während die Große Glocke schlägt: zwei Regeln.\nEine Gravierte Platte auf Glockenbronze legen (die Wiegen-Plätze sind voll davon): alle.\nSühne beendet die Jagd.',
     'GIESSEREISTÄDTE\n\nDie zerfallenen Städte der Drahtwerker sind hunderte Blöcke breit, hinter zerbrochenen Mauern. In ihrer Mitte steht die leere Wiege, in der einst eine Glocke hing.',
+    'DAS RASTER\n\nLeuchtende Lichtbahnen durchziehen das Reich alle 256 Blöcke, von Nord nach Süd und Ost nach West. Wo sie sich treffen, stehen Knoten: Raddepots, Kreuzungstürme, Bahnwerke und Glockentore. Viele Bahnen brachen; die Bahnwerker flicken sie.',
+    'LICHTRÄDER\n\nBeim ersten Besuch wird dir ein Lichtrad gebaut. Fahr damit auf eine Lichtbahn: es rastet ein und rast darauf entlang. Tippe vor einer Kreuzung A oder D zum Abbiegen. Springen halten: Schub, S: bremsen, S im Stand: wenden.',
+    'DEIN RAD\n\nDas Reich hält es an deiner Seite: geht es verloren, wird es neben dir neu gebaut. Der Lichtrad-Schlüssel ruft es jederzeit. Während die Große Glocke schlägt, hält es von selbst still. M öffnet die Rasterkarte; links siehst du die Bahnen um dich.',
+    'BAHNWERKER\n\nPflastermaschinen auf Krabbenbeinen. Sie gehen zu den Bruchstellen der Bahnen und legen Kachel um Kachel, und sie beginnen neue Abzweige, die an einem Haltestellen-Leuchtfeuer enden: neue Wege zum Abbiegen. Ihre Bahnen gelten als gebaut: lass sie ganz.',
+    'DIE VERSIEGELTE WEITE\n\nUmmauerte Lande, ringsum karminrote Schilder. Drinnen halten Drahtgespenst und Schlundmaschine die Eintracht nicht: sie jagen jeden, und sie zu bekämpfen bricht keine Regel. Sie verlassen die Mauern nie. Du solltest sie nicht betreten.',
     'KOLBENKARST\nHelle Kalktürme.\n\nAuslöser: Druckplatte\nReaktion: Quetschgang\nGegenmittel: Kolbenstrebe (Rechtsklick auf Zermalmer)\n\nDer Tresor am Ende öffnet mit zwei Hebeln und einem UND-Gatter.',
     'WEICHENEBENE\nRost, Schlacke und Schienen.\n\nAuslöser: Auslöseschiene\nReaktion: Umleitung in eine Stachelgrube\nGegenmittel: Impulsinjektor (brennt Weichen durch, lähmt Konstrukte).',
     'RESONANZHÖHLEN\nKristallhöhlen tief unten.\n\nAuslöser: Schrittvibration (Sculk-Sensor)\nReaktion: Abriegelung\nGegenmittel: Köderleuchtfeuer\n\nSchleichen: der Glockenpirscher jagt nach Gehör.',

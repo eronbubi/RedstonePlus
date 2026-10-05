@@ -62,6 +62,7 @@ public final class RealmClient {
         modBus.addListener(RealmSky::register);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(RealmSky::clientTick);
         CycleClient.init(modBus);
+        CrewLinks.init();
         // the clear liquids are drawn see-through
         modBus.addListener((net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) -> event.enqueueWork(() -> {
             for (RealmLiquids.Kind kind : RealmLiquids.Kind.values()) {

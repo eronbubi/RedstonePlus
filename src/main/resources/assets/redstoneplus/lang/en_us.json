@@ -1001,5 +1001,9 @@
   "book.redstoneplus.realm_guide.35": "THE LAST FIGHT\n\nForge the five cores and a block of bell bronze into the Heart of the Five. Lay it on the socket of the Great Cradle, in the Heart, the widest chamber of the artery. The Bell comes down: the Overtoll. When it tolls, stand still.",
   "book.redstoneplus.realm_guide.36": "THE FREED REALM\n\nWhen the Overtoll falls, a red sun rises where it hung. The light grows warm, the creatures bloom and leave you in peace, and around you the land heals: the chains fall, blight turns to heather, dead lamps light, dawn lilies grow.",
   "biome.redstoneplus.the_abyss.desc": "Realm. The void around the artery: nothing to stand on, a red haze, and far below the Blood Below, a sea of molten redstone with veins hanging into it.",
-  "subtitles.redstoneplus.ambient.heartbeat": "The realm's heart beats"
+  "subtitles.redstoneplus.ambient.heartbeat": "The realm's heart beats",
+  "book.redstoneplus.realm_guide.37": "CREWS\n\nThe realm's creatures work in crews. A crew has a node, its leader, linked by lines of light to its members. Warbands march in a wedge, jackal packs in single file, mite herds in two columns, the hunters of the Reach in a ring.",
+  "book.redstoneplus.realm_guide.38": "ORDERS\n\nThe node decides. Its orders run down the links as pulses of light; the farther a member, the later it hears. Each member nods and flashes as the order reaches it, and a fainter pulse runs back: the acknowledgement.",
+  "book.redstoneplus.realm_guide.39": "CREWS AT WORK\n\nWhen the node takes on a job (a lamp, a bell, a wall), its crew rings the work, faces it and works in step. Every member in place makes the job go faster. Idle, a crew stands in formation and sweeps its gaze round together.",
+  "book.redstoneplus.realm_guide.40": "CREWS IN A FIGHT\n\nAn engaged crew encircles its target. Only the members holding an attack token (a spike of light above them) close in; the tokens pass round the ring. The badly hurt drop back to repair. When the node falls, the crew elects another; a losing crew calls for help."
 }

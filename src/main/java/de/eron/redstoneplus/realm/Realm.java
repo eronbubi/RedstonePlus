@@ -427,6 +427,7 @@ public final class Realm {
         RealmStory.init();
         Sanctums.init();
         ArteryBounds.init();
+        Crews.init();
         modBus.addListener(Realm::attributes);
         modBus.addListener(Realm::spawnPlacements);
         if (FMLEnvironment.dist == Dist.CLIENT) {

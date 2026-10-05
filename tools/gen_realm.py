@@ -2111,6 +2111,18 @@ for key, e, g in (
         ('edge', 'The realm ends here: only the void lies beyond, and it pushes you back.', 'Hier endet das Reich: dahinter liegt nur die Leere, und sie drängt dich zurück.'),
         ('returned', 'The void will not hold you. The artery pulls you back to its land.', 'Die Leere hält dich nicht. Die Ader zieht dich zurück an ihr Land.')):
     name(f'artery.{NS}.{key}', e, g)
+BOOK_EN += [
+    'CREWS\n\nThe realm\'s creatures work in crews. A crew has a node, its leader, linked by lines of light to its members. Warbands march in a wedge, jackal packs in single file, mite herds in two columns, the hunters of the Reach in a ring.',
+    'ORDERS\n\nThe node decides. Its orders run down the links as pulses of light; the farther a member, the later it hears. Each member nods and flashes as the order reaches it, and a fainter pulse runs back: the acknowledgement.',
+    'CREWS AT WORK\n\nWhen the node takes on a job (a lamp, a bell, a wall), its crew rings the work, faces it and works in step. Every member in place makes the job go faster. Idle, a crew stands in formation and sweeps its gaze round together.',
+    'CREWS IN A FIGHT\n\nAn engaged crew encircles its target. Only the members holding an attack token (a spike of light above them) close in; the tokens pass round the ring. The badly hurt drop back to repair. When the node falls, the crew elects another; a losing crew calls for help.',
+]
+BOOK_DE += [
+    'TRUPPS\n\nDie Kreaturen des Reichs arbeiten in Trupps. Ein Trupp hat einen Knoten, seinen Anführer, mit Lichtlinien zu seinen Mitgliedern verbunden. Kriegshaufen marschieren im Keil, Schakalrudel im Gänsemarsch, Milbenherden in zwei Reihen, die Jäger der Weite im Ring.',
+    'BEFEHLE\n\nDer Knoten entscheidet. Seine Befehle laufen als Lichtimpulse die Verbindungen entlang; je weiter weg ein Mitglied, desto später hört es sie. Jedes nickt und blitzt auf, wenn der Befehl ankommt, und ein schwächerer Impuls läuft zurück: die Bestätigung.',
+    'TRUPPS BEI DER ARBEIT\n\nNimmt sich der Knoten eine Arbeit vor (eine Lampe, eine Glocke, eine Mauer), umringt sein Trupp sie, blickt darauf und arbeitet im Takt. Jedes Mitglied an seinem Platz macht die Arbeit schneller. Untätig steht ein Trupp in Formation und schaut gemeinsam reihum.',
+    'TRUPPS IM KAMPF\n\nEin kämpfender Trupp umzingelt sein Ziel. Nur wer eine Angriffsmarke hält (ein Lichtdorn über ihm), rückt vor; die Marken wandern im Ring. Schwer Verletzte ziehen sich zur Reparatur zurück. Fällt der Knoten, wählt der Trupp einen neuen; ein unterlegener Trupp ruft Hilfe.',
+]
 BOOK_EN[1:1] = [
     'THE ARTERY\n\nThe realm does not go on forever. It is one giant artery of the world: a vessel of land eight thousand blocks long, winding over a red void. It swells into chambers and sends side vessels off its flanks.',
     'THE WAY ALONG IT\nWest Root, Piston Karst (Force), Switchyard (Signal), Moors and Fen (Resonance), the Heart with the Great Cradle, the Red Sea (Flow), the Grove, the Kiln Barrens (Heat), the Salt Flats, East Root. The Sealed Reach is a walled side vessel near the east.',

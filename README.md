@@ -220,6 +220,50 @@ eine Riesenkette in den Himmel steigt, und am Himmel laufen fünf Ketten vom Hor
 Neue Werkzeuge: `python tools/gen_realm_healed.py` (Texturen der geheilten Kreaturen), `build_mobs.py -- --previews-only --healed NAME`
 (Vorschau damit).
 
+## Die Ader, Riesen-Bosse und Trupps (neu)
+
+**Das Reich hat jetzt Grenzen.** Es ist keine endlose Welt mehr, sondern eine einzige riesige **Ader** der Welt: ein Gefäß aus
+Land, etwa 8000 Blöcke lang und 400 bis 1100 breit, das sich über eine rote Leere windet (`Artery.java`, festgelegt, in jeder
+Welt gleich). Es weitet sich zu Kammern, treibt Seitengefäße aus und hängt frei: unter der Mitte reicht das Land bis ganz
+nach unten, zum Rand hin wird es dünner wie der Querschnitt eines Rohrs. Am Rand steigt die **Aderwand** auf (neuer Block),
+und von Rändern und Unterseite hängen **Adern** aus Aderwand mit glühendem Redstone-Kern hinab in das **Blut darunter**, ein Meer
+aus geschmolzenem Redstone am Grund der Leere. An beiden Enden (West- und Ostwurzel) taucht die Ader selbst darin ein: dort ist
+das Reich mit der Welt verbunden.
+
+Die Biome liegen jetzt **mit Absicht** entlang der Ader, als Reise von West nach Ost (eigene Biomquelle): Westwurzel
+(Hämatit-Klippen), Kolbenkarst, Weichenebene / Arsenal-Dünen, Wegmarken-Moore / Rotton-Moor, das **Herz** (Rubedo-Gärten, die
+weiteste Kammer), Schleusengärten / das **Rote Meer** (ein Becken aus Rostlake), Lampenhain / Adermoor, Brennofen-Öde,
+Oxid-Salzebene / Frostwerk-Öde, Ostwurzel. Seitengefäße: Arsenal-Dünen, Stolperdraht-Dickicht, Adermoor und die **Versiegelte
+Weite** als ummauerte Sackgasse (die Mauer steht nur an ihrer Mündung). Unter der Erde Fossilbetten und Resonanzhöhlen. Die Leere
+ist ein eigenes Biom (der Abgrund) mit aufsteigender Glut. Ein Kartenbild entsteht mit dem Werkzeug in `Artery.java` (reines Java).
+
+**Grenzen:** Portale landen immer auf der Ader. Wer weit über die Leere fliegt, wird zurückgedrängt und ab 560 Blöcken zurückgeholt.
+Wer ins Blut fällt, wird nach drei Sekunden von einem Pulsschlag der Ader ans nächste Land geworfen.
+**Herzschlag:** Alle fünf Sekunden schlägt das Herz des Reichs (Ton, und Licht und Nebel pulsieren rot mit).
+
+**Riesen-Bosse:** Die Echos sind doppelt so groß (der Kolbenfürst 17 Blöcke hoch), mit passender Trefferbox, mehr Leben, Reichweite
+und größeren Angriffen; der Übergeläut ist über 25 Blöcke hoch und 2000 Leben stark. Die Schleusenmutter schreitet direkt auf ihr Ziel zu.
+
+**Arenen:** Jedes Echo hat genau eine Arena an einem festen Ort der Ader (Radius 56), aus Plänen in `Arenas.java` (reines Java,
+ohne Spiel als Bild prüfbar): der **Pressenthron** (versenkter Achteckhof, zwölf Riesenkolben, Arkaden, zwei Hochstege, Thron mit
+Rückenlehne), die **Schaltwarte** (Platine mit Leiterbahnen und Chips, Relaissäulen, sechzehn Signalmasten, Kronenring mit
+durchhängenden Kabelbündeln), die **Glockenmulde** (Amphitheater, Kristallobelisken, Glockentürme, eine riesige Glocke auf der
+Kette aufgefädelt), die **Ofenkrone** (Lavagraben, brennende Mauer, sechs Schlote, Krone aus Rippen) und das **Schleusenbecken**
+(Terrassen, zehn Kanäle aus geschmolzenem Redstone, Ringbecken, Insel, Aquädukt). Der letzte Kampf ist in der **Großen Wiege** im
+Herzen (Radius 92): Platz mit Graben, fünf Echo-Pylone, Säulengang, die gebrochene Wiege mit 60 Blöcke hohen Pfeilern, und darüber
+ein Käfig aus sechs Rippen. Das Herz der Fünf wirkt nur auf ihrem Bronzesockel.
+
+**Trupps:** Die Kreaturen arbeiten jetzt in Trupps statt einzeln (`Crews.java`). Ein **Knoten** führt, die Mitglieder sind mit
+**Lichtlinien** mit ihm verbunden. Befehle laufen als Lichtimpuls die Linien entlang und brauchen Zeit (je weiter, desto länger);
+jedes Mitglied nickt und blitzt auf, wenn er ankommt, und ein Bestätigungsimpuls läuft zurück. Formationen: Kriegshaufen im Keil,
+Schakale im Gänsemarsch, Funkenmilben in zwei Reihen (sie zerstreuen sich, wenn sie angegriffen werden), Jäger der Weite im Ring.
+Untätig stehen sie in Formation, blicken in dieselbe Richtung und schauen im Takt reihum, und ihre Leerlauf-Animation läuft auf einer
+gemeinsamen Uhr. **Arbeit:** Nimmt sich der Knoten eine Arbeit vor, umringt der Trupp sie, arbeitet im Takt mit (gleiche Animation
+zur gleichen Zeit, Funkenlinien zur Arbeit), und jedes Mitglied macht sie schneller. **Kampf:** Der Trupp umzingelt das Ziel
+(Ring, der langsam kreist), nur zwei Mitglieder mit **Angriffsmarke** (Lichtdorn) rücken vor, die Marken wandern weiter;
+Schwerverletzte ziehen sich hinter den Knoten zurück und reparieren sich; fällt der Knoten, wird gewählt; ein unterlegener Trupp
+ruft Kreaturen seiner Art aus der Nähe herbei. Die Eintracht gilt weiter: ein Trupp greift nur an, wen die Regeln erlauben.
+
 ## Handbuch im Spiel
 
 Das **RedstonePlus-Handbuch** (Kreativ-Tab, oder Buch + Redstone craften; jeder Spieler bekommt es beim ersten Betreten)

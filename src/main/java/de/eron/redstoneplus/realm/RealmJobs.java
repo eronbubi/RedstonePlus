@@ -149,6 +149,7 @@ final class RealmJobs {
         public void stop() {
             this.target = null;
             this.mob.getNavigation().stop();
+            Crews.stoppedWorking(this.mob);
         }
 
         @Override
@@ -180,13 +181,16 @@ final class RealmJobs {
             if (!(this.mob.level() instanceof ServerLevel level)) {
                 return;
             }
-            if (this.timer % 20 == 0) {
+            if (this.mob.tickCount % 20 == 0) {
                 level.broadcastEntityEvent(this.mob, RealmAnimated.ABILITY_EVENT);
                 this.busy.tick(level, this.mob, this.target);
             }
-            if (++this.timer >= this.workTicks) {
+            // a crew working together gets it done sooner (see Crews)
+            this.timer += Crews.working(this.mob, this.target);
+            if (this.timer >= this.workTicks) {
                 this.work.done(level, this.mob, this.target, level.getBlockState(this.target));
                 this.target = null;
+                Crews.stoppedWorking(this.mob);
             }
         }
     }

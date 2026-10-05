@@ -62,6 +62,11 @@ public class RealmModel<T extends LivingEntity> extends HierarchicalModel<T> {
             part.zScale = 1.0F;
         });
         float seconds = ageInTicks / 20.0F;
+        float partial = ageInTicks - entity.tickCount;
+        if (CrewLinks.inCrew(entity)) {
+            // a crew idles on one shared clock: every member moves in step
+            seconds = (entity.level().getGameTime() + partial) / 20.0F;
+        }
 
         this.play("idle", seconds, 1.0F);
         float walkWeight = Mth.clamp(limbSwingAmount * 1.6F, 0.0F, 1.0F);
@@ -98,11 +103,14 @@ public class RealmModel<T extends LivingEntity> extends HierarchicalModel<T> {
                 }
             }
         }
+        // when an order from its crew's node arrives, a member acknowledges it with a sharp nod
+        float since = CrewLinks.sinceOrder(entity, partial);
+        float nod = since >= 0.0F && since < 10.0F ? Mth.sin(since / 10.0F * Mth.PI) * 0.45F : 0.0F;
         for (String name : this.spec.lookParts) {
             ModelPart part = this.parts.get(name);
             if (part != null) {
                 part.yRot += netHeadYaw * Mth.DEG_TO_RAD / this.spec.lookParts.size();
-                part.xRot += headPitch * Mth.DEG_TO_RAD / this.spec.lookParts.size();
+                part.xRot += headPitch * Mth.DEG_TO_RAD / this.spec.lookParts.size() + nod;
             }
         }
     }

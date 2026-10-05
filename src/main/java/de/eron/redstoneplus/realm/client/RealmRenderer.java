@@ -99,6 +99,11 @@ public class RealmRenderer<T extends Mob> extends MobRenderer<T, RealmModel<T>> 
             if (entity.hurtTime > 0) {
                 pulse = 1.0F;
             }
+            // a crew member's lights flash as an order reaches it
+            float since = CrewLinks.sinceOrder(entity, partialTick);
+            if (since >= 0.0F && since < 6.0F) {
+                pulse = 1.0F;
+            }
             int color = net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, pulse, pulse, pulse);
             this.getParentModel().renderToBuffer(pose, buffers.getBuffer(this.type), 0xF00000,
                     net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, color);

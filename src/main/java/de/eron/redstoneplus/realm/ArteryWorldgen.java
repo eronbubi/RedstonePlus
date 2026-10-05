@@ -171,8 +171,8 @@ public final class ArteryWorldgen {
         return level.getBlockState(new net.minecraft.core.BlockPos(x, y, z)).isAir();
     }
 
-    /** The bottom of the void: the Blood Below, a sea of molten redstone, nine blocks deep. */
-    public static final int BLOOD_TOP = -56;
+    /** The bottom of the void: the Blood Below, a sea of molten redstone, ten blocks deep. */
+    public static final int BLOOD_TOP = -55;
 
     /**
      * One column of the abyss: the Blood Below wherever there is no land down to the bottom, a skin of vessel wall on the
@@ -184,7 +184,9 @@ public final class ArteryWorldgen {
         var wall = Realm.ARTERY_WALL.get().defaultBlockState();
         boolean built = false;
         for (int y = min; y <= BLOOD_TOP; y++) {
-            if (air(level, x, y, z)) {
+            // the terrain fills the bottom of the world with plain lava wherever nothing stands; the Blood replaces it
+            var here = level.getBlockState(new net.minecraft.core.BlockPos(x, y, z));
+            if (here.isAir() || here.is(net.minecraft.world.level.block.Blocks.LAVA)) {
                 put(level, x, y, z, molten);
                 built = true;
             }

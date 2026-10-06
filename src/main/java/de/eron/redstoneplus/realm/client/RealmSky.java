@@ -127,6 +127,9 @@ public final class RealmSky extends DimensionSpecialEffects {
         float clear = 1.0F - level.getRainLevel(partialTick);
         float pulse = healed ? 0.0F : toll(level, partialTick);
         float time = ticks + partialTick;
+        if (!healed) {
+            arteries(pose.last().pose(), time, heartbeat(level, partialTick), clear);
+        }
         float angle = level.getTimeOfDay(partialTick) * 360.0F;
         if (!healed) {
             // the chains, drawn first so the Bell hangs in front of where they meet it
@@ -224,6 +227,85 @@ public final class RealmSky extends DimensionSpecialEffects {
         }
         BufferUploader.drawWithShader(b.buildOrThrow());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    /** The arteries across the sky: vessels branching up from the horizon towards the zenith (fixed, from a seed). */
+    private static final java.util.List<float[][]> ARTERIES = new java.util.ArrayList<>();
+    private static final java.util.List<float[]> ARTERY_LOOK = new java.util.ArrayList<>(); // width, speed, phase
+
+    static {
+        net.minecraft.util.RandomSource r = net.minecraft.util.RandomSource.create(1913);
+        for (int i = 0; i < 14; i++) {
+            double az0 = i * Mth.TWO_PI / 14 + r.nextDouble() * 0.3;
+            double az1 = az0 + (r.nextDouble() - 0.5) * 1.4;
+            double el1 = 0.9 + r.nextDouble() * 0.5;
+            float[][] main = vessel(az0, -0.08, az1, el1, r.nextDouble() * 10, 56);
+            ARTERIES.add(main);
+            ARTERY_LOOK.add(new float[]{2.8F, 0.006F + r.nextFloat() * 0.004F, r.nextFloat()});
+            for (int k = 0; k < 2; k++) {
+                // a branch leaving the vessel part of the way up
+                double t = 0.3 + r.nextDouble() * 0.4;
+                double az = az0 + (az1 - az0) * t;
+                double el = -0.08 + (el1 + 0.08) * t;
+                ARTERIES.add(vessel(az, el, az + (r.nextBoolean() ? 0.5 : -0.5), el + 0.25 + r.nextDouble() * 0.2, r.nextDouble() * 10, 24));
+                ARTERY_LOOK.add(new float[]{1.5F, 0.01F + r.nextFloat() * 0.006F, r.nextFloat()});
+            }
+        }
+    }
+
+    /** Points along a wavering vessel on the sky dome from (az0, el0) to (az1, el1). */
+    private static float[][] vessel(double az0, double el0, double az1, double el1, double phase, int n) {
+        float[][] out = new float[n + 1][];
+        for (int k = 0; k <= n; k++) {
+            double t = k / (double) n;
+            double az = az0 + (az1 - az0) * t + 0.06 * Math.sin(k * 0.7 + phase);
+            double el = el0 + (el1 - el0) * t + 0.03 * Math.sin(k * 1.3 + phase);
+            out[k] = new float[]{(float) (150 * Math.cos(el) * Math.cos(az)), (float) (150 * Math.sin(el)), (float) (150 * Math.cos(el) * Math.sin(az))};
+        }
+        return out;
+    }
+
+    /** Draws the arteries: dull red vessels with bright pulses running up them, all flaring on the heartbeat. */
+    private static void arteries(Matrix4f m, float time, float beat, float clear) {
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F); // the sky disc leaves its colour set
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        BufferBuilder buf = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (int i = 0; i < ARTERIES.size(); i++) {
+            float[][] pts = ARTERIES.get(i);
+            float[] look = ARTERY_LOOK.get(i);
+            float head = (time * look[1] + look[2]) % 1.0F;
+            int n = pts.length - 1;
+            for (int k = 0; k < n; k++) {
+                Vector3f a = new Vector3f(pts[k]);
+                Vector3f b = new Vector3f(pts[k + 1]);
+                Vector3f side = new Vector3f(b).sub(a).cross(new Vector3f(a).add(b));
+                if (side.lengthSquared() < 1.0E-6F) {
+                    continue;
+                }
+                side.normalize(look[0]);
+                int ca = glow(k / (float) n, head, beat, clear);
+                int cb = glow((k + 1) / (float) n, head, beat, clear);
+                buf.addVertex(m, a.x - side.x, a.y - side.y, a.z - side.z).setColor(255, 50, 30, ca);
+                buf.addVertex(m, a.x + side.x, a.y + side.y, a.z + side.z).setColor(255, 50, 30, ca);
+                buf.addVertex(m, b.x + side.x, b.y + side.y, b.z + side.z).setColor(255, 50, 30, cb);
+                buf.addVertex(m, b.x - side.x, b.y - side.y, b.z - side.z).setColor(255, 50, 30, cb);
+                // the other way round too, so no face is culled
+                buf.addVertex(m, b.x - side.x, b.y - side.y, b.z - side.z).setColor(255, 50, 30, cb);
+                buf.addVertex(m, b.x + side.x, b.y + side.y, b.z + side.z).setColor(255, 50, 30, cb);
+                buf.addVertex(m, a.x + side.x, a.y + side.y, a.z + side.z).setColor(255, 50, 30, ca);
+                buf.addVertex(m, a.x - side.x, a.y - side.y, a.z - side.z).setColor(255, 50, 30, ca);
+            }
+        }
+        BufferUploader.drawWithShader(buf.buildOrThrow());
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private static int glow(float t, float head, float beat, float clear) {
+        float d = (t - head) * 9.0F;
+        float a = (0.3F + 0.8F * (float) Math.exp(-d * d) + 0.3F * beat) * clear;
+        return (int) (Mth.clamp(a, 0.0F, 1.0F) * 255);
     }
 
     /** A flat band of chain from {@code a} to {@code b}, turned to face the camera (at the origin). */

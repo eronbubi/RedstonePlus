@@ -12,6 +12,7 @@ import colorsys
 import glob
 import io
 import json
+import math
 import os
 import random
 import zipfile
@@ -312,6 +313,21 @@ for bid, (img, tool, e, g, de_, dg) in TERRAIN.items():
     self_drop(bid)
     name(f'block.{NS}.{bid}', e, g, de_, dg)
     (pickaxe if tool == 'pickaxe' else shovel).append(f'{NS}:{bid}')
+for bid, frames, low in (('redstone_vein', 12, 0.62), ('chiseled_realmstone_bricks', 16, 0.8)):
+    base = TERRAIN[bid][0].convert('RGBA')
+    strip = Image.new('RGBA', (16, 16 * frames))
+    for f in range(frames):
+        k = low + (1 - low) * (0.5 - 0.5 * math.cos(2 * math.pi * f / frames))
+        frame = base.copy()
+        px = frame.load()
+        for yy in range(16):
+            for xx in range(16):
+                r_, g_, b_, a_ = px[xx, yy]
+                if r_ > g_ + 40:  # only the glowing red parts throb
+                    px[xx, yy] = (int(r_ * k), int(g_ * k), int(b_ * k), a_)
+        strip.paste(frame, (0, 16 * f))
+    save(strip, 'block', bid)
+    write(os.path.join(ASSETS, 'textures', 'block', bid + '.png.mcmeta'), {'animation': {'frametime': 3, 'interpolate': True}})
 
 # logs
 pale_side = tint(vanilla('block/stripped_birch_log'), '#ece2d2', gain=1.1)
@@ -1591,7 +1607,7 @@ cluster('cave_clusters_floor', 18, -60, 50, 'down')
 cluster('cave_clusters_ceiling', 12, -60, 50, 'up')
 
 # landforms: once per chunk, over the columns of their own biome
-for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities', 'grid', 'sealed_wall', 'sanctums',
+for shape in ('dunes', 'mesas', 'ponds', 'crevasses', 'lava_channels', 'terrace_pools', 'tracks', 'veins', 'roads', 'cities', 'powerlines', 'grid', 'sealed_wall', 'sanctums',
               'red_sea', 'rim', 'abyss'):
     placed(shape, none_feature(shape), [])
 
@@ -1663,7 +1679,7 @@ STEPS = [
     ['minecraft:lake_lava_surface', 'redstoneplus:molten_redstone_lake', 'redstoneplus:molten_redstone_pool', 'redstoneplus:ember_oil_lake',
      'redstoneplus:rust_brine_lake', 'redstoneplus:resonant_ichor_pool', 'redstoneplus:blight_sap_lake', 'redstoneplus:dawn_nectar_lake'],
     ['redstoneplus:dunes', 'redstoneplus:mesas', 'redstoneplus:ponds', 'redstoneplus:crevasses', 'redstoneplus:lava_channels',
-     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid',
+     'redstoneplus:terrace_pools', 'redstoneplus:tracks', 'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:powerlines', 'redstoneplus:grid',
      'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:karst_spire', 'redstoneplus:kiln_spire', 'redstoneplus:hoodoo', 'redstoneplus:tempest_pillar', 'redstoneplus:rubedo_spire',
      'redstoneplus:frost_spire', 'redstoneplus:dune_rock', 'redstoneplus:slag_heap', 'redstoneplus:sulfur_rock', 'redstoneplus:salt_mound',
      'redstoneplus:scree', 'redstoneplus:red_sea', 'redstoneplus:rim', 'redstoneplus:abyss'],
@@ -1685,7 +1701,7 @@ STEPS = [
      'redstoneplus:cinder_bloom_patch', 'redstoneplus:frost_fern_patch', 'redstoneplus:briar_patch'],
     [],
 ]
-EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:chain_anchor',
+EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:powerlines', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:chain_anchor',
               'redstoneplus:red_sea', 'redstoneplus:rim', 'redstoneplus:abyss', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
               'redstoneplus:scree', 'redstoneplus:logic_hall', 'redstoneplus:observatory', 'redstoneplus:wirewright_farm', 'redstoneplus:clock_tower', 'redstoneplus:salute_battery', 'redstoneplus:lockhouse'}
 

@@ -45,7 +45,9 @@ public final class RealmTerrain {
         // the sanctums of the five Echoes, and the giant chains rising from them (see Sanctums)
         SANCTUMS(),
         // the artery itself (see Artery): the Blood Below and the hanging veins, the vessel's rim wall, the Red Sea
-        ABYSS(), RIM(), RED_SEA();
+        ABYSS(), RIM(), RED_SEA(),
+        // the power lines down the artery: pylons here, the cables drawn by the client (see RealmPower)
+        POWERLINES();
 
         final String[] biomes;
 
@@ -104,6 +106,7 @@ public final class RealmTerrain {
                         case TRACKS -> track(level, a, x, z, top, sea);
                         case VEINS -> vein(level, a, b, x, z, top);
                         case ROADS -> road(level, a, b, x, z, top, sea);
+                        case POWERLINES -> RealmPower.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case CITIES -> RealmCities.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case GRID -> Grid.column(level, context.chunkGenerator(), level.getLevel().getChunkSource().randomState(), x, z, top);
                         case SEALED_WALL -> SealedReach.column(level, x, z, top);

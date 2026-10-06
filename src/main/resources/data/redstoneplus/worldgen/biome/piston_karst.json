@@ -120,7 +120,13 @@
       "redstoneplus:generator_hall",
       "redstoneplus:relay_spire",
       "redstoneplus:circuit_temple",
-      "redstoneplus:chain_anchor"
+      "redstoneplus:chain_anchor",
+      "redstoneplus:logic_hall",
+      "redstoneplus:observatory",
+      "redstoneplus:wirewright_farm",
+      "redstoneplus:clock_tower",
+      "redstoneplus:salute_battery",
+      "redstoneplus:lockhouse"
     ],
     [],
     [

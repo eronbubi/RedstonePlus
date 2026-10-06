@@ -163,16 +163,32 @@ public final class RealmFeatures {
                 }
                 state = this.weathered(state);
             }
-            BlockState rotated = state.rotate(this.rotation);
+            BlockState rotated = rotate(state, this.rotation);
             this.level.setBlock(pos, rotated, this.worldgen ? Block.UPDATE_CLIENTS : Block.UPDATE_ALL);
             if (this.worldgen) {
-                // generated blocks get no onPlace call: wake up everything that runs on scheduled ticks
+                // generated blocks get no onPlace call: wake up everything that runs on scheduled ticks. Powered
+                // machines only if placed powered: their tick fires them whether or not they are (docs/redstone-components.md)
                 Block block = rotated.getBlock();
-                if (block instanceof GateBlock || block instanceof Sensors.Sensor || block instanceof PoweredBlock
-                        || block instanceof Wireless.Receiver) {
+                if (block instanceof GateBlock || block instanceof Sensors.Sensor || block instanceof Wireless.Receiver
+                        || block instanceof PoweredBlock && rotated.getValue(PoweredBlock.POWERED)) {
                     this.level.scheduleTick(pos, block, 2 + this.random.nextInt(4));
                 }
             }
+        }
+
+        /** Gates and sensors do not rotate themselves: turn their facing by hand when {@code rotate} left it alone. */
+        static BlockState rotate(BlockState state, Rotation rotation) {
+            BlockState rotated = state.rotate(rotation);
+            if (rotated != state || rotation == Rotation.NONE) {
+                return rotated;
+            }
+            if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+                return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
+            }
+            if (state.hasProperty(BlockStateProperties.FACING)) {
+                return state.setValue(BlockStateProperties.FACING, rotation.rotate(state.getValue(BlockStateProperties.FACING)));
+            }
+            return state;
         }
 
         private BlockState weathered(BlockState state) {
@@ -285,6 +301,8 @@ public final class RealmFeatures {
         // machines that run by themselves
         LAMP_PYLON(false), CRUSHER_MILL(true), PUMP_STATION(true), MINECART_LOOP(true), STORM_SPIRE(false), BELL_TOWER(true), BEAST_CAGE(true),
         LASER_POST(true),
+        // the Wirewrights' workshops, one per family of RedstonePlus parts (RealmWorkshops)
+        LOGIC_HALL(true), OBSERVATORY(true), WIREWRIGHT_FARM(true), CLOCK_TOWER(true), SALUTE_BATTERY(true), LOCKHOUSE(true),
         // the great buildings of the old world, standing or in ruins
         GENERATOR_HALL(false), RELAY_SPIRE(false), CIRCUIT_TEMPLE(false),
         // the great chains that bind the trapped realm to the Bell
@@ -367,6 +385,12 @@ public final class RealmFeatures {
                 case BELL_TOWER -> RealmStructures.bellTower(b);
                 case BEAST_CAGE -> RealmStructures.beastCage(b);
                 case LASER_POST -> RealmStructures.laserPost(b);
+                case LOGIC_HALL -> RealmWorkshops.logicHall(b);
+                case OBSERVATORY -> RealmWorkshops.observatory(b);
+                case WIREWRIGHT_FARM -> RealmWorkshops.farm(b);
+                case CLOCK_TOWER -> RealmWorkshops.clockTower(b);
+                case SALUTE_BATTERY -> RealmWorkshops.saluteBattery(b);
+                case LOCKHOUSE -> RealmWorkshops.lockhouse(b);
                 case GENERATOR_HALL -> RealmRelics.generatorHall(b);
                 case RELAY_SPIRE -> RealmRelics.relaySpire(b);
                 case CIRCUIT_TEMPLE -> RealmRelics.circuitTemple(b);

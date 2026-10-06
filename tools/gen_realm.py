@@ -1601,7 +1601,9 @@ for kind, rarity in (('crusher_passage', 28), ('switchyard_junction', 26), ('slu
                      ('rail_line', 40), ('tower', 40), ('ruin', 56), ('monolith', 36), ('crashed_shell', 36), ('crystal_dome', 36),
                      ('boardwalk', 10), ('kiln_hut', 36), ('aqueduct', 40), ('ice_rails', 40), ('scrap', 36),
                      ('lamp_pylon', 70), ('crusher_mill', 48), ('pump_station', 44), ('minecart_loop', 48), ('storm_spire', 30),
-                     ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40)):
+                     ('bell_tower', 44), ('beast_cage', 56), ('laser_post', 40),
+                     # the Wirewrights' workshops (RealmWorkshops): one per family of RedstonePlus parts, in every land biome
+                     ('logic_hall', 48), ('observatory', 54), ('wirewright_farm', 48), ('clock_tower', 54), ('salute_battery', 60), ('lockhouse', 54)):
     site(kind, rarity)
 # the great buildings of the old world: centred on their chunk so they have room, and very rare
 for kind, rarity in (('generator_hall', 260), ('relay_spire', 220), ('circuit_temple', 300)):
@@ -1671,7 +1673,8 @@ STEPS = [
      'redstoneplus:crashed_shell', 'redstoneplus:crystal_dome', 'redstoneplus:boardwalk', 'redstoneplus:kiln_hut', 'redstoneplus:aqueduct',
      'redstoneplus:ice_rails', 'redstoneplus:scrap', 'redstoneplus:lamp_pylon', 'redstoneplus:crusher_mill', 'redstoneplus:pump_station',
      'redstoneplus:minecart_loop', 'redstoneplus:storm_spire', 'redstoneplus:bell_tower', 'redstoneplus:beast_cage', 'redstoneplus:laser_post',
-     'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:chain_anchor'],
+     'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:chain_anchor',
+     'redstoneplus:logic_hall', 'redstoneplus:observatory', 'redstoneplus:wirewright_farm', 'redstoneplus:clock_tower', 'redstoneplus:salute_battery', 'redstoneplus:lockhouse'],
     [],
     ['redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:ore_redstone_vein',
      'redstoneplus:resonant_crystal_ore'],
@@ -1684,7 +1687,7 @@ STEPS = [
 ]
 EVERYWHERE = {'redstoneplus:veins', 'redstoneplus:roads', 'redstoneplus:cities', 'redstoneplus:grid', 'redstoneplus:sealed_wall', 'redstoneplus:sanctums', 'redstoneplus:chain_anchor',
               'redstoneplus:red_sea', 'redstoneplus:rim', 'redstoneplus:abyss', 'redstoneplus:generator_hall', 'redstoneplus:relay_spire', 'redstoneplus:circuit_temple', 'redstoneplus:ore_realm_redstone', 'redstoneplus:ore_realm_iron', 'redstoneplus:ore_realm_copper', 'redstoneplus:cave_clusters_floor',
-              'redstoneplus:scree'}
+              'redstoneplus:scree', 'redstoneplus:logic_hall', 'redstoneplus:observatory', 'redstoneplus:wirewright_farm', 'redstoneplus:clock_tower', 'redstoneplus:salute_battery', 'redstoneplus:lockhouse'}
 
 
 def features(*wanted):
@@ -2037,6 +2040,8 @@ BOOK_EN = [
     'THE RULES\n\nThe realm still keeps the Concordance. Its creatures leave you alone until you:\n\n1. strike first,\n2. break what the Wirewrights built (their bricks, tiles, bronze, lamps, bells and traps),\n3. move while the Great Bell tolls.',
     'THE COUNT\n\nThe bar at the top counts the rules you have broken. At three, every creature of the realm hunts you on sight. Fight back freely when they come for you: defending is no crime. The bar also counts down to each toll. The realm forgets the dead.',
     'ATONEMENT\n\nRelight a dead lamp with redstone: one rule (each lamp once, one a minute).\nRing a bell while the Great Bell tolls: two rules.\nLay an Etched Plate on Bell Bronze (the Cradle plazas are full of it): all of them.\nAtoning calls off the hunt.',
+    'WORKSHOPS\n\nEach Wirewright workshop still runs one machine. Logic Hall: clocks feed gates, lamps blink. Observatory: sensors, a door that opens for you, a siren for monsters. Farm: a harvester and a magnet.',
+    'WORKSHOPS II\n\nClock Tower: flip-flops count in binary and ring a bell. Salute Battery: fireworks for visitors. Lockhouse: three levers, an XOR and an AND; the right setting opens the floor to a vault.',
     'FOUNDRY CITIES\n\nThe ruined cities of the Wirewrights spread hundreds of blocks wide, behind broken walls. At the centre of each stands the empty cradle where a bell once hung.',
     'THE GRID\n\nGlowing Lightlines cross the realm every 256 blocks, north-south and east-west. Where they meet stand nodes: cycle depots, junction spires, trackworks and bell gates. Many lines broke; the Trackwrights mend them.',
     'LIGHT CYCLES\n\nOn your first visit a light cycle is built for you. Ride it onto a Lightline: it locks on and races along it. Tap A or D before a junction to turn. Hold jump for overdrive, S to brake, S at a standstill to turn round.',
@@ -2065,6 +2070,8 @@ BOOK_DE = [
     'DIE REGELN\n\nDas Reich hält noch die Eintracht. Seine Kreaturen lassen dich in Ruhe, bis du:\n\n1. zuerst zuschlägst,\n2. zerstörst, was die Drahtwerker gebaut haben (Ziegel, Fliesen, Bronze, Lampen, Glocken, Fallen),\n3. dich bewegst, während die Große Glocke schlägt.',
     'DIE ZÄHLUNG\n\nDer Balken oben zählt deine gebrochenen Regeln. Ab drei jagt dich jede Kreatur des Reichs. Wehr dich ruhig, wenn sie kommen: Verteidigung ist kein Vergehen. Der Balken zählt auch bis zu jedem Schlag herunter. Das Reich vergisst die Toten.',
     'SÜHNE\n\nEine tote Lampe mit Redstone neu entzünden: eine Regel (jede Lampe einmal, eine pro Minute).\nEine Glocke läuten, während die Große Glocke schlägt: zwei Regeln.\nEine Gravierte Platte auf Glockenbronze legen (die Wiegen-Plätze sind voll davon): alle.\nSühne beendet die Jagd.',
+    'WERKSTÄTTEN\n\nJede Werkstatt der Drahtwerker betreibt noch eine Maschine. Logikhalle: Taktgeber speisen Gatter, Lampen blinken. Observatorium: Sensoren, eine Tür, die sich für dich öffnet, eine Sirene bei Monstern. Hof: Ernter und Magnet.',
+    'WERKSTÄTTEN II\n\nUhrturm: Flipflops zählen binär und läuten eine Glocke. Salutbatterie: Feuerwerk für Besucher. Schlosshaus: drei Hebel, ein XOR und ein UND; die richtige Stellung öffnet den Boden zum Tresor.',
     'GIESSEREISTÄDTE\n\nDie zerfallenen Städte der Drahtwerker sind hunderte Blöcke breit, hinter zerbrochenen Mauern. In ihrer Mitte steht die leere Wiege, in der einst eine Glocke hing.',
     'DAS RASTER\n\nLeuchtende Lichtbahnen durchziehen das Reich alle 256 Blöcke, von Nord nach Süd und Ost nach West. Wo sie sich treffen, stehen Knoten: Raddepots, Kreuzungstürme, Bahnwerke und Glockentore. Viele Bahnen brachen; die Bahnwerker flicken sie.',
     'LICHTRÄDER\n\nBeim ersten Besuch wird dir ein Lichtrad gebaut. Fahr damit auf eine Lichtbahn: es rastet ein und rast darauf entlang. Tippe vor einer Kreuzung A oder D zum Abbiegen. Springen halten: Schub, S: bremsen, S im Stand: wenden.',
